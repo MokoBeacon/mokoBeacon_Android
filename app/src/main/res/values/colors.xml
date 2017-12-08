@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- test -->
+    <color name="white_ffffff">#ffffff</color>
+    <color name="transparent">#00000000</color>
+    <color name="white_fffefe">#fffefe</color>
+    <color name="black_333333">#333333</color>
+    <color name="black_373737">#373737</color>
+    <color name="grey_999999">#999999</color>
+    <color name="grey_666666">#666666</color>
+    <color name="grey_d9d9d9">#d9d9d9</color>
+    <color name="grey_ebebeb">#ebebeb</color>
+    <color name="blue_5691fc">#5691fc</color>
+</resources>

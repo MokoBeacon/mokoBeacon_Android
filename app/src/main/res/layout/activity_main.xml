@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/blue_5691fc"
+        android:paddingBottom="12dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="14dp"
+            android:text="@string/device_list_title"
+            android:textColor="@color/white_ffffff"
+            android:textSize="17sp" />
+
+        <ImageView
+            android:id="@+id/iv_about"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:padding="16dp"
+            android:src="@drawable/about" />
+
+        <EditText
+            android:id="@+id/et_device_filter"
+            android:layout_width="match_parent"
+            android:layout_height="38dp"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:layout_marginTop="53dp"
+            android:background="@drawable/shape_radius_white_bg"
+            android:hint="@string/device_list_filter_hin"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:singleLine="true"
+            android:text=""
+            android:textColor="@color/black_333333"
+            android:textColorHint="@color/grey_d9d9d9"
+            android:textSize="15sp" />
+
+    </RelativeLayout>
+
+    <RadioGroup
+        android:id="@+id/rg_device_sort"
+        android:layout_width="match_parent"
+        android:layout_height="42dp"
+        android:background="@color/white_ffffff"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/rb_sort_rssi"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:button="@null"
+            android:drawableLeft="@drawable/selector_device_sort_rssi"
+            android:gravity="center"
+            android:paddingLeft="40dp"
+            android:paddingRight="40dp" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.0" />
+
+        <RadioButton
+            android:id="@+id/rb_sort_major"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:button="@null"
+            android:drawableLeft="@drawable/selector_device_sort_major"
+            android:gravity="center"
+            android:paddingLeft="40dp"
+            android:paddingRight="40dp" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.0" />
+
+        <RadioButton
+            android:id="@+id/rb_sort_minor"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:button="@null"
+            android:drawableLeft="@drawable/selector_device_sort_minor"
+            android:gravity="center"
+            android:paddingLeft="40dp"
+            android:paddingRight="40dp" />
+
+    </RadioGroup>
+
+    <ListView
+        android:id="@+id/lv_device_list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1.0"
+        android:background="@color/grey_ebebeb"
+        android:cacheColorHint="@color/transparent"
+        android:clipToPadding="false"
+        android:divider="@color/transparent"
+        android:dividerHeight="5dp"
+        android:listSelector="@color/transparent"
+        android:scrollbarStyle="outsideOverlay" />
+</LinearLayout>

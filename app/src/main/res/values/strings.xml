@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Moko Beacon</string>
+    <string name="device_list_title">设备列表</string>
+    <string name="device_list_filter_hin">名字</string>
+    <string name="about_version">版本号：1.0.0</string>
+    <string name="about_moko_url">www.mokosmart.com</string>
+    <string name="about_moko_name">深圳市华创恒达科技</string>
+</resources>
