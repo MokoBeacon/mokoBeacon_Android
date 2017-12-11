@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Intent;
 
 import com.moko.beacon.service.BeaconService;
+import com.moko.beaconsupport.beacon.BeaconModule;
 
 /**
  * @Date 2017/12/7 0007

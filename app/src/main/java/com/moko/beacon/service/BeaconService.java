@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 
+import com.moko.beaconsupport.beacon.BeaconModule;
 import com.moko.beaconsupport.log.LogModule;
 
 /**
@@ -34,8 +35,9 @@ public class BeaconService extends Service {
 
     @Override
     public void onCreate() {
-        LogModule.i("后台服务创建");
         super.onCreate();
+        BeaconModule.getInstance().init(this);
+        LogModule.i("后台服务创建");
     }
 
     @Override

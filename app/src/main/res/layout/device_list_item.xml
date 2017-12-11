@@ -1,8 +1,155 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/white_ffffff"
+    android:layout_height="wrap_content"
     android:orientation="vertical">
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        android:background="@color/grey_ebebeb" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white_ffffff"
+        android:paddingBottom="12dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingTop="12dp">
+
+        <TextView
+            android:id="@+id/tv_device_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="device_name"
+            android:textColor="@color/blue_5691fc"
+            android:textSize="15sp" />
+
+        <ImageView
+            android:id="@+id/iv_battery_power"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/battery_1" />
+
+        <LinearLayout
+            android:id="@+id/ll_device_info_1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_device_name"
+            android:layout_marginLeft="31dp"
+            android:layout_marginTop="6dp">
+
+            <TextView
+                android:id="@+id/tv_device_rssi"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.0"
+                android:singleLine="true"
+                android:text="Rssi:92"
+                android:textColor="@color/grey_737373"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/tv_device_major"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.0"
+                android:singleLine="true"
+                android:text="Major:10001"
+                android:textColor="@color/grey_737373"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/tv_device_minor"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.0"
+                android:singleLine="true"
+                android:text="Minor:19641"
+                android:textColor="@color/grey_737373"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_device_info_2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ll_device_info_1"
+            android:layout_marginLeft="31dp"
+            android:layout_marginTop="6dp">
+
+            <TextView
+                android:id="@+id/tv_device_distance"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.0"
+                android:singleLine="true"
+                android:text="Rssi:92"
+                android:textColor="@color/grey_737373"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/tv_device_distane_desc"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.0"
+                android:singleLine="true"
+                android:text="Major:10001"
+                android:textColor="@color/grey_737373"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/tv_device_conn_state"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.0"
+                android:singleLine="true"
+                android:text="Minor:19641"
+                android:textColor="@color/grey_737373"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_device_info_3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ll_device_info_2"
+            android:layout_marginLeft="31dp"
+            android:layout_marginTop="6dp">
+
+            <TextView
+                android:id="@+id/tv_device_tx"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.0"
+                android:singleLine="true"
+                android:text="Rssi:92"
+                android:textColor="@color/grey_737373"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/tv_device_mac"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2.0"
+                android:singleLine="true"
+                android:text="Major:10001"
+                android:textColor="@color/grey_737373"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_device_uuid"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ll_device_info_3"
+            android:layout_marginTop="9dp"
+            android:singleLine="true"
+            android:text="UUID:Unknown"
+            android:textColor="@color/black_333333"
+            android:textSize="12sp" />
+
+    </RelativeLayout>
 </LinearLayout>
