@@ -1,11 +1,10 @@
 package com.moko.beaconsupport.beacon;
 
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
-import android.text.TextUtils;
 
+import com.moko.beaconsupport.callback.FitLeScanCallback;
 import com.moko.beaconsupport.callback.ScanDeviceCallback;
 import com.moko.beaconsupport.log.LogModule;
 
@@ -20,6 +19,9 @@ public class BeaconModule {
     private FitLeScanCallback mFitLeScanCallback;
 
     private static volatile BeaconModule INSTANCE;
+
+    private BeaconModule() {
+    }
 
     public static BeaconModule getInstance() {
         if (INSTANCE == null) {
@@ -38,7 +40,11 @@ public class BeaconModule {
         mBluetoothAdapter = bluetoothManager.getAdapter();
     }
 
-    public void startScanDevice(final ScanDeviceCallback scanDeviceCallback) {
+    public boolean isBluetoothOpen() {
+        return mBluetoothAdapter != null && mBluetoothAdapter.isEnabled();
+    }
+
+    public void startScanDevice(ScanDeviceCallback scanDeviceCallback) {
         mFitLeScanCallback = new FitLeScanCallback(scanDeviceCallback);
         mBluetoothAdapter.startLeScan(mFitLeScanCallback);
         scanDeviceCallback.onStartScan();
@@ -47,24 +53,6 @@ public class BeaconModule {
     public void stopScanDevice() {
         if (mFitLeScanCallback != null) {
             mBluetoothAdapter.stopLeScan(mFitLeScanCallback);
-        }
-    }
-
-    class FitLeScanCallback implements BluetoothAdapter.LeScanCallback {
-        private ScanDeviceCallback callback;
-
-        public FitLeScanCallback(ScanDeviceCallback callback) {
-            this.callback = callback;
-        }
-
-        @Override
-        public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
-            if (device != null) {
-                if (TextUtils.isEmpty(device.getName()) || scanRecord.length == 0 || rssi == 127) {
-                    return;
-                }
-                callback.onScanDevice(device, rssi, scanRecord);
-            }
         }
     }
 }

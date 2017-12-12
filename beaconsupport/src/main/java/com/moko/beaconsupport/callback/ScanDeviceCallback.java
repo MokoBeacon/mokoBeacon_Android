@@ -1,6 +1,8 @@
 package com.moko.beaconsupport.callback;
 
-import android.bluetooth.BluetoothDevice;
+import com.moko.beaconsupport.entity.BeaconInfo;
+
+import java.util.ArrayList;
 
 /**
  * @Date 2017/12/8 0008
@@ -11,7 +13,7 @@ import android.bluetooth.BluetoothDevice;
 public interface ScanDeviceCallback {
     void onStartScan();
 
-    void onScanDevice(BluetoothDevice device, int rssi, byte[] scanRecord);
+    void onScanDevice(ArrayList<BeaconInfo> beaconInfos);
 
     void onStopScan();
 }

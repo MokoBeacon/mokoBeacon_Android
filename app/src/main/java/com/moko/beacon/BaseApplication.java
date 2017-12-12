@@ -16,6 +16,7 @@ public class BaseApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        BeaconModule.getInstance().init(getApplicationContext());
         // 启动蓝牙服务
         startService(new Intent(this, BeaconService.class));
     }

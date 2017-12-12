@@ -6,6 +6,7 @@ import android.os.Binder;
 import android.os.IBinder;
 
 import com.moko.beaconsupport.beacon.BeaconModule;
+import com.moko.beaconsupport.callback.ScanDeviceCallback;
 import com.moko.beaconsupport.log.LogModule;
 
 /**
@@ -16,6 +17,7 @@ import com.moko.beaconsupport.log.LogModule;
  */
 public class BeaconService extends Service {
     private IBinder mBinder = new LocalBinder();
+
 
     public class LocalBinder extends Binder {
         public BeaconService getService() {
@@ -36,19 +38,28 @@ public class BeaconService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        BeaconModule.getInstance().init(this);
-        LogModule.i("后台服务创建");
+        LogModule.i("启动后台服务");
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        LogModule.i("后台服务启动");
         return super.onStartCommand(intent, flags, startId);
+    }
+
+
+    public void startScanDevice(ScanDeviceCallback callback) {
+        LogModule.i("开始扫描Beacon");
+        BeaconModule.getInstance().startScanDevice(callback);
+    }
+
+    public void stopScanDevice() {
+        LogModule.i("结束扫描Beacon");
+        BeaconModule.getInstance().stopScanDevice();
     }
 
     @Override
     public void onDestroy() {
-        LogModule.i("后台服务关闭");
+        LogModule.i("关闭后台服务");
         super.onDestroy();
     }
 }

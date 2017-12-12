@@ -8,7 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.moko.beacon.R;
-import com.moko.beacon.entity.DeviceInfo;
+import com.moko.beaconsupport.entity.BeaconInfo;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -17,18 +17,22 @@ import butterknife.ButterKnife;
  * @Date 2017/12/8 0008
  * @Author wenzheng.liu
  * @Description
- * @ClassPath com.moko.beacon.adapter.DeviceListAdapter
+ * @ClassPath com.moko.beacon.adapter.BeaconListAdapter
  */
-public class DeviceListAdapter extends BeaconBaseAdapter<DeviceInfo> {
+public class BeaconListAdapter extends BeaconBaseAdapter<BeaconInfo> {
 
-    public DeviceListAdapter(Context context) {
+    public BeaconListAdapter(Context context) {
         super(context);
     }
 
     @Override
     protected void bindViewHolder(int position, ViewHolder viewHolder, View convertView, ViewGroup parent) {
         final DeviceViewHolder holder = (DeviceViewHolder) viewHolder;
-        final DeviceInfo device = getItem(position);
+        final BeaconInfo device = getItem(position);
+        setView(holder, device);
+    }
+
+    private void setView(DeviceViewHolder holder, BeaconInfo device) {
         holder.tvDeviceName.setText(device.name);
         holder.tvDeviceRssi.setText(String.format("Rssi:%s", device.rssi));
         holder.tvDeviceMajor.setText(String.format("Major:%s", device.major));

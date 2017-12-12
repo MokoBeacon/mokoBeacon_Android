@@ -2,9 +2,12 @@ package com.moko.beacon.activity;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothAdapter;
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.os.Message;
 import android.support.annotation.IdRes;
 import android.text.Editable;
@@ -14,26 +17,24 @@ import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
+import com.moko.beacon.BeaconConstants;
 import com.moko.beacon.R;
-import com.moko.beacon.adapter.DeviceListAdapter;
+import com.moko.beacon.adapter.BeaconListAdapter;
 import com.moko.beacon.base.BaseHandler;
 import com.moko.beacon.dialog.PasswordDialog;
-import com.moko.beacon.entity.DeviceInfo;
-import com.moko.beacon.utils.Utils;
+import com.moko.beacon.service.BeaconService;
 import com.moko.beaconsupport.beacon.BeaconModule;
 import com.moko.beaconsupport.callback.ScanDeviceCallback;
+import com.moko.beaconsupport.entity.BeaconInfo;
 import com.moko.beaconsupport.log.LogModule;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -52,9 +53,6 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
     public static final int SORT_TYPE_RSSI = 0;
     public static final int SORT_TYPE_MAJOR = 1;
     public static final int SORT_TYPE_MINOR = 2;
-
-    @Bind(R.id.iv_about)
-    ImageView ivAbout;
     @Bind(R.id.et_device_filter)
     EditText etDeviceFilter;
     @Bind(R.id.rb_sort_rssi)
@@ -68,11 +66,11 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
     @Bind(R.id.lv_device_list)
     ListView lvDeviceList;
 
-    private DeviceListAdapter mAdapter;
-    private ArrayList<DeviceInfo> mDeviceInfos;
-    private HashMap<String, DeviceInfo> mDeviceMap;
+    private BeaconListAdapter mAdapter;
+    private ArrayList<BeaconInfo> mBeaconInfos;
     private int mSortType;
     private String mFilterText;
+    private BeaconService mBeaconService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,10 +78,9 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         mHandler = new CustomHandler(this);
-        mAdapter = new DeviceListAdapter(this);
-        mDeviceInfos = new ArrayList<>();
-        mDeviceMap = new HashMap<>();
-        mAdapter.setItems(mDeviceInfos);
+        mAdapter = new BeaconListAdapter(this);
+        mBeaconInfos = new ArrayList<>();
+        mAdapter.setItems(mBeaconInfos);
         lvDeviceList.setAdapter(mAdapter);
         rgDeviceSort.setOnCheckedChangeListener(this);
         lvDeviceList.setOnItemClickListener(this);
@@ -104,13 +101,63 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
                 mFilterText = s.toString();
             }
         });
-        BeaconModule.getInstance().startScanDevice(this);
+        bindService(new Intent(this, BeaconService.class), mServiceConnection, BIND_AUTO_CREATE);
+    }
+
+    private ServiceConnection mServiceConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            mBeaconService = ((BeaconService.LocalBinder) service).getService();
+            // 注册广播接收器
+//            IntentFilter filter = new IntentFilter();
+//            filter.addAction(BTConstants.ACTION_CONN_STATUS_DISCONNECTED);
+//            filter.addAction(BTConstants.ACTION_DISCOVER_SUCCESS);
+//            filter.addAction(BTConstants.ACTION_DISCOVER_FAILURE);
+//            filter.addAction(BTConstants.ACTION_DISCOVER_TIMEOUT);
+//            filter.addAction(BTConstants.ACTION_ORDER_RESULT);
+//            filter.addAction(BTConstants.ACTION_ORDER_TIMEOUT);
+//            filter.addAction(BTConstants.ACTION_ORDER_FINISH);
+//            filter.setPriority(100);
+//            registerReceiver(mReceiver, filter);
+            if (!BeaconModule.getInstance().isBluetoothOpen()) {
+                // 蓝牙未打开，开启蓝牙
+                Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                startActivityForResult(enableBtIntent, BeaconConstants.REQUEST_CODE_ENABLE_BT);
+            } else {
+                mBeaconService.startScanDevice(MainActivity.this);
+            }
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+        }
+    };
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case BeaconConstants.REQUEST_CODE_ENABLE_BT:
+                    // 打开蓝牙
+                    mBeaconService.startScanDevice(MainActivity.this);
+                    break;
+            }
+        } else {
+            switch (requestCode) {
+                case BeaconConstants.REQUEST_CODE_ENABLE_BT:
+                    // 未打开蓝牙
+                    break;
+            }
+        }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        BeaconModule.getInstance().stopScanDevice();
+        mBeaconService.stopScanDevice();
+        unbindService(mServiceConnection);
     }
 
     @Override
@@ -164,108 +211,25 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
     }
 
     @Override
-    public void onScanDevice(BluetoothDevice device, int rssi, byte[] scanRecord) {
-        int startByte = 2;
-        boolean patternFound = false;
-        // 0215 00ff
-        while (startByte <= 5) {
-            if (((int) scanRecord[startByte + 2] & 0xff) == 0x02
-                    && ((int) scanRecord[startByte + 3] & 0xff) == 0x15
-                    && ((int) scanRecord[startByte + 30] & 0xff) == 0x00
-                    && ((int) scanRecord[startByte + 31] & 0xff) == 0xff) {
-                // yes!  This is an iBeacon
-                patternFound = true;
-                break;
-            }
-            startByte++;
-        }
-        if (patternFound == false) {
-            // This is not an iBeacon
-            return;
-        }
-        // log
-        String log = Utils.bytesToHexString(scanRecord);
-        // uuid
-        byte[] proximityUuidBytes = new byte[16];
-        System.arraycopy(scanRecord, startByte + 4, proximityUuidBytes, 0, 16);
-        String hexString = Utils.bytesToHexString(proximityUuidBytes);
-        StringBuilder sb = new StringBuilder();
-        sb.append(hexString.substring(0, 8));
-        sb.append("-");
-        sb.append(hexString.substring(8, 12));
-        sb.append("-");
-        sb.append(hexString.substring(12, 16));
-        sb.append("-");
-        sb.append(hexString.substring(16, 20));
-        sb.append("-");
-        sb.append(hexString.substring(20, 32));
-        String uuid = sb.toString();
-
-        int major = (scanRecord[startByte + 20] & 0xff) * 0x100 + (scanRecord[startByte + 21] & 0xff);
-        int minor = (scanRecord[startByte + 22] & 0xff) * 0x100 + (scanRecord[startByte + 23] & 0xff);
-        int txPower = 0 - (int) scanRecord[startByte + 27] & 0xff;
-        int battery = (int) scanRecord[startByte + 32] & 0xff;
-        // distance acc
-        int acc = (int) scanRecord[startByte + 37] & 0xff;
-        int version = (int) scanRecord[startByte + 38] & 0xff;
-        String mac = device.getAddress();
-        double distance = Utils.getDistance(rssi, acc);
-        String distanceDesc = "unknown";
-        if (distance <= 0.1) {
-            distanceDesc = "immediate";
-        } else if (distance > 0.1 && distance <= 1.0) {
-            distanceDesc = "near";
-        } else if (distance > 1.0) {
-            distanceDesc = "far";
-        }
-        String distanceStr = new DecimalFormat("#0.00").format(distance);
-        if (!mDeviceMap.isEmpty() && mDeviceMap.containsKey(mac)) {
-            DeviceInfo deviceInfo = mDeviceMap.get(mac);
-            deviceInfo.name = device.getName();
-            deviceInfo.rssi = rssi;
-            deviceInfo.distance = distanceStr;
-            deviceInfo.distanceDesc = distanceDesc;
-            deviceInfo.major = major;
-            deviceInfo.minor = minor;
-            deviceInfo.txPower = txPower;
-            deviceInfo.uuid = uuid;
-            deviceInfo.batteryPower = battery;
-            deviceInfo.version = version;
-            deviceInfo.scanRecord = log;
-        } else {
-            DeviceInfo deviceInfo = new DeviceInfo();
-            deviceInfo.name = device.getName();
-            deviceInfo.rssi = rssi;
-            deviceInfo.distance = distanceStr;
-            deviceInfo.distanceDesc = distanceDesc;
-            deviceInfo.major = major;
-            deviceInfo.minor = minor;
-            deviceInfo.txPower = txPower;
-            deviceInfo.uuid = uuid;
-            deviceInfo.batteryPower = battery;
-            deviceInfo.version = version;
-            deviceInfo.scanRecord = log;
-            deviceInfo.mac = mac;
-            mDeviceMap.put(deviceInfo.mac, deviceInfo);
-        }
-        mDeviceInfos.clear();
+    public void onScanDevice(ArrayList<BeaconInfo> beaconInfos) {
+        mBeaconInfos.clear();
         // 名称过滤
         if (TextUtils.isEmpty(mFilterText)) {
-            mDeviceInfos.addAll(mDeviceMap.values());
+            mBeaconInfos.addAll(beaconInfos);
         } else {
-            for (DeviceInfo deviceInfo : mDeviceMap.values()) {
-                if (deviceInfo.name.toLowerCase().contains(mFilterText.toLowerCase())) {
-                    mDeviceInfos.add(deviceInfo);
+            for (BeaconInfo beaconInfo : beaconInfos) {
+                if (beaconInfo.name.toLowerCase().contains(mFilterText.toLowerCase())) {
+                    mBeaconInfos.add(beaconInfo);
                 }
             }
         }
         // 排序
         switch (mSortType) {
             case SORT_TYPE_RSSI:
-                if (!mDeviceInfos.isEmpty()) {
-                    Collections.sort(mDeviceInfos, new Comparator<DeviceInfo>() {
+                if (!mBeaconInfos.isEmpty()) {
+                    Collections.sort(mBeaconInfos, new Comparator<BeaconInfo>() {
                         @Override
-                        public int compare(DeviceInfo lhs, DeviceInfo rhs) {
+                        public int compare(BeaconInfo lhs, BeaconInfo rhs) {
                             if (lhs.rssi > rhs.rssi) {
                                 return -1;
                             } else if (lhs.rssi < rhs.rssi) {
@@ -277,10 +241,10 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
                 }
                 break;
             case SORT_TYPE_MAJOR:
-                if (!mDeviceInfos.isEmpty()) {
-                    Collections.sort(mDeviceInfos, new Comparator<DeviceInfo>() {
+                if (!mBeaconInfos.isEmpty()) {
+                    Collections.sort(mBeaconInfos, new Comparator<BeaconInfo>() {
                         @Override
-                        public int compare(DeviceInfo lhs, DeviceInfo rhs) {
+                        public int compare(BeaconInfo lhs, BeaconInfo rhs) {
                             if (lhs.major > rhs.major) {
                                 return -1;
                             } else if (lhs.major < rhs.major) {
@@ -292,10 +256,10 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
                 }
                 break;
             case SORT_TYPE_MINOR:
-                if (!mDeviceInfos.isEmpty()) {
-                    Collections.sort(mDeviceInfos, new Comparator<DeviceInfo>() {
+                if (!mBeaconInfos.isEmpty()) {
+                    Collections.sort(mBeaconInfos, new Comparator<BeaconInfo>() {
                         @Override
-                        public int compare(DeviceInfo lhs, DeviceInfo rhs) {
+                        public int compare(BeaconInfo lhs, BeaconInfo rhs) {
                             if (lhs.minor > rhs.minor) {
                                 return -1;
                             } else if (lhs.minor < rhs.minor) {
@@ -319,8 +283,8 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        DeviceInfo deviceInfo = (DeviceInfo) parent.getItemAtPosition(position);
-        LogModule.i(deviceInfo.toString());
+        BeaconInfo beaconInfo = (BeaconInfo) parent.getItemAtPosition(position);
+        LogModule.i(beaconInfo.toString());
         if (!isFinishing()) {
             final PasswordDialog dialog = new PasswordDialog(this);
             dialog.setOnPasswordClicked(new PasswordDialog.PasswordClickListener() {

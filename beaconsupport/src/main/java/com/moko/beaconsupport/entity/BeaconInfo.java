@@ -1,12 +1,12 @@
-package com.moko.beacon.entity;
+package com.moko.beaconsupport.entity;
 
 /**
  * @Date 2017/12/8 0008
  * @Author wenzheng.liu
  * @Description
- * @ClassPath com.moko.beacon.entity.DeviceInfo
+ * @ClassPath com.moko.beacon.entity.BeaconInfo
  */
-public class DeviceInfo {
+public class BeaconInfo {
     public String name;
     public int rssi;
     public String distance;
@@ -23,7 +23,7 @@ public class DeviceInfo {
 
     @Override
     public String toString() {
-        return "DeviceInfo{" +
+        return "BeaconInfo{" +
                 "name='" + name + '\'' +
                 ", rssi=" + rssi +
                 ", distance='" + distance + '\'' +
