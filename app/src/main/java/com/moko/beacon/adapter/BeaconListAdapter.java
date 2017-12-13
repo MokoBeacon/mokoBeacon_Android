@@ -54,7 +54,7 @@ public class BeaconListAdapter extends BeaconBaseAdapter<BeaconInfo> {
         if (device.batteryPower >= 76 && device.batteryPower <= 100) {
             holder.ivBatteryPower.setImageResource(R.drawable.battery_1);
         }
-        holder.tvDeviceConnState.setText("CONN:Unknow");
+        holder.tvDeviceConnState.setText(device.isConnected ? "CONN:YES" : "CONN:NO");
     }
 
     @Override

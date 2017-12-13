@@ -1,19 +1,21 @@
 package com.moko.beaconsupport.entity;
 
+import java.io.Serializable;
+
 /**
  * @Date 2017/12/8 0008
  * @Author wenzheng.liu
  * @Description
  * @ClassPath com.moko.beacon.entity.BeaconInfo
  */
-public class BeaconInfo {
+public class BeaconInfo implements Serializable{
     public String name;
     public int rssi;
     public String distance;
     public String distanceDesc;
     public int major;
     public int minor;
-    public String connState;
+    public boolean isConnected;
     public int txPower;
     public String mac;
     public String uuid;
@@ -30,7 +32,7 @@ public class BeaconInfo {
                 ", distanceDesc='" + distanceDesc + '\'' +
                 ", major=" + major +
                 ", minor=" + minor +
-                ", connState='" + connState + '\'' +
+                ", isConnected='" + isConnected + '\'' +
                 ", txPower=" + txPower +
                 ", mac='" + mac + '\'' +
                 ", uuid='" + uuid + '\'' +

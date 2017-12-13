@@ -5,7 +5,9 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 
+import com.moko.beacon.BeaconConstants;
 import com.moko.beaconsupport.beacon.BeaconModule;
+import com.moko.beaconsupport.callback.BeaconConnStateCallback;
 import com.moko.beaconsupport.callback.ScanDeviceCallback;
 import com.moko.beaconsupport.log.LogModule;
 
@@ -15,9 +17,8 @@ import com.moko.beaconsupport.log.LogModule;
  * @Description
  * @ClassPath com.moko.beacon.service.BeaconService
  */
-public class BeaconService extends Service {
+public class BeaconService extends Service implements BeaconConnStateCallback {
     private IBinder mBinder = new LocalBinder();
-
 
     public class LocalBinder extends Binder {
         public BeaconService getService() {
@@ -42,24 +43,39 @@ public class BeaconService extends Service {
     }
 
     @Override
+    public void onDestroy() {
+        LogModule.i("关闭后台服务");
+        super.onDestroy();
+    }
+
+    @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         return super.onStartCommand(intent, flags, startId);
     }
 
 
     public void startScanDevice(ScanDeviceCallback callback) {
-        LogModule.i("开始扫描Beacon");
         BeaconModule.getInstance().startScanDevice(callback);
     }
 
     public void stopScanDevice() {
-        LogModule.i("结束扫描Beacon");
         BeaconModule.getInstance().stopScanDevice();
     }
 
-    @Override
-    public void onDestroy() {
-        LogModule.i("关闭后台服务");
-        super.onDestroy();
+    public void connDevice(String address) {
+        BeaconModule.getInstance().connDevice(this, address, this);
     }
+
+    @Override
+    public void onConnectSuccess() {
+        Intent intent = new Intent(BeaconConstants.ACTION_CONNECT_SUCCESS);
+        sendOrderedBroadcast(intent, null);
+    }
+
+    @Override
+    public void onDisConnected() {
+        Intent intent = new Intent(BeaconConstants.ACTION_CONNECT_DISCONNECTED);
+        sendOrderedBroadcast(intent, null);
+    }
+
 }

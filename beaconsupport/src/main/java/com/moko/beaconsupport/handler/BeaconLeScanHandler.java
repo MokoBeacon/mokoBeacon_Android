@@ -1,12 +1,15 @@
-package com.moko.beaconsupport.callback;
+package com.moko.beaconsupport.handler;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.text.TextUtils;
 
+import com.moko.beaconsupport.callback.ScanDeviceCallback;
 import com.moko.beaconsupport.entity.BeaconInfo;
+import com.moko.beaconsupport.log.LogModule;
 import com.moko.beaconsupport.utils.Utils;
 
+import java.lang.reflect.Method;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,13 +18,13 @@ import java.util.HashMap;
  * @Date 2017/12/12 0012
  * @Author wenzheng.liu
  * @Description 搜索设备回调类
- * @ClassPath com.moko.beaconsupport.callback.FitLeScanCallback
+ * @ClassPath com.moko.beaconsupport.handler.BeaconLeScanHandler
  */
-public class FitLeScanCallback implements BluetoothAdapter.LeScanCallback {
+public class BeaconLeScanHandler implements BluetoothAdapter.LeScanCallback {
     private ScanDeviceCallback callback;
     private HashMap<String, BeaconInfo> beaconMap;
 
-    public FitLeScanCallback(ScanDeviceCallback callback) {
+    public BeaconLeScanHandler(ScanDeviceCallback callback) {
         this.callback = callback;
         beaconMap = new HashMap<>();
     }
@@ -74,7 +77,14 @@ public class FitLeScanCallback implements BluetoothAdapter.LeScanCallback {
             int battery = (int) scanRecord[startByte + 32] & 0xff;
             // distance acc
             int acc = (int) scanRecord[startByte + 37] & 0xff;
-            int version = (int) scanRecord[startByte + 38] & 0xff;
+            // 连接状态在版本号最高位，0不可连接，1可连接，判断后将版本号归位
+            String versionStr = Utils.hexString2binaryString(Utils.byte2HexString(scanRecord[startByte + 38]));
+            LogModule.i("version binary: " + versionStr);
+            String connState = versionStr.substring(0, 1);
+            boolean isConnected = Integer.parseInt(connState) == 1;
+            String versionBinary = isConnected ? "0" + versionStr.substring(1, versionStr.length()) : versionStr;
+            int version = Integer.parseInt(Utils.binaryString2hexString(versionBinary), 16);
+            // ========================================================
             String mac = device.getAddress();
             double distance = Utils.getDistance(rssi, acc);
             String distanceDesc = "unknown";
@@ -86,6 +96,12 @@ public class FitLeScanCallback implements BluetoothAdapter.LeScanCallback {
                 distanceDesc = "far";
             }
             String distanceStr = new DecimalFormat("#0.00").format(distance);
+            try {
+                Method isConnectedMethod = BluetoothDevice.class.getMethod("isConnected");
+                Boolean returnValue = (Boolean) isConnectedMethod.invoke(device);
+                LogModule.i("isConnected: " + returnValue.booleanValue());
+            } catch (Exception e) {
+            }
             if (!beaconMap.isEmpty() && beaconMap.containsKey(mac)) {
                 BeaconInfo beaconInfo = beaconMap.get(mac);
                 beaconInfo.name = device.getName();
@@ -98,6 +114,7 @@ public class FitLeScanCallback implements BluetoothAdapter.LeScanCallback {
                 beaconInfo.uuid = uuid;
                 beaconInfo.batteryPower = battery;
                 beaconInfo.version = version;
+                beaconInfo.isConnected = isConnected;
                 beaconInfo.scanRecord = log;
             } else {
                 BeaconInfo beaconInfo = new BeaconInfo();
@@ -112,10 +129,11 @@ public class FitLeScanCallback implements BluetoothAdapter.LeScanCallback {
                 beaconInfo.batteryPower = battery;
                 beaconInfo.version = version;
                 beaconInfo.scanRecord = log;
+                beaconInfo.isConnected = isConnected;
                 beaconInfo.mac = mac;
                 beaconMap.put(beaconInfo.mac, beaconInfo);
             }
-            callback.onScanDevice(new ArrayList<BeaconInfo>(beaconMap.values()));
+            callback.onScanDevice(new ArrayList<>(beaconMap.values()));
         }
     }
 }

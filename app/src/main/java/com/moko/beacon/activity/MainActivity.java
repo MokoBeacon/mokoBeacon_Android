@@ -3,8 +3,11 @@ package com.moko.beacon.activity;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -110,16 +113,11 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
         public void onServiceConnected(ComponentName name, IBinder service) {
             mBeaconService = ((BeaconService.LocalBinder) service).getService();
             // 注册广播接收器
-//            IntentFilter filter = new IntentFilter();
-//            filter.addAction(BTConstants.ACTION_CONN_STATUS_DISCONNECTED);
-//            filter.addAction(BTConstants.ACTION_DISCOVER_SUCCESS);
-//            filter.addAction(BTConstants.ACTION_DISCOVER_FAILURE);
-//            filter.addAction(BTConstants.ACTION_DISCOVER_TIMEOUT);
-//            filter.addAction(BTConstants.ACTION_ORDER_RESULT);
-//            filter.addAction(BTConstants.ACTION_ORDER_TIMEOUT);
-//            filter.addAction(BTConstants.ACTION_ORDER_FINISH);
-//            filter.setPriority(100);
-//            registerReceiver(mReceiver, filter);
+            IntentFilter filter = new IntentFilter();
+            filter.addAction(BeaconConstants.ACTION_CONNECT_SUCCESS);
+            filter.addAction(BeaconConstants.ACTION_CONNECT_DISCONNECTED);
+            filter.setPriority(100);
+            registerReceiver(mReceiver, filter);
             if (!BeaconModule.getInstance().isBluetoothOpen()) {
                 // 蓝牙未打开，开启蓝牙
                 Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
@@ -134,6 +132,25 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
         }
     };
 
+    private BroadcastReceiver mReceiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent != null) {
+                String action = intent.getAction();
+                if (BeaconConstants.ACTION_CONNECT_SUCCESS.equals(action)) {
+                    mBeaconService.stopScanDevice();
+                    Intent deviceInfoIntent = new Intent(MainActivity.this, DeviceInfoActivity.class);
+                    deviceInfoIntent.putExtra(BeaconConstants.EXTRA_KEY_DEVICE_INFO, mBeaconInfo);
+                    startActivityForResult(deviceInfoIntent, BeaconConstants.REQUEST_CODE_DEVICE_INFO);
+                }
+                if (BeaconConstants.ACTION_CONNECT_DISCONNECTED.equals(action)) {
+
+                }
+            }
+        }
+    };
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -143,11 +160,15 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
                     // 打开蓝牙
                     mBeaconService.startScanDevice(MainActivity.this);
                     break;
+
             }
         } else {
             switch (requestCode) {
                 case BeaconConstants.REQUEST_CODE_ENABLE_BT:
                     // 未打开蓝牙
+                    break;
+                case BeaconConstants.REQUEST_CODE_DEVICE_INFO:
+                    mBeaconService.startScanDevice(MainActivity.this);
                     break;
             }
         }
@@ -156,6 +177,7 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        unregisterReceiver(mReceiver);
         mBeaconService.stopScanDevice();
         unbindService(mServiceConnection);
     }
@@ -280,10 +302,11 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
     }
 
     private CustomHandler mHandler;
+    private BeaconInfo mBeaconInfo;
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        BeaconInfo beaconInfo = (BeaconInfo) parent.getItemAtPosition(position);
+        final BeaconInfo beaconInfo = (BeaconInfo) parent.getItemAtPosition(position);
         LogModule.i(beaconInfo.toString());
         if (!isFinishing()) {
             final PasswordDialog dialog = new PasswordDialog(this);
@@ -291,6 +314,7 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
                 @Override
                 public void onEnsureClicked(String password) {
                     LogModule.i(password);
+                    mBeaconService.connDevice(beaconInfo.mac);
                 }
             });
             dialog.show();
