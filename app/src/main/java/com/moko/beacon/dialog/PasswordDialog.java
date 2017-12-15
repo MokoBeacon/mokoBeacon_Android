@@ -51,6 +51,10 @@ public class PasswordDialog extends BaseDialog {
                     ToastUtils.showToast(getContext(), "密码不能为空");
                     return;
                 }
+                if (etPassword.getText().toString().length() != 8) {
+                    ToastUtils.showToast(getContext(), "密码长度8位");
+                    return;
+                }
                 passwordClickListener.onEnsureClicked(etPassword.getText().toString());
                 break;
         }

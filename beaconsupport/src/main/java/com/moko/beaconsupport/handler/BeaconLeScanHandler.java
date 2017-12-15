@@ -79,7 +79,7 @@ public class BeaconLeScanHandler implements BluetoothAdapter.LeScanCallback {
             int acc = (int) scanRecord[startByte + 37] & 0xff;
             // 连接状态在版本号最高位，0不可连接，1可连接，判断后将版本号归位
             String versionStr = Utils.hexString2binaryString(Utils.byte2HexString(scanRecord[startByte + 38]));
-            LogModule.i("version binary: " + versionStr);
+//            LogModule.i("version binary: " + versionStr);
             String connState = versionStr.substring(0, 1);
             boolean isConnected = Integer.parseInt(connState) == 1;
             String versionBinary = isConnected ? "0" + versionStr.substring(1, versionStr.length()) : versionStr;
@@ -96,12 +96,12 @@ public class BeaconLeScanHandler implements BluetoothAdapter.LeScanCallback {
                 distanceDesc = "far";
             }
             String distanceStr = new DecimalFormat("#0.00").format(distance);
-            try {
-                Method isConnectedMethod = BluetoothDevice.class.getMethod("isConnected");
-                Boolean returnValue = (Boolean) isConnectedMethod.invoke(device);
-                LogModule.i("isConnected: " + returnValue.booleanValue());
-            } catch (Exception e) {
-            }
+//            try {
+//                Method isConnectedMethod = BluetoothDevice.class.getMethod("isConnected");
+//                Boolean returnValue = (Boolean) isConnectedMethod.invoke(device);
+//                LogModule.i("isConnected: " + returnValue.booleanValue());
+//            } catch (Exception e) {
+//            }
             if (!beaconMap.isEmpty() && beaconMap.containsKey(mac)) {
                 BeaconInfo beaconInfo = beaconMap.get(mac);
                 beaconInfo.name = device.getName();

@@ -25,27 +25,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="详细信息"
+            android:text="系统信息"
             android:textColor="@color/white_ffffff"
             android:textSize="17sp" />
-
-        <TextView
-            android:id="@+id/tv_conn_state"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
-            android:gravity="center_vertical"
-            android:paddingRight="16dp"
-            android:text="@string/device_info_conn_status_connected"
-            android:textColor="@color/white_ffffff"
-            android:textSize="15sp" />
     </RelativeLayout>
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1.0"
-        android:background="@color/white_ffffff">
+        android:background="@color/grey_ebebeb">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -55,7 +44,6 @@
             android:paddingRight="16dp">
 
             <RelativeLayout
-                android:id="@+id/rl_ibeacon_battery"
                 android:layout_width="match_parent"
                 android:layout_height="49dp">
 
@@ -63,77 +51,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:text="设备电量"
+                    android:text="制造商"
                     android:textColor="@color/black_333333"
                     android:textSize="15sp" />
 
                 <TextView
-                    android:id="@+id/tv_ibeacon_battery"
+                    android:id="@+id/tv_ibeacon_firmname"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_alignParentRight="true"
-                    android:gravity="center"
-                    android:paddingRight="20dp"
-                    android:text=""
-                    android:textColor="@color/black_333333"
-                    android:textSize="15sp" />
-
-                <View
-                    style="@style/divider_line"
-                    android:layout_alignParentBottom="true" />
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/rl_ibeacon_uuid"
-                android:layout_width="match_parent"
-                android:layout_height="49dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:text="UUID"
-                    android:textColor="@color/black_333333"
-                    android:textSize="15sp" />
-
-                <TextView
-                    android:id="@+id/tv_ibeacon_uuid"
-                    android:layout_width="200dp"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentRight="true"
-                    android:drawablePadding="15dp"
-                    android:drawableRight="@drawable/right_arrow"
-                    android:gravity="center"
-                    android:singleLine="true"
-                    android:text="sdasdasdasdasdasdasdasdasdasdasdasdasd"
-                    android:textColor="@color/black_333333"
-                    android:textSize="15sp" />
-
-                <View
-                    style="@style/divider_line"
-                    android:layout_alignParentBottom="true" />
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/rl_ibeacon_major"
-                android:layout_width="match_parent"
-                android:layout_height="49dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:text="MAJOR"
-                    android:textColor="@color/black_333333"
-                    android:textSize="15sp" />
-
-                <TextView
-                    android:id="@+id/tv_ibeacon_major"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentRight="true"
-                    android:drawablePadding="15dp"
-                    android:drawableRight="@drawable/right_arrow"
                     android:gravity="center"
                     android:text=""
                     android:textColor="@color/black_333333"
@@ -145,7 +71,6 @@
             </RelativeLayout>
 
             <RelativeLayout
-                android:id="@+id/rl_ibeacon_minor"
                 android:layout_width="match_parent"
                 android:layout_height="49dp">
 
@@ -153,17 +78,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:text="MINOR"
+                    android:text="产品型号"
                     android:textColor="@color/black_333333"
                     android:textSize="15sp" />
 
                 <TextView
-                    android:id="@+id/tv_ibeacon_minor"
+                    android:id="@+id/tv_ibeacon_device_name"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_alignParentRight="true"
-                    android:drawablePadding="15dp"
-                    android:drawableRight="@drawable/right_arrow"
                     android:gravity="center"
                     android:text=""
                     android:textColor="@color/black_333333"
@@ -175,7 +98,6 @@
             </RelativeLayout>
 
             <RelativeLayout
-                android:id="@+id/rl_ibeacon_measure_power"
                 android:layout_width="match_parent"
                 android:layout_height="49dp">
 
@@ -183,17 +105,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:text="校验距离"
+                    android:text="生产日期"
                     android:textColor="@color/black_333333"
                     android:textSize="15sp" />
 
                 <TextView
-                    android:id="@+id/tv_ibeacon_measure_power"
+                    android:id="@+id/tv_ibeacon_date"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_alignParentRight="true"
-                    android:drawablePadding="15dp"
-                    android:drawableRight="@drawable/right_arrow"
                     android:gravity="center"
                     android:text=""
                     android:textColor="@color/black_333333"
@@ -205,97 +125,6 @@
             </RelativeLayout>
 
             <RelativeLayout
-                android:id="@+id/rl_ibeacon_transmission"
-                android:layout_width="match_parent"
-                android:layout_height="49dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:text="广播功率"
-                    android:textColor="@color/black_333333"
-                    android:textSize="15sp" />
-
-                <TextView
-                    android:id="@+id/tv_ibeacon_transmission"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentRight="true"
-                    android:drawablePadding="15dp"
-                    android:drawableRight="@drawable/right_arrow"
-                    android:gravity="center"
-                    android:text=""
-                    android:textColor="@color/black_333333"
-                    android:textSize="15sp" />
-
-                <View
-                    style="@style/divider_line"
-                    android:layout_alignParentBottom="true" />
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/rl_ibeacon_broadcasting_interval"
-                android:layout_width="match_parent"
-                android:layout_height="49dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:text="广播周期"
-                    android:textColor="@color/black_333333"
-                    android:textSize="15sp" />
-
-                <TextView
-                    android:id="@+id/tv_ibeacon_broadcasting_interval"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentRight="true"
-                    android:drawablePadding="15dp"
-                    android:drawableRight="@drawable/right_arrow"
-                    android:gravity="center"
-                    android:text=""
-                    android:textColor="@color/black_333333"
-                    android:textSize="15sp" />
-
-                <View
-                    style="@style/divider_line"
-                    android:layout_alignParentBottom="true" />
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/rl_ibeacon_serialID"
-                android:layout_width="match_parent"
-                android:layout_height="49dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:text="设备ID"
-                    android:textColor="@color/black_333333"
-                    android:textSize="15sp" />
-
-                <TextView
-                    android:id="@+id/tv_ibeacon_serialID"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentRight="true"
-                    android:drawablePadding="15dp"
-                    android:drawableRight="@drawable/right_arrow"
-                    android:gravity="center"
-                    android:text=""
-                    android:textColor="@color/black_333333"
-                    android:textSize="15sp" />
-
-                <View
-                    style="@style/divider_line"
-                    android:layout_alignParentBottom="true" />
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/rl_ibeacon_mac"
                 android:layout_width="match_parent"
                 android:layout_height="49dp">
 
@@ -313,7 +142,6 @@
                     android:layout_height="match_parent"
                     android:layout_alignParentRight="true"
                     android:gravity="center"
-                    android:paddingRight="20dp"
                     android:text=""
                     android:textColor="@color/black_333333"
                     android:textSize="15sp" />
@@ -324,7 +152,6 @@
             </RelativeLayout>
 
             <RelativeLayout
-                android:id="@+id/rl_ibeacon_device_name"
                 android:layout_width="match_parent"
                 android:layout_height="49dp">
 
@@ -332,17 +159,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:text="设备名称"
+                    android:text="芯片型号"
                     android:textColor="@color/black_333333"
                     android:textSize="15sp" />
 
                 <TextView
-                    android:id="@+id/tv_ibeacon_device_name"
+                    android:id="@+id/tv_ibeacon_chip_mode"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_alignParentRight="true"
-                    android:drawablePadding="15dp"
-                    android:drawableRight="@drawable/right_arrow"
                     android:gravity="center"
                     android:text=""
                     android:textColor="@color/black_333333"
@@ -354,7 +179,6 @@
             </RelativeLayout>
 
             <RelativeLayout
-                android:id="@+id/rl_ibeacon_device_conn_mode"
                 android:layout_width="match_parent"
                 android:layout_height="49dp">
 
@@ -362,17 +186,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:text="连接模式"
+                    android:text="硬件版本"
                     android:textColor="@color/black_333333"
                     android:textSize="15sp" />
 
                 <TextView
-                    android:id="@+id/tv_ibeacon_device_conn_mode"
+                    android:id="@+id/tv_ibeacon_hardware_version"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_alignParentRight="true"
-                    android:drawablePadding="15dp"
-                    android:drawableRight="@drawable/right_arrow"
                     android:gravity="center"
                     android:text=""
                     android:textColor="@color/black_333333"
@@ -384,7 +206,6 @@
             </RelativeLayout>
 
             <RelativeLayout
-                android:id="@+id/rl_ibeacon_change_password"
                 android:layout_width="match_parent"
                 android:layout_height="49dp">
 
@@ -392,17 +213,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:text="修改重启密码"
+                    android:text="固件版本"
                     android:textColor="@color/black_333333"
                     android:textSize="15sp" />
 
                 <TextView
-                    android:id="@+id/tv_ibeacon_change_password"
+                    android:id="@+id/tv_ibeacon_firmware_version"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_alignParentRight="true"
-                    android:drawablePadding="15dp"
-                    android:drawableRight="@drawable/right_arrow"
                     android:gravity="center"
                     android:text=""
                     android:textColor="@color/black_333333"
@@ -414,7 +233,6 @@
             </RelativeLayout>
 
             <RelativeLayout
-                android:id="@+id/rl_ibeacon_device_info"
                 android:layout_width="match_parent"
                 android:layout_height="49dp">
 
@@ -422,17 +240,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:text="系统信息"
+                    android:text="运行时间"
                     android:textColor="@color/black_333333"
                     android:textSize="15sp" />
 
                 <TextView
-                    android:id="@+id/tv_ibeacon_device_info"
+                    android:id="@+id/tv_ibeacon_runtime"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_alignParentRight="true"
-                    android:drawablePadding="15dp"
-                    android:drawableRight="@drawable/right_arrow"
                     android:gravity="center"
                     android:text=""
                     android:textColor="@color/black_333333"
@@ -442,6 +258,63 @@
                     style="@style/divider_line"
                     android:layout_alignParentBottom="true" />
             </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="49dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="系统标示"
+                    android:textColor="@color/black_333333"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/tv_ibeacon_system_mark"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentRight="true"
+                    android:gravity="center"
+                    android:text=""
+                    android:textColor="@color/black_333333"
+                    android:textSize="15sp" />
+
+                <View
+                    style="@style/divider_line"
+                    android:layout_alignParentBottom="true" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="49dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="IEEE标准信息"
+                    android:textColor="@color/black_333333"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/tv_ibeacon_ieee_info"
+                    android:layout_width="200dp"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentRight="true"
+                    android:gravity="right|center_vertical"
+                    android:text=""
+                    android:textColor="@color/black_333333"
+                    android:textSize="15sp" />
+
+                <View
+                    style="@style/divider_line"
+                    android:layout_alignParentBottom="true" />
+            </RelativeLayout>
+
         </LinearLayout>
+
     </ScrollView>
+
 </LinearLayout>

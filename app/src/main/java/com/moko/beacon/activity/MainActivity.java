@@ -29,13 +29,19 @@ import com.moko.beacon.R;
 import com.moko.beacon.adapter.BeaconListAdapter;
 import com.moko.beacon.base.BaseHandler;
 import com.moko.beacon.dialog.PasswordDialog;
+import com.moko.beacon.entity.BeaconDeviceInfo;
+import com.moko.beacon.entity.BeaconParam;
 import com.moko.beacon.service.BeaconService;
+import com.moko.beacon.utils.ToastUtils;
 import com.moko.beaconsupport.beacon.BeaconModule;
 import com.moko.beaconsupport.callback.ScanDeviceCallback;
 import com.moko.beaconsupport.entity.BeaconInfo;
+import com.moko.beaconsupport.entity.OrderType;
 import com.moko.beaconsupport.log.LogModule;
+import com.moko.beaconsupport.utils.Utils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Timer;
@@ -74,6 +80,7 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
     private int mSortType;
     private String mFilterText;
     private BeaconService mBeaconService;
+    private boolean mIsChangePasswordSuccess;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,6 +123,9 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
             IntentFilter filter = new IntentFilter();
             filter.addAction(BeaconConstants.ACTION_CONNECT_SUCCESS);
             filter.addAction(BeaconConstants.ACTION_CONNECT_DISCONNECTED);
+            filter.addAction(BeaconConstants.ACTION_RESPONSE_SUCCESS);
+            filter.addAction(BeaconConstants.ACTION_RESPONSE_TIMEOUT);
+            filter.addAction(BeaconConstants.ACTION_RESPONSE_FINISH);
             filter.setPriority(100);
             registerReceiver(mReceiver, filter);
             if (!BeaconModule.getInstance().isBluetoothOpen()) {
@@ -132,6 +142,7 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
         }
     };
 
+    private boolean mIsScaning;
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
 
         @Override
@@ -139,13 +150,155 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
             if (intent != null) {
                 String action = intent.getAction();
                 if (BeaconConstants.ACTION_CONNECT_SUCCESS.equals(action)) {
-                    mBeaconService.stopScanDevice();
-                    Intent deviceInfoIntent = new Intent(MainActivity.this, DeviceInfoActivity.class);
-                    deviceInfoIntent.putExtra(BeaconConstants.EXTRA_KEY_DEVICE_INFO, mBeaconInfo);
-                    startActivityForResult(deviceInfoIntent, BeaconConstants.REQUEST_CODE_DEVICE_INFO);
+                    mBeaconParam = new BeaconParam();
+                    BeaconDeviceInfo beaconInfo = new BeaconDeviceInfo();
+                    mBeaconParam.beaconInfo = beaconInfo;
+                    // 读取全部可读数据
+                    mHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            mBeaconService.getReadableData(mPassword);
+                        }
+                    }, 1000);
                 }
                 if (BeaconConstants.ACTION_CONNECT_DISCONNECTED.equals(action)) {
-
+                    dismissLoadingProgressDialog();
+                }
+                if (BeaconConstants.ACTION_RESPONSE_TIMEOUT.equals(action)) {
+                    OrderType orderType = (OrderType) intent.getSerializableExtra(BeaconConstants.EXTRA_KEY_RESPONSE_ORDER_TYPE);
+                    switch (orderType) {
+                        case changePassword:
+                            // 修改密码超时
+                            break;
+                    }
+                }
+                if (BeaconConstants.ACTION_RESPONSE_FINISH.equals(action)) {
+                    mHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            dismissLoadingProgressDialog();
+                            if (mIsChangePasswordSuccess) {
+                                mBeaconService.stopScanDevice();
+                                mIsScaning = false;
+                                LogModule.i(mBeaconParam.toString());
+                                Intent deviceInfoIntent = new Intent(MainActivity.this, DeviceInfoActivity.class);
+                                deviceInfoIntent.putExtra(BeaconConstants.EXTRA_KEY_DEVICE_PARAM, mBeaconParam);
+                                startActivityForResult(deviceInfoIntent, BeaconConstants.REQUEST_CODE_DEVICE_INFO);
+                            } else {
+                                ToastUtils.showToast(MainActivity.this, "password error");
+                            }
+                        }
+                    }, 1000);
+                }
+                if (BeaconConstants.ACTION_RESPONSE_SUCCESS.equals(action)) {
+                    OrderType orderType = (OrderType) intent.getSerializableExtra(BeaconConstants.EXTRA_KEY_RESPONSE_ORDER_TYPE);
+                    byte[] value = intent.getByteArrayExtra(BeaconConstants.EXTRA_KEY_RESPONSE_VALUE);
+                    switch (orderType) {
+                        case battery:
+                            mBeaconParam.battery = Integer.parseInt(Utils.bytesToHexString(value), 16);
+                            break;
+                        case iBeaconUuid:
+                            String hexString = Utils.bytesToHexString(value);
+                            if (hexString.length() > 31) {
+                                StringBuilder sb = new StringBuilder();
+                                sb.append(hexString.substring(0, 8));
+                                sb.append("-");
+                                sb.append(hexString.substring(8, 12));
+                                sb.append("-");
+                                sb.append(hexString.substring(12, 16));
+                                sb.append("-");
+                                sb.append(hexString.substring(16, 20));
+                                sb.append("-");
+                                sb.append(hexString.substring(20, 32));
+                                String uuid = sb.toString();
+                                mBeaconParam.uuid = uuid;
+                            }
+                            break;
+                        case major:
+                            mBeaconParam.major = Integer.parseInt(Utils.bytesToHexString(value), 16);
+                            break;
+                        case minor:
+                            mBeaconParam.minor = Integer.parseInt(Utils.bytesToHexString(value), 16);
+                            break;
+                        case measurePower:
+                            mBeaconParam.measurePower = Integer.parseInt(Utils.bytesToHexString(value), 16);
+                            break;
+                        case transmission:
+                            mBeaconParam.transmission = Integer.parseInt(Utils.bytesToHexString(value), 16);
+                            break;
+                        case broadcastingInterval:
+                            mBeaconParam.broadcastingInterval = Integer.parseInt(Utils.bytesToHexString(value), 16);
+                            break;
+                        case serialID:
+                            mBeaconParam.serialID = Utils.hex2String(Utils.bytesToHexString(value));
+                            break;
+                        case iBeaconMac:
+                            String hexMac = Utils.bytesToHexString(value);
+                            if (hexMac.length() > 11) {
+                                StringBuilder sb = new StringBuilder();
+                                sb.append(hexMac.substring(0, 2));
+                                sb.append(":");
+                                sb.append(hexMac.substring(2, 4));
+                                sb.append(":");
+                                sb.append(hexMac.substring(4, 6));
+                                sb.append(":");
+                                sb.append(hexMac.substring(6, 8));
+                                sb.append(":");
+                                sb.append(hexMac.substring(8, 10));
+                                sb.append(":");
+                                sb.append(hexMac.substring(10, 12));
+                                String mac = sb.toString().toUpperCase();
+                                mBeaconParam.iBeaconMAC = mac;
+                                mBeaconParam.beaconInfo.iBeaconMac = mac;
+                            }
+                            break;
+                        case iBeaconName:
+                            mBeaconParam.iBeaconName = Utils.hex2String(Utils.bytesToHexString(value));
+                            break;
+                        case connectionMode:
+                            mBeaconParam.connectionMode = Utils.bytesToHexString(value);
+                            break;
+                        case firmname:
+                            mBeaconParam.beaconInfo.firmname = Utils.hex2String(Utils.bytesToHexString(value));
+                            break;
+                        case devicename:
+                            mBeaconParam.beaconInfo.deviceName = Utils.hex2String(Utils.bytesToHexString(value));
+                            break;
+                        case iBeaconDate:
+                            mBeaconParam.beaconInfo.iBeaconDate = Utils.hex2String(Utils.bytesToHexString(value));
+                            break;
+                        case hardwareVersion:
+                            mBeaconParam.beaconInfo.hardwareVersion = Utils.hex2String(Utils.bytesToHexString(value));
+                            break;
+                        case firmwareVersion:
+                            mBeaconParam.beaconInfo.firmwareVersion = Utils.hex2String(Utils.bytesToHexString(value));
+                            break;
+                        case runtimeAndChipModel:
+                            if ("0004".equals(Utils.bytesToHexString(Arrays.copyOfRange(value, 0, 2)))) {
+                                byte[] runtimeBytes = Arrays.copyOfRange(value, 2, value.length);
+                                int runtime = Integer.parseInt(Utils.bytesToHexString(runtimeBytes), 16);
+                                int runtimeDays = runtime / (60 * 60 * 24);
+                                int runtimeHours = (runtime % (60 * 60 * 24)) / (60 * 60);
+                                int runtimeMinutes = (runtime % (60 * 60)) / (60);
+                                int runtimeSeconds = (runtime % (60)) / 1000;
+                                mBeaconParam.beaconInfo.runtime = String.format("%dD%dh%dm%ds", runtimeDays, runtimeHours, runtimeMinutes, runtimeSeconds);
+                            }
+                            if ("000c".equals(Utils.bytesToHexString(Arrays.copyOfRange(value, 0, 2)).toLowerCase())) {
+                                byte[] chipModelBytes = Arrays.copyOfRange(value, 2, value.length);
+                                mBeaconParam.beaconInfo.chipModel = Utils.hex2String(Utils.bytesToHexString(chipModelBytes));
+                            }
+                            break;
+                        case systemMark:
+                            mBeaconParam.beaconInfo.systemMark = Utils.bytesToHexString(value);
+                        case IEEEInfo:
+                            mBeaconParam.beaconInfo.IEEEInfo = Utils.bytesToHexString(value);
+                            break;
+                        case changePassword:
+                            if ("00".equals(Utils.bytesToHexString(value))) {
+                                mIsChangePasswordSuccess = true;
+                            }
+                            break;
+                    }
                 }
             }
         }
@@ -158,7 +311,10 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
             switch (requestCode) {
                 case BeaconConstants.REQUEST_CODE_ENABLE_BT:
                     // 打开蓝牙
-                    mBeaconService.startScanDevice(MainActivity.this);
+                    if (!mIsScaning) {
+                        mBeaconService.startScanDevice(MainActivity.this);
+                        mIsScaning = true;
+                    }
                     break;
 
             }
@@ -168,7 +324,11 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
                     // 未打开蓝牙
                     break;
                 case BeaconConstants.REQUEST_CODE_DEVICE_INFO:
-                    mBeaconService.startScanDevice(MainActivity.this);
+                    mIsChangePasswordSuccess = false;
+                    if (!mIsScaning) {
+                        mBeaconService.startScanDevice(MainActivity.this);
+                        mIsScaning = true;
+                    }
                     break;
             }
         }
@@ -179,6 +339,7 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
         super.onDestroy();
         unregisterReceiver(mReceiver);
         mBeaconService.stopScanDevice();
+        mIsScaning = false;
         unbindService(mServiceConnection);
     }
 
@@ -302,7 +463,8 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
     }
 
     private CustomHandler mHandler;
-    private BeaconInfo mBeaconInfo;
+    private BeaconParam mBeaconParam;
+    private String mPassword;
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -314,7 +476,9 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
                 @Override
                 public void onEnsureClicked(String password) {
                     LogModule.i(password);
+                    mPassword = password;
                     mBeaconService.connDevice(beaconInfo.mac);
+                    showLoadingProgressDialog();
                 }
             });
             dialog.show();
@@ -328,6 +492,27 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
             }, 200);
         }
     }
+
+    private ProgressDialog mLoadingDialog;
+
+    private void showLoadingProgressDialog() {
+        mLoadingDialog = new ProgressDialog(MainActivity.this);
+        mLoadingDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        mLoadingDialog.setCanceledOnTouchOutside(false);
+        mLoadingDialog.setCancelable(false);
+        mLoadingDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        mLoadingDialog.setMessage("连接中...");
+        if (!isFinishing() && mLoadingDialog != null && !mLoadingDialog.isShowing()) {
+            mLoadingDialog.show();
+        }
+    }
+
+    private void dismissLoadingProgressDialog() {
+        if (!isFinishing() && mLoadingDialog != null && mLoadingDialog.isShowing()) {
+            mLoadingDialog.dismiss();
+        }
+    }
+
 
     private class CustomHandler extends BaseHandler<MainActivity> {
 
