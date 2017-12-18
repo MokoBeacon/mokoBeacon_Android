@@ -2,6 +2,7 @@ package com.moko.beaconsupport.task;
 
 import com.moko.beaconsupport.callback.OrderTaskCallback;
 import com.moko.beaconsupport.entity.OrderType;
+import com.moko.beaconsupport.utils.Utils;
 
 /**
  * @Date 2017/12/14 0014
@@ -15,6 +16,10 @@ public class TransmissionTask extends OrderTask {
 
     public TransmissionTask(OrderTaskCallback callback, int sendDataType) {
         super(OrderType.transmission, callback, sendDataType);
+    }
+
+    public void setData(int transmission) {
+        data = Utils.hex2bytes(Integer.toHexString(transmission));
     }
 
     @Override

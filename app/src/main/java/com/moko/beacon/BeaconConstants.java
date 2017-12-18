@@ -24,9 +24,11 @@ public class BeaconConstants {
     public static final String EXTRA_KEY_DEVICE_PARAM = "EXTRA_KEY_DEVICE_PARAM";
     public static final String EXTRA_KEY_DEVICE_INFO = "EXTRA_KEY_DEVICE_INFO";
     public static final String EXTRA_KEY_DEVICE_UUID = "EXTRA_KEY_DEVICE_UUID";
-    public static final String EXTRA_KEY_DEVICE_MAJOR= "EXTRA_KEY_DEVICE_MAJOR";
-    public static final String EXTRA_KEY_DEVICE_MINOR= "EXTRA_KEY_DEVICE_MINOR";
-    public static final String EXTRA_KEY_DEVICE_MEASURE_POWER= "EXTRA_KEY_DEVICE_MEASURE_POWER";
+    public static final String EXTRA_KEY_DEVICE_MAJOR = "EXTRA_KEY_DEVICE_MAJOR";
+    public static final String EXTRA_KEY_DEVICE_MINOR = "EXTRA_KEY_DEVICE_MINOR";
+    public static final String EXTRA_KEY_DEVICE_MEASURE_POWER = "EXTRA_KEY_DEVICE_MEASURE_POWER";
+    public static final String EXTRA_KEY_DEVICE_TRANSMISSION = "EXTRA_KEY_DEVICE_TRANSMISSION";
+    public static final String EXTRA_KEY_DEVICE_BROADCASTINTERVAL = "EXTRA_KEY_DEVICE_BROADCASTINTERVAL";
     // request_code
     public static final int REQUEST_CODE_ENABLE_BT = 1001;
     public static final int REQUEST_CODE_DEVICE_INFO = 101;
@@ -34,6 +36,8 @@ public class BeaconConstants {
     public static final int REQUEST_CODE_SET_MAJOR = 103;
     public static final int REQUEST_CODE_SET_MINOR = 104;
     public static final int REQUEST_CODE_SET_MEASURE_POWER = 105;
+    public static final int REQUEST_CODE_SET_TRANSMISSION = 106;
+    public static final int REQUEST_CODE_SET_BROADCASTINTERVAL = 107;
     // result_code
     public static final int RESULT_CONN_DISCONNECTED = 2;
 }

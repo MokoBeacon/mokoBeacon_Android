@@ -28,7 +28,7 @@ import butterknife.OnClick;
  * @Date 2017/12/18 0018
  * @Author wenzheng.liu
  * @Description
- * @ClassPath com.moko.beacon.activity.SetMinorActivity
+ * @ClassPath com.moko.beacon.activity.SetMeasurePowerActivity
  */
 public class SetMeasurePowerActivity extends Activity {
     @Bind(R.id.et_measure_power)

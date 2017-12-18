@@ -244,8 +244,20 @@ public class BeaconService extends Service implements BeaconConnStateCallback, O
         return transmissionTask;
     }
 
+    public OrderTask setTransmission(int transmission) {
+        TransmissionTask transmissionTask = new TransmissionTask(this, OrderTask.RESPONSE_TYPE_WRITE);
+        transmissionTask.setData(transmission);
+        return transmissionTask;
+    }
+
     public OrderTask getBroadcastingInterval() {
         BroadcastingIntervalTask broadcastingIntervalTask = new BroadcastingIntervalTask(this, OrderTask.RESPONSE_TYPE_READ);
+        return broadcastingIntervalTask;
+    }
+
+    public OrderTask setBroadcastingInterval(int broadcastInterval) {
+        BroadcastingIntervalTask broadcastingIntervalTask = new BroadcastingIntervalTask(this, OrderTask.RESPONSE_TYPE_WRITE);
+        broadcastingIntervalTask.setData(broadcastInterval);
         return broadcastingIntervalTask;
     }
 

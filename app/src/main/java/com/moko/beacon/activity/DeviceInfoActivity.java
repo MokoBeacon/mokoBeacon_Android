@@ -363,12 +363,18 @@ public class DeviceInfoActivity extends Activity {
                     ToastUtils.showToast(this, "设备连接断开，请点击右上角按钮重连");
                     return;
                 }
+                intent = new Intent(this, SetTransmissionActivity.class);
+                intent.putExtra(BeaconConstants.EXTRA_KEY_DEVICE_TRANSMISSION, mBeaconParam.transmission);
+                startActivityForResult(intent, BeaconConstants.REQUEST_CODE_SET_TRANSMISSION);
                 break;
             case R.id.rl_ibeacon_broadcasting_interval:
                 if (!BeaconModule.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
                     ToastUtils.showToast(this, "设备连接断开，请点击右上角按钮重连");
                     return;
                 }
+                intent = new Intent(this, SetBroadcastIntervalActivity.class);
+                intent.putExtra(BeaconConstants.EXTRA_KEY_DEVICE_BROADCASTINTERVAL, mBeaconParam.broadcastingInterval);
+                startActivityForResult(intent, BeaconConstants.REQUEST_CODE_SET_BROADCASTINTERVAL);
                 break;
             case R.id.rl_ibeacon_serialID:
                 if (!BeaconModule.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
@@ -457,6 +463,20 @@ public class DeviceInfoActivity extends Activity {
                         int measurePower = data.getExtras().getInt(BeaconConstants.EXTRA_KEY_DEVICE_MEASURE_POWER, 0);
                         tvIbeaconMeasurePower.setText(String.format("-%ddBm", measurePower));
                         mBeaconParam.measurePower = measurePower;
+                    }
+                    break;
+                case BeaconConstants.REQUEST_CODE_SET_TRANSMISSION:
+                    if (data != null && data.getExtras() != null) {
+                        int transmission = data.getExtras().getInt(BeaconConstants.EXTRA_KEY_DEVICE_TRANSMISSION, 0);
+                        tvIbeaconMeasurePower.setText(String.valueOf(transmission));
+                        mBeaconParam.transmission = transmission;
+                    }
+                    break;
+                case BeaconConstants.REQUEST_CODE_SET_BROADCASTINTERVAL:
+                    if (data != null && data.getExtras() != null) {
+                        int broadcastInterval = data.getExtras().getInt(BeaconConstants.EXTRA_KEY_DEVICE_BROADCASTINTERVAL, 0);
+                        tvIbeaconBroadcastingInterval.setText(String.valueOf(broadcastInterval));
+                        mBeaconParam.broadcastingInterval = broadcastInterval;
                     }
                     break;
             }

@@ -1,0 +1,433 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@color/blue_5691fc">
+
+        <TextView
+            android:id="@+id/tv_back"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:drawableLeft="@drawable/back"
+            android:drawablePadding="6dp"
+            android:gravity="center_vertical"
+            android:paddingLeft="16dp"
+            android:text="@string/device_list_title"
+            android:textColor="@color/white_ffffff"
+            android:textSize="15sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="广播功率"
+            android:textColor="@color/white_ffffff"
+            android:textSize="17sp" />
+
+        <ImageView
+            android:id="@+id/iv_save"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:src="@drawable/save" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1.0"
+        android:background="@color/grey_ebebeb"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="26dp"
+            android:layout_marginTop="20dp"
+            android:text="请选择档位"
+            android:textColor="@color/black_333333"
+            android:textSize="13sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="20dp">
+
+            <LinearLayout
+                android:id="@+id/ll_transmission_grade_0"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1.0"
+                android:background="@drawable/shape_radius_white_bg"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:tag="0">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="11dp"
+                    android:text="最高档"
+                    android:textColor="@color/blue_5691fc"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="功率：-4dBm"
+                    android:textColor="@color/grey_a6a6a6"
+                    android:textSize="11sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="覆盖半径：约90米"
+                    android:textColor="@color/grey_a6a6a6"
+                    android:textSize="11sp" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="7dp"
+                android:layout_height="wrap_content" />
+
+            <LinearLayout
+                android:id="@+id/ll_transmission_grade_1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1.0"
+                android:background="@drawable/shape_radius_white_bg"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:tag="1">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="11dp"
+                    android:text="1档"
+                    android:textColor="@color/blue_5691fc"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="功率：0dBm"
+                    android:textColor="@color/grey_a6a6a6"
+                    android:textSize="11sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="覆盖半径：约50米"
+                    android:textColor="@color/grey_a6a6a6"
+                    android:textSize="11sp" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="7dp"
+                android:layout_height="wrap_content" />
+
+            <LinearLayout
+                android:id="@+id/ll_transmission_grade_2"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1.0"
+                android:background="@drawable/shape_radius_white_bg"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:tag="2">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="11dp"
+                    android:text="2档"
+                    android:textColor="@color/blue_5691fc"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="功率：-4dBm"
+                    android:textColor="@color/grey_a6a6a6"
+                    android:textSize="11sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="覆盖半径：约27米"
+                    android:textColor="@color/grey_a6a6a6"
+                    android:textSize="11sp" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="7dp">
+
+            <LinearLayout
+                android:id="@+id/ll_transmission_grade_3"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1.0"
+                android:background="@drawable/shape_radius_white_bg"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:tag="3">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="11dp"
+                    android:text="3档"
+                    android:textColor="@color/blue_5691fc"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="功率：-8dBm"
+                    android:textColor="@color/grey_a6a6a6"
+                    android:textSize="11sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="覆盖半径：约22米"
+                    android:textColor="@color/grey_a6a6a6"
+                    android:textSize="11sp" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="7dp"
+                android:layout_height="wrap_content" />
+
+            <LinearLayout
+                android:id="@+id/ll_transmission_grade_4"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1.0"
+                android:background="@drawable/shape_radius_white_bg"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:tag="4">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="11dp"
+                    android:text="4档"
+                    android:textColor="@color/blue_5691fc"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="功率：-12dBm"
+                    android:textColor="@color/grey_a6a6a6"
+                    android:textSize="11sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="覆盖半径：约15米"
+                    android:textColor="@color/grey_a6a6a6"
+                    android:textSize="11sp" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="7dp"
+                android:layout_height="wrap_content" />
+
+            <LinearLayout
+                android:id="@+id/ll_transmission_grade_5"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1.0"
+                android:background="@drawable/shape_radius_white_bg"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:tag="5">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="11dp"
+                    android:text="5档"
+                    android:textColor="@color/blue_5691fc"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="功率：-16dBm"
+                    android:textColor="@color/grey_a6a6a6"
+                    android:textSize="11sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="覆盖半径：约10米"
+                    android:textColor="@color/grey_a6a6a6"
+                    android:textSize="11sp" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="7dp">
+
+            <LinearLayout
+                android:id="@+id/ll_transmission_grade_6"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1.0"
+                android:background="@drawable/shape_radius_white_bg"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:tag="6">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="11dp"
+                    android:text="6档"
+                    android:textColor="@color/blue_5691fc"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="功率：-20dBm"
+                    android:textColor="@color/grey_a6a6a6"
+                    android:textSize="11sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="覆盖半径：约7米"
+                    android:textColor="@color/grey_a6a6a6"
+                    android:textSize="11sp" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="7dp"
+                android:layout_height="wrap_content" />
+
+            <LinearLayout
+                android:id="@+id/ll_transmission_grade_7"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1.0"
+                android:background="@drawable/shape_radius_white_bg"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:tag="7">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="11dp"
+                    android:text="7档"
+                    android:textColor="@color/blue_5691fc"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="功率：-30dBm"
+                    android:textColor="@color/grey_a6a6a6"
+                    android:textSize="11sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="覆盖半径：约2米"
+                    android:textColor="@color/grey_a6a6a6"
+                    android:textSize="11sp" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="7dp"
+                android:layout_height="wrap_content" />
+
+            <LinearLayout
+                android:id="@+id/ll_transmission_grade_8"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1.0"
+                android:background="@drawable/shape_radius_white_bg"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:tag="8">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="11dp"
+                    android:text="8档"
+                    android:textColor="@color/blue_5691fc"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="功率：-40dBm"
+                    android:textColor="@color/grey_a6a6a6"
+                    android:textSize="11sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="覆盖半径：约1米"
+                    android:textColor="@color/grey_a6a6a6"
+                    android:textSize="11sp" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="25dp"
+            android:layout_marginTop="20dp"
+            android:text="提示：广播功率设置越高，信号覆盖范围越大耗电量也越大，修改参数后，重启生效"
+            android:textColor="@color/grey_737373"
+            android:textSize="12sp" />
+    </LinearLayout>
+</LinearLayout>

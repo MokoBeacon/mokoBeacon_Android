@@ -64,6 +64,7 @@
                 android:digits="0123456789"
                 android:gravity="center"
                 android:inputType="number"
+                android:maxLength="5"
                 android:paddingLeft="15dp"
                 android:paddingRight="15dp"
                 android:singleLine="true"
@@ -78,6 +79,7 @@
                 android:layout_marginRight="24dp"
                 android:layout_toLeftOf="@id/et_measure_power"
                 android:text="-"
+                android:textColor="@color/black_333333"
                 android:textSize="15sp" />
 
             <TextView
@@ -87,6 +89,7 @@
                 android:layout_marginLeft="24dp"
                 android:layout_toRightOf="@id/et_measure_power"
                 android:text="dBm"
+                android:textColor="@color/black_333333"
                 android:textSize="15sp" />
 
         </RelativeLayout>
