@@ -359,6 +359,12 @@ public class BeaconModule implements BeaconResponseCallback {
                 case iBeaconUuid:
                 case major:
                 case minor:
+                case measurePower:
+                case transmission:
+                case broadcastingInterval:
+                case serialID:
+                case devicename:
+                case connectionMode:
                     formatCommonOrder(orderTask, value);
                     break;
             }

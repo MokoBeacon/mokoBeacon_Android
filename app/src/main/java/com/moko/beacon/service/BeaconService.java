@@ -3,12 +3,10 @@ package com.moko.beacon.service;
 import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
-import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 
 import com.moko.beacon.BeaconConstants;
-import com.moko.beacon.activity.MainActivity;
 import com.moko.beacon.base.BaseHandler;
 import com.moko.beaconsupport.beacon.BeaconModule;
 import com.moko.beaconsupport.callback.BeaconConnStateCallback;
@@ -233,6 +231,13 @@ public class BeaconService extends Service implements BeaconConnStateCallback, O
         MeasurePowerTask measurePowerTask = new MeasurePowerTask(this, OrderTask.RESPONSE_TYPE_READ);
         return measurePowerTask;
     }
+
+    public OrderTask setMeasurePower(int measurePower) {
+        MeasurePowerTask measurePowerTask = new MeasurePowerTask(this, OrderTask.RESPONSE_TYPE_WRITE);
+        measurePowerTask.setData(measurePower);
+        return measurePowerTask;
+    }
+
 
     public OrderTask getTransmission() {
         TransmissionTask transmissionTask = new TransmissionTask(this, OrderTask.RESPONSE_TYPE_READ);

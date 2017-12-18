@@ -26,12 +26,14 @@ public class BeaconConstants {
     public static final String EXTRA_KEY_DEVICE_UUID = "EXTRA_KEY_DEVICE_UUID";
     public static final String EXTRA_KEY_DEVICE_MAJOR= "EXTRA_KEY_DEVICE_MAJOR";
     public static final String EXTRA_KEY_DEVICE_MINOR= "EXTRA_KEY_DEVICE_MINOR";
+    public static final String EXTRA_KEY_DEVICE_MEASURE_POWER= "EXTRA_KEY_DEVICE_MEASURE_POWER";
     // request_code
     public static final int REQUEST_CODE_ENABLE_BT = 1001;
     public static final int REQUEST_CODE_DEVICE_INFO = 101;
     public static final int REQUEST_CODE_SET_UUID = 102;
     public static final int REQUEST_CODE_SET_MAJOR = 103;
     public static final int REQUEST_CODE_SET_MINOR = 104;
+    public static final int REQUEST_CODE_SET_MEASURE_POWER = 105;
     // result_code
     public static final int RESULT_CONN_DISCONNECTED = 2;
 }

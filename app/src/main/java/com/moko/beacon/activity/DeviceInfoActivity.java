@@ -354,6 +354,9 @@ public class DeviceInfoActivity extends Activity {
                     ToastUtils.showToast(this, "设备连接断开，请点击右上角按钮重连");
                     return;
                 }
+                intent = new Intent(this, SetMeasurePowerActivity.class);
+                intent.putExtra(BeaconConstants.EXTRA_KEY_DEVICE_MEASURE_POWER, mBeaconParam.measurePower);
+                startActivityForResult(intent, BeaconConstants.REQUEST_CODE_SET_MEASURE_POWER);
                 break;
             case R.id.rl_ibeacon_transmission:
                 if (!BeaconModule.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
@@ -447,6 +450,13 @@ public class DeviceInfoActivity extends Activity {
                         int minor = data.getExtras().getInt(BeaconConstants.EXTRA_KEY_DEVICE_MINOR, 0);
                         tvIbeaconMinor.setText(minor + "");
                         mBeaconParam.minor = minor;
+                    }
+                    break;
+                case BeaconConstants.REQUEST_CODE_SET_MEASURE_POWER:
+                    if (data != null && data.getExtras() != null) {
+                        int measurePower = data.getExtras().getInt(BeaconConstants.EXTRA_KEY_DEVICE_MEASURE_POWER, 0);
+                        tvIbeaconMeasurePower.setText(String.format("-%ddBm", measurePower));
+                        mBeaconParam.measurePower = measurePower;
                     }
                     break;
             }
