@@ -23,6 +23,8 @@ import com.moko.beacon.entity.BeaconParam;
 import com.moko.beacon.service.BeaconService;
 import com.moko.beacon.utils.ToastUtils;
 import com.moko.beaconsupport.beacon.BeaconModule;
+import com.moko.beaconsupport.entity.OrderType;
+import com.moko.beaconsupport.utils.Utils;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -115,6 +117,44 @@ public class DeviceInfoActivity extends Activity {
                     tvConnState.setText(getString(R.string.device_info_conn_status_disconnect));
                     dismissLoadingProgressDialog();
                 }
+                if (BeaconConstants.ACTION_RESPONSE_TIMEOUT.equals(action)) {
+                    OrderType orderType = (OrderType) intent.getSerializableExtra(BeaconConstants.EXTRA_KEY_RESPONSE_ORDER_TYPE);
+                    switch (orderType) {
+                        case iBeaconUuid:
+                            // 读取UUID失败
+                            ToastUtils.showToast(DeviceInfoActivity.this, "读取UUID失败");
+                            break;
+                    }
+                }
+                if (BeaconConstants.ACTION_RESPONSE_FINISH.equals(action)) {
+
+                }
+                if (BeaconConstants.ACTION_RESPONSE_SUCCESS.equals(action)) {
+                    OrderType orderType = (OrderType) intent.getSerializableExtra(BeaconConstants.EXTRA_KEY_RESPONSE_ORDER_TYPE);
+                    byte[] value = intent.getByteArrayExtra(BeaconConstants.EXTRA_KEY_RESPONSE_VALUE);
+                    switch (orderType) {
+                        case iBeaconUuid:
+                            // 读取UUID成功
+                            // ToastUtils.showToast(DeviceInfoActivity.this, "读取UUID成功");
+                            String hexString = Utils.bytesToHexString(value).toUpperCase();
+                            if (hexString.length() > 31) {
+                                StringBuilder sb = new StringBuilder();
+                                sb.append(hexString.substring(0, 8));
+                                sb.append("-");
+                                sb.append(hexString.substring(8, 12));
+                                sb.append("-");
+                                sb.append(hexString.substring(12, 16));
+                                sb.append("-");
+                                sb.append(hexString.substring(16, 20));
+                                sb.append("-");
+                                sb.append(hexString.substring(20, 32));
+                                String uuid = sb.toString();
+                                mBeaconParam.uuid = uuid;
+                                tvIbeaconUuid.setText(uuid);
+                            }
+                            break;
+                    }
+                }
             }
         }
     };
@@ -164,6 +204,7 @@ public class DeviceInfoActivity extends Activity {
 
     @OnClick({R.id.tv_back, R.id.tv_conn_state, R.id.rl_ibeacon_battery, R.id.rl_ibeacon_uuid, R.id.rl_ibeacon_major, R.id.rl_ibeacon_minor, R.id.rl_ibeacon_measure_power, R.id.rl_ibeacon_transmission, R.id.rl_ibeacon_broadcasting_interval, R.id.rl_ibeacon_serialID, R.id.rl_ibeacon_mac, R.id.rl_ibeacon_device_name, R.id.rl_ibeacon_device_conn_mode, R.id.rl_ibeacon_change_password, R.id.rl_ibeacon_device_info})
     public void onClick(View view) {
+        Intent intent;
         switch (view.getId()) {
             case R.id.tv_back:
                 back();
@@ -179,6 +220,9 @@ public class DeviceInfoActivity extends Activity {
                     ToastUtils.showToast(this, "设备连接断开，请点击右上角按钮重连");
                     return;
                 }
+                intent = new Intent(this, SetUUIDActivity.class);
+                intent.putExtra(BeaconConstants.EXTRA_KEY_DEVICE_UUID, mBeaconParam.uuid);
+                startActivityForResult(intent, BeaconConstants.REQUEST_CODE_SET_UUID);
                 break;
             case R.id.rl_ibeacon_major:
                 if (!BeaconModule.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
@@ -239,7 +283,7 @@ public class DeviceInfoActivity extends Activity {
                     ToastUtils.showToast(this, "设备连接断开，请点击右上角按钮重连");
                     return;
                 }
-                Intent intent = new Intent(this, SystemInfoActivity.class);
+                intent = new Intent(this, SystemInfoActivity.class);
                 intent.putExtra(BeaconConstants.EXTRA_KEY_DEVICE_INFO, mBeaconParam.beaconInfo);
                 startActivity(intent);
                 break;
@@ -263,6 +307,26 @@ public class DeviceInfoActivity extends Activity {
     private void dismissLoadingProgressDialog() {
         if (!isFinishing() && mLoadingDialog != null && mLoadingDialog.isShowing()) {
             mLoadingDialog.dismiss();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case BeaconConstants.REQUEST_CODE_SET_UUID:
+                    mBeaconService.mHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            mBeaconService.sendOrder(mBeaconService.getIBeaconUuid());
+                        }
+                    }, 1000);
+                    break;
+
+            }
+        } else if (resultCode == BeaconConstants.RESULT_CONN_DISCONNECTED) {
+            tvConnState.setText(getString(R.string.device_info_conn_status_disconnect));
         }
     }
 }

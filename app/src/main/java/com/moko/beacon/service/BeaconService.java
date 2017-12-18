@@ -5,8 +5,11 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
 
 import com.moko.beacon.BeaconConstants;
+import com.moko.beacon.activity.MainActivity;
+import com.moko.beacon.base.BaseHandler;
 import com.moko.beaconsupport.beacon.BeaconModule;
 import com.moko.beaconsupport.callback.BeaconConnStateCallback;
 import com.moko.beaconsupport.callback.OrderTaskCallback;
@@ -67,6 +70,8 @@ public class BeaconService extends Service implements BeaconConnStateCallback, O
     public void onCreate() {
         super.onCreate();
         LogModule.i("启动后台服务");
+        mHandler = new ServiceHandler(this);
+
     }
 
     @Override
@@ -196,6 +201,12 @@ public class BeaconService extends Service implements BeaconConnStateCallback, O
         return iBeaconUuidTask;
     }
 
+    public OrderTask setIBeaconUuid(String uuid) {
+        IBeaconUuidTask iBeaconUuidTask = new IBeaconUuidTask(this, OrderTask.RESPONSE_TYPE_WRITE);
+        iBeaconUuidTask.setData(uuid);
+        return iBeaconUuidTask;
+    }
+
     public OrderTask getMajor() {
         MajorTask majorTask = new MajorTask(this, OrderTask.RESPONSE_TYPE_READ);
         return majorTask;
@@ -277,5 +288,18 @@ public class BeaconService extends Service implements BeaconConnStateCallback, O
         LogModule.i("任务完成");
         Intent intent = new Intent(BeaconConstants.ACTION_RESPONSE_FINISH);
         sendOrderedBroadcast(intent, null);
+    }
+
+    public ServiceHandler mHandler;
+
+    public class ServiceHandler extends BaseHandler<BeaconService> {
+
+        public ServiceHandler(BeaconService service) {
+            super(service);
+        }
+
+        @Override
+        protected void handleMessage(BeaconService service, Message msg) {
+        }
     }
 }

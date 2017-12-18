@@ -358,6 +358,9 @@ public class BeaconModule implements BeaconResponseCallback {
                 case overtime:
                     formatCommonOrder(orderTask, value);
                     break;
+                case iBeaconUuid:
+                    formatCommonOrder(orderTask, value);
+                    break;
             }
         }
     }

@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@color/blue_5691fc">
+
+        <TextView
+            android:id="@+id/tv_back"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:drawableLeft="@drawable/back"
+            android:drawablePadding="6dp"
+            android:gravity="center_vertical"
+            android:paddingLeft="16dp"
+            android:text="@string/device_list_title"
+            android:textColor="@color/white_ffffff"
+            android:textSize="15sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="UUID"
+            android:textColor="@color/white_ffffff"
+            android:textSize="17sp" />
+
+        <ImageView
+            android:id="@+id/iv_save"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:src="@drawable/save" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1.0"
+        android:background="@color/grey_ebebeb"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:background="@color/white_ffffff"
+            android:orientation="vertical"
+            android:paddingBottom="20dp">
+
+            <EditText
+                android:id="@+id/et_seletced_uuid"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/shape_radius_grey_bg"
+                android:gravity="center"
+                android:hint="11111111-1111-1111-1111-111111111111"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                android:singleLine="true"
+                android:textColor="@color/black_333333"
+                android:textSize="12sp" />
+
+            <RelativeLayout
+                android:id="@+id/rl_airLocate"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:layout_marginLeft="25dp"
+                android:layout_marginRight="25dp"
+                android:layout_marginTop="20dp"
+                android:paddingTop="20dp">
+
+                <TextView
+                    android:id="@+id/airLocate_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="AirLocate"
+                    android:textColor="@color/blue_5691fc"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/tv_airLocate_uuid"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/airLocate_title"
+                    android:layout_marginTop="5dp"
+                    android:text="E2C56DB5-DFFB-48D2-B060-D0F5A71096E0"
+                    android:textColor="@color/black_333333"
+                    android:textSize="12sp" />
+
+
+                <View
+                    style="@style/divider_line"
+                    android:layout_alignParentBottom="true" />
+
+                <ImageView
+                    android:id="@+id/iv_airLocate_selected"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/uuid_selected"
+                    android:visibility="gone" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rl_wechat_1"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:layout_marginLeft="25dp"
+                android:layout_marginRight="25dp"
+                android:paddingTop="20dp">
+
+                <TextView
+                    android:id="@+id/wechat_1_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="微信"
+                    android:textColor="@color/blue_5691fc"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/tv_wechat_1_uuid"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/wechat_1_title"
+                    android:layout_marginTop="5dp"
+                    android:text="FDA50693-A4E2-4FB1-AFCF-C6EB07647825"
+                    android:textColor="@color/black_333333"
+                    android:textSize="12sp" />
+
+                <View
+                    style="@style/divider_line"
+                    android:layout_alignParentBottom="true" />
+
+                <ImageView
+                    android:id="@+id/iv_wechat_1_selected"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/uuid_selected"
+                    android:visibility="gone" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rl_wechat_2"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:layout_marginLeft="25dp"
+                android:layout_marginRight="25dp"
+                android:paddingTop="20dp">
+
+                <TextView
+                    android:id="@+id/wechat_2_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="微信"
+                    android:textColor="@color/blue_5691fc"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/tv_wechat_2_uuid"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/wechat_2_title"
+                    android:layout_marginTop="5dp"
+                    android:text="AB8190D5-D11E-4941-ACC4-42F30510B408"
+                    android:textColor="@color/black_333333"
+                    android:textSize="12sp" />
+
+                <View
+                    style="@style/divider_line"
+                    android:layout_alignParentBottom="true" />
+
+                <ImageView
+                    android:id="@+id/iv_wechat_2_selected"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/uuid_selected"
+                    android:visibility="gone" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rl_estimote"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:layout_marginLeft="25dp"
+                android:layout_marginRight="25dp"
+                android:paddingTop="20dp">
+
+                <TextView
+                    android:id="@+id/estimote_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Estimote"
+                    android:textColor="@color/blue_5691fc"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/tv_estimote_uuid"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/estimote_title"
+                    android:layout_marginTop="5dp"
+                    android:text="B9407F30-F5F8-466E-AFF9-25556B57FE6D"
+                    android:textColor="@color/black_333333"
+                    android:textSize="12sp" />
+
+                <View
+                    style="@style/divider_line"
+                    android:layout_alignParentBottom="true" />
+
+                <ImageView
+                    android:id="@+id/iv_estimote_selected"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/uuid_selected"
+                    android:visibility="gone" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rl_uuid"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:layout_marginLeft="25dp"
+                android:layout_marginRight="25dp"
+                android:paddingTop="20dp">
+
+                <TextView
+                    android:id="@+id/uuid_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="UUID"
+                    android:textColor="@color/blue_5691fc"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/tv_uuid"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/uuid_title"
+                    android:layout_marginTop="5dp"
+                    android:text=""
+                    android:textColor="@color/black_333333"
+                    android:textSize="12sp" />
+
+                <View
+                    style="@style/divider_line"
+                    android:layout_alignParentBottom="true" />
+
+                <ImageView
+                    android:id="@+id/iv_uuid_selected"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/uuid_selected"
+                    android:visibility="gone" />
+            </RelativeLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

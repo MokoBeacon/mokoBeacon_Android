@@ -23,7 +23,11 @@ public class BeaconConstants {
     public static final String EXTRA_KEY_RESPONSE_VALUE = "EXTRA_KEY_RESPONSE_VALUE";
     public static final String EXTRA_KEY_DEVICE_PARAM = "EXTRA_KEY_DEVICE_PARAM";
     public static final String EXTRA_KEY_DEVICE_INFO = "EXTRA_KEY_DEVICE_INFO";
+    public static final String EXTRA_KEY_DEVICE_UUID = "EXTRA_KEY_DEVICE_UUID";
     // request_code
     public static final int REQUEST_CODE_ENABLE_BT = 1001;
     public static final int REQUEST_CODE_DEVICE_INFO = 101;
+    public static final int REQUEST_CODE_SET_UUID = 102;
+    // result_code
+    public static final int RESULT_CONN_DISCONNECTED = 2;
 }

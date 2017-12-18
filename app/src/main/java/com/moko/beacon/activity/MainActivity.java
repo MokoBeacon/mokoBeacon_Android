@@ -87,7 +87,6 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        mHandler = new CustomHandler(this);
         mAdapter = new BeaconListAdapter(this);
         mBeaconInfos = new ArrayList<>();
         mAdapter.setItems(mBeaconInfos);
@@ -154,7 +153,7 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
                     BeaconDeviceInfo beaconInfo = new BeaconDeviceInfo();
                     mBeaconParam.beaconInfo = beaconInfo;
                     // 读取全部可读数据
-                    mHandler.postDelayed(new Runnable() {
+                    mBeaconService.mHandler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
                             mBeaconService.getReadableData(mPassword);
@@ -163,6 +162,7 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
                 }
                 if (BeaconConstants.ACTION_CONNECT_DISCONNECTED.equals(action)) {
                     dismissLoadingProgressDialog();
+                    ToastUtils.showToast(MainActivity.this, "connect failed");
                 }
                 if (BeaconConstants.ACTION_RESPONSE_TIMEOUT.equals(action)) {
                     OrderType orderType = (OrderType) intent.getSerializableExtra(BeaconConstants.EXTRA_KEY_RESPONSE_ORDER_TYPE);
@@ -173,7 +173,7 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
                     }
                 }
                 if (BeaconConstants.ACTION_RESPONSE_FINISH.equals(action)) {
-                    mHandler.postDelayed(new Runnable() {
+                    mBeaconService.mHandler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
                             dismissLoadingProgressDialog();
@@ -198,7 +198,7 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
                             mBeaconParam.battery = Integer.parseInt(Utils.bytesToHexString(value), 16);
                             break;
                         case iBeaconUuid:
-                            String hexString = Utils.bytesToHexString(value);
+                            String hexString = Utils.bytesToHexString(value).toUpperCase();
                             if (hexString.length() > 31) {
                                 StringBuilder sb = new StringBuilder();
                                 sb.append(hexString.substring(0, 8));
@@ -384,7 +384,7 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
         dialog.setMessage("扫描中...");
         if (!isFinishing() && dialog != null && !dialog.isShowing()) {
             dialog.show();
-            mHandler.postDelayed(new Runnable() {
+            mBeaconService.mHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     dialog.dismiss();
@@ -462,7 +462,6 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
 
     }
 
-    private CustomHandler mHandler;
     private BeaconParam mBeaconParam;
     private String mPassword;
 
