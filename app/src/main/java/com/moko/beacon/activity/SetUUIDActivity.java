@@ -123,7 +123,9 @@ public class SetUUIDActivity extends Activity {
                         case iBeaconUuid:
                             // 修改UUID成功
                             ToastUtils.showToast(SetUUIDActivity.this, "修改UUID成功");
-                            SetUUIDActivity.this.setResult(RESULT_OK);
+                            Intent i = new Intent();
+                            i.putExtra(BeaconConstants.EXTRA_KEY_DEVICE_UUID, etSeletcedUuid.getText().toString());
+                            SetUUIDActivity.this.setResult(RESULT_OK, i);
                             finish();
                             break;
                     }

@@ -24,7 +24,10 @@ import com.moko.beacon.service.BeaconService;
 import com.moko.beacon.utils.ToastUtils;
 import com.moko.beaconsupport.beacon.BeaconModule;
 import com.moko.beaconsupport.entity.OrderType;
+import com.moko.beaconsupport.log.LogModule;
 import com.moko.beaconsupport.utils.Utils;
+
+import java.util.Arrays;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -80,6 +83,10 @@ public class DeviceInfoActivity extends Activity {
         } else {
             tvConnState.setText(getString(R.string.device_info_conn_status_disconnect));
         }
+        changeValue();
+    }
+
+    private void changeValue() {
         tvIbeaconBattery.setText(mBeaconParam.battery + "");
         tvIbeaconUuid.setText(mBeaconParam.uuid);
         tvIbeaconMajor.setText(mBeaconParam.major + "");
@@ -108,13 +115,17 @@ public class DeviceInfoActivity extends Activity {
                 abortBroadcast();
                 String action = intent.getAction();
                 if (BeaconConstants.ACTION_CONNECT_SUCCESS.equals(action)) {
-                    tvConnState.setText(getString(R.string.device_info_conn_status_connected));
-                    mBeaconService.sendOrder(mBeaconService.setOvertime());
-                    dismissLoadingProgressDialog();
-                    ToastUtils.showToast(DeviceInfoActivity.this, "Connect Success");
+                    // 读取全部可读数据
+                    mBeaconService.mHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            mBeaconService.getReadableData(mBeaconParam.password);
+                        }
+                    }, 1000);
                 }
                 if (BeaconConstants.ACTION_CONNECT_DISCONNECTED.equals(action)) {
                     tvConnState.setText(getString(R.string.device_info_conn_status_disconnect));
+                    ToastUtils.showToast(DeviceInfoActivity.this, "Connect Failed");
                     dismissLoadingProgressDialog();
                 }
                 if (BeaconConstants.ACTION_RESPONSE_TIMEOUT.equals(action)) {
@@ -127,12 +138,22 @@ public class DeviceInfoActivity extends Activity {
                     }
                 }
                 if (BeaconConstants.ACTION_RESPONSE_FINISH.equals(action)) {
-
+                    mBeaconService.mHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            dismissLoadingProgressDialog();
+                            tvConnState.setText(getString(R.string.device_info_conn_status_connected));
+                            ToastUtils.showToast(DeviceInfoActivity.this, "Connect Success");
+                        }
+                    }, 1000);
                 }
                 if (BeaconConstants.ACTION_RESPONSE_SUCCESS.equals(action)) {
                     OrderType orderType = (OrderType) intent.getSerializableExtra(BeaconConstants.EXTRA_KEY_RESPONSE_ORDER_TYPE);
                     byte[] value = intent.getByteArrayExtra(BeaconConstants.EXTRA_KEY_RESPONSE_VALUE);
                     switch (orderType) {
+                        case battery:
+                            mBeaconParam.battery = Integer.parseInt(Utils.bytesToHexString(value), 16);
+                            break;
                         case iBeaconUuid:
                             // 读取UUID成功
                             // ToastUtils.showToast(DeviceInfoActivity.this, "读取UUID成功");
@@ -151,6 +172,92 @@ public class DeviceInfoActivity extends Activity {
                                 String uuid = sb.toString();
                                 mBeaconParam.uuid = uuid;
                                 tvIbeaconUuid.setText(uuid);
+                            }
+                            break;
+                        case major:
+                            mBeaconParam.major = Integer.parseInt(Utils.bytesToHexString(value), 16);
+                            tvIbeaconMajor.setText(mBeaconParam.major + "");
+                            break;
+                        case minor:
+                            mBeaconParam.minor = Integer.parseInt(Utils.bytesToHexString(value), 16);
+                            break;
+                        case measurePower:
+                            mBeaconParam.measurePower = Integer.parseInt(Utils.bytesToHexString(value), 16);
+                            break;
+                        case transmission:
+                            mBeaconParam.transmission = Integer.parseInt(Utils.bytesToHexString(value), 16);
+                            break;
+                        case broadcastingInterval:
+                            mBeaconParam.broadcastingInterval = Integer.parseInt(Utils.bytesToHexString(value), 16);
+                            break;
+                        case serialID:
+                            mBeaconParam.serialID = Utils.hex2String(Utils.bytesToHexString(value));
+                            break;
+                        case iBeaconMac:
+                            String hexMac = Utils.bytesToHexString(value);
+                            if (hexMac.length() > 11) {
+                                StringBuilder sb = new StringBuilder();
+                                sb.append(hexMac.substring(0, 2));
+                                sb.append(":");
+                                sb.append(hexMac.substring(2, 4));
+                                sb.append(":");
+                                sb.append(hexMac.substring(4, 6));
+                                sb.append(":");
+                                sb.append(hexMac.substring(6, 8));
+                                sb.append(":");
+                                sb.append(hexMac.substring(8, 10));
+                                sb.append(":");
+                                sb.append(hexMac.substring(10, 12));
+                                String mac = sb.toString().toUpperCase();
+                                mBeaconParam.iBeaconMAC = mac;
+                                mBeaconParam.beaconInfo.iBeaconMac = mac;
+                            }
+                            break;
+                        case iBeaconName:
+                            mBeaconParam.iBeaconName = Utils.hex2String(Utils.bytesToHexString(value));
+                            break;
+                        case connectionMode:
+                            mBeaconParam.connectionMode = Utils.bytesToHexString(value);
+                            break;
+                        case firmname:
+                            mBeaconParam.beaconInfo.firmname = Utils.hex2String(Utils.bytesToHexString(value));
+                            break;
+                        case devicename:
+                            mBeaconParam.beaconInfo.deviceName = Utils.hex2String(Utils.bytesToHexString(value));
+                            break;
+                        case iBeaconDate:
+                            mBeaconParam.beaconInfo.iBeaconDate = Utils.hex2String(Utils.bytesToHexString(value));
+                            break;
+                        case hardwareVersion:
+                            mBeaconParam.beaconInfo.hardwareVersion = Utils.hex2String(Utils.bytesToHexString(value));
+                            break;
+                        case firmwareVersion:
+                            mBeaconParam.beaconInfo.firmwareVersion = Utils.hex2String(Utils.bytesToHexString(value));
+                            break;
+                        case runtimeAndChipModel:
+                            if ("0004".equals(Utils.bytesToHexString(Arrays.copyOfRange(value, 0, 2)))) {
+                                byte[] runtimeBytes = Arrays.copyOfRange(value, 2, value.length);
+                                int runtime = Integer.parseInt(Utils.bytesToHexString(runtimeBytes), 16);
+                                int runtimeDays = runtime / (60 * 60 * 24);
+                                int runtimeHours = (runtime % (60 * 60 * 24)) / (60 * 60);
+                                int runtimeMinutes = (runtime % (60 * 60)) / (60);
+                                int runtimeSeconds = (runtime % (60)) / 1000;
+                                mBeaconParam.beaconInfo.runtime = String.format("%dD%dh%dm%ds", runtimeDays, runtimeHours, runtimeMinutes, runtimeSeconds);
+                            }
+                            if ("000c".equals(Utils.bytesToHexString(Arrays.copyOfRange(value, 0, 2)).toLowerCase())) {
+                                byte[] chipModelBytes = Arrays.copyOfRange(value, 2, value.length);
+                                mBeaconParam.beaconInfo.chipModel = Utils.hex2String(Utils.bytesToHexString(chipModelBytes));
+                            }
+                            break;
+                        case systemMark:
+                            mBeaconParam.beaconInfo.systemMark = Utils.bytesToHexString(value);
+                        case IEEEInfo:
+                            mBeaconParam.beaconInfo.IEEEInfo = Utils.bytesToHexString(value);
+                            break;
+                        case changePassword:
+                            if ("00".equals(Utils.bytesToHexString(value))) {
+                                LogModule.i("修改密码成功");
+                                changeValue();
                             }
                             break;
                     }
@@ -229,12 +336,18 @@ public class DeviceInfoActivity extends Activity {
                     ToastUtils.showToast(this, "设备连接断开，请点击右上角按钮重连");
                     return;
                 }
+                intent = new Intent(this, SetMajorActivity.class);
+                intent.putExtra(BeaconConstants.EXTRA_KEY_DEVICE_MAJOR, mBeaconParam.major);
+                startActivityForResult(intent, BeaconConstants.REQUEST_CODE_SET_MAJOR);
                 break;
             case R.id.rl_ibeacon_minor:
                 if (!BeaconModule.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
                     ToastUtils.showToast(this, "设备连接断开，请点击右上角按钮重连");
                     return;
                 }
+                intent = new Intent(this, SetMinorActivity.class);
+                intent.putExtra(BeaconConstants.EXTRA_KEY_DEVICE_MINOR, mBeaconParam.minor);
+                startActivityForResult(intent, BeaconConstants.REQUEST_CODE_SET_MINOR);
                 break;
             case R.id.rl_ibeacon_measure_power:
                 if (!BeaconModule.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
@@ -316,14 +429,26 @@ public class DeviceInfoActivity extends Activity {
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case BeaconConstants.REQUEST_CODE_SET_UUID:
-                    mBeaconService.mHandler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            mBeaconService.sendOrder(mBeaconService.getIBeaconUuid());
-                        }
-                    }, 1000);
+                    if (data != null && data.getExtras() != null) {
+                        String uuid = data.getExtras().getString(BeaconConstants.EXTRA_KEY_DEVICE_UUID);
+                        tvIbeaconUuid.setText(uuid);
+                        mBeaconParam.uuid = uuid;
+                    }
                     break;
-
+                case BeaconConstants.REQUEST_CODE_SET_MAJOR:
+                    if (data != null && data.getExtras() != null) {
+                        int major = data.getExtras().getInt(BeaconConstants.EXTRA_KEY_DEVICE_MAJOR, 0);
+                        tvIbeaconMajor.setText(major + "");
+                        mBeaconParam.major = major;
+                    }
+                    break;
+                case BeaconConstants.REQUEST_CODE_SET_MINOR:
+                    if (data != null && data.getExtras() != null) {
+                        int minor = data.getExtras().getInt(BeaconConstants.EXTRA_KEY_DEVICE_MINOR, 0);
+                        tvIbeaconMinor.setText(minor + "");
+                        mBeaconParam.minor = minor;
+                    }
+                    break;
             }
         } else if (resultCode == BeaconConstants.RESULT_CONN_DISCONNECTED) {
             tvConnState.setText(getString(R.string.device_info_conn_status_disconnect));

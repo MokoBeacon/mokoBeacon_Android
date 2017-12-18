@@ -156,6 +156,7 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
                     mBeaconService.mHandler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
+                            mBeaconParam.password = mPassword;
                             mBeaconService.getReadableData(mPassword);
                         }
                     }, 1000);

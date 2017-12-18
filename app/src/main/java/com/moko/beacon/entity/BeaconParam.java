@@ -30,6 +30,8 @@ public class BeaconParam implements Serializable {
     public String connectionMode;
     // 系统信息
     public BeaconDeviceInfo beaconInfo;
+    // 密码
+    public String password;
 
     @Override
     public String toString() {

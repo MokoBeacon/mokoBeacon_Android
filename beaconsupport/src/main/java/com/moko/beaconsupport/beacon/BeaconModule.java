@@ -356,9 +356,9 @@ public class BeaconModule implements BeaconResponseCallback {
         if (value != null && value.length > 0) {
             switch (orderTask.orderType) {
                 case overtime:
-                    formatCommonOrder(orderTask, value);
-                    break;
                 case iBeaconUuid:
+                case major:
+                case minor:
                     formatCommonOrder(orderTask, value);
                     break;
             }

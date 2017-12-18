@@ -223,6 +223,12 @@ public class BeaconService extends Service implements BeaconConnStateCallback, O
         return minorTask;
     }
 
+    public OrderTask setMinor(int minor) {
+        MinorTask minorTask = new MinorTask(this, OrderTask.RESPONSE_TYPE_WRITE);
+        minorTask.setData(minor);
+        return minorTask;
+    }
+
     public OrderTask getMeasurePower() {
         MeasurePowerTask measurePowerTask = new MeasurePowerTask(this, OrderTask.RESPONSE_TYPE_READ);
         return measurePowerTask;

@@ -17,20 +17,13 @@ android {
             abortOnError false
         }
     }
-    signingConfigs {
-        release {
-            keyAlias 'mokoBeacon'
-            keyPassword 'moko123456'
-            storeFile file('D:\\AndroidStudioProjects\\MokoBeacon\\app\\keystore\\mokoBeacon.jks')
-            storePassword 'moko123456'
-        }
-    }
+
     buildTypes {
         release {
             minifyEnabled false
-            signingConfig signingConfigs.release
         }
     }
+
     applicationVariants.all { variant ->
         variant.outputs.each { output ->
             def outputFile = output.outputFile

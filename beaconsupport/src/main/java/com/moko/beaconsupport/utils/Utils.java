@@ -118,6 +118,9 @@ public class Utils {
     }
 
     public static byte[] hex2bytes(String hex) {
+        if (hex.length() % 2 == 1) {
+            hex = "0" + hex;
+        }
         byte[] data = new byte[hex.length() / 2];
         for (int i = 0; i < data.length; i++) {
             try {
