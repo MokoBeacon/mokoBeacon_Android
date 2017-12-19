@@ -288,6 +288,12 @@ public class BeaconService extends Service implements BeaconConnStateCallback, O
         return connectionModeTask;
     }
 
+    public OrderTask setConnectionMode(String connectionMode) {
+        ConnectionModeTask connectionModeTask = new ConnectionModeTask(this, OrderTask.RESPONSE_TYPE_WRITE);
+        connectionModeTask.setData(connectionMode);
+        return connectionModeTask;
+    }
+
     public OrderTask getSoftReboot() {
         SoftRebootModeTask softRebootModeTask = new SoftRebootModeTask(this, OrderTask.RESPONSE_TYPE_READ);
         return softRebootModeTask;

@@ -399,6 +399,9 @@ public class DeviceInfoActivity extends Activity {
                     ToastUtils.showToast(this, "设备连接断开，请点击右上角按钮重连");
                     return;
                 }
+                intent = new Intent(this, SetConnectionModeActivity.class);
+                intent.putExtra(BeaconConstants.EXTRA_KEY_DEVICE_CONNECTION_MODE, mBeaconParam.connectionMode);
+                startActivityForResult(intent, BeaconConstants.REQUEST_CODE_SET_CONNECTION_MODE);
                 break;
             case R.id.rl_ibeacon_change_password:
                 if (!BeaconModule.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
@@ -497,6 +500,13 @@ public class DeviceInfoActivity extends Activity {
                         String deviceName = data.getExtras().getString(BeaconConstants.EXTRA_KEY_DEVICE_IBEACON_NAME);
                         tvIbeaconDeviceName.setText(String.valueOf(deviceName));
                         mBeaconParam.iBeaconName = deviceName;
+                    }
+                    break;
+                case BeaconConstants.REQUEST_CODE_SET_CONNECTION_MODE:
+                    if (data != null && data.getExtras() != null) {
+                        String connectionMode = data.getExtras().getString(BeaconConstants.EXTRA_KEY_DEVICE_CONNECTION_MODE);
+                        tvIbeaconDeviceConnMode.setText("00".equals(connectionMode) ? "YES" : "NO");
+                        mBeaconParam.connectionMode = connectionMode;
                     }
                     break;
             }

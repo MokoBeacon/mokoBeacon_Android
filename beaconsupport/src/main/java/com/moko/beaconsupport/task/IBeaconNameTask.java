@@ -17,6 +17,7 @@ public class IBeaconNameTask extends OrderTask {
     public IBeaconNameTask(OrderTaskCallback callback, int sendDataType) {
         super(OrderType.iBeaconName, callback, sendDataType);
     }
+
     public void setData(String deviceName) {
         data = Utils.hex2bytes(Utils.string2Hex(deviceName));
     }
