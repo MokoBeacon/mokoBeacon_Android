@@ -25,7 +25,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="校验距离"
+            android:text="设备ID"
             android:textColor="@color/white_ffffff"
             android:textSize="17sp" />
 
@@ -46,20 +46,13 @@
         android:background="@color/grey_ebebeb"
         android:orientation="vertical">
 
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="40dp"
-            android:orientation="horizontal">
-
-
             <EditText
-                android:id="@+id/et_measure_power"
-                android:layout_width="70dp"
+                android:id="@+id/et_device_id"
+                android:layout_width="match_parent"
                 android:layout_height="30dp"
-                android:layout_centerInParent="true"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="20dp"
                 android:background="@drawable/shape_radius_grey_light_bg"
                 android:digits="0123456789"
                 android:gravity="center"
@@ -68,39 +61,16 @@
                 android:paddingLeft="15dp"
                 android:paddingRight="15dp"
                 android:singleLine="true"
-                android:text=""
                 android:textColor="@color/black_333333"
-                android:textSize="15sp" />
+                android:textSize="12sp" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="24dp"
-                android:layout_toLeftOf="@id/et_measure_power"
-                android:text="-"
-                android:textColor="@color/black_333333"
-                android:textSize="15sp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="24dp"
-                android:layout_toRightOf="@id/et_measure_power"
-                android:text="dBm"
-                android:textColor="@color/black_333333"
-                android:textSize="15sp" />
-
-        </RelativeLayout>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="25dp"
-            android:layout_marginRight="25dp"
             android:layout_marginTop="20dp"
-            android:text="注：这个数值用于标准iBeacon和手机的距离，数值必须为负，通常是-55和-59。不是专业认识，不建议去修改这个值"
+            android:text="注：beacon设备广播出来的设备ID，最大5个字符"
             android:textColor="@color/grey_737373"
             android:textSize="12sp" />
     </LinearLayout>

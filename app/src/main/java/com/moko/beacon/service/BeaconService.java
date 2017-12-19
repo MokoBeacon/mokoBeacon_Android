@@ -266,8 +266,20 @@ public class BeaconService extends Service implements BeaconConnStateCallback, O
         return serialIDTask;
     }
 
+    public OrderTask setSerialID(String deviceId) {
+        SerialIDTask serialIDTask = new SerialIDTask(this, OrderTask.RESPONSE_TYPE_WRITE);
+        serialIDTask.setData(deviceId);
+        return serialIDTask;
+    }
+
     public OrderTask getIBeaconName() {
         IBeaconNameTask iBeaconNameTask = new IBeaconNameTask(this, OrderTask.RESPONSE_TYPE_READ);
+        return iBeaconNameTask;
+    }
+
+    public OrderTask setIBeaconName(String deviceName) {
+        IBeaconNameTask iBeaconNameTask = new IBeaconNameTask(this, OrderTask.RESPONSE_TYPE_WRITE);
+        iBeaconNameTask.setData(deviceName);
         return iBeaconNameTask;
     }
 

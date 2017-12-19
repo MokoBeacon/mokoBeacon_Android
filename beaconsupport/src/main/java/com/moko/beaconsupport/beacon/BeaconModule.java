@@ -363,7 +363,7 @@ public class BeaconModule implements BeaconResponseCallback {
                 case transmission:
                 case broadcastingInterval:
                 case serialID:
-                case devicename:
+                case iBeaconName:
                 case connectionMode:
                     formatCommonOrder(orderTask, value);
                     break;

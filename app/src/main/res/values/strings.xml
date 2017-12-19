@@ -7,4 +7,5 @@
     <string name="about_moko_name">深圳市华创恒达科技</string>
     <string name="device_info_conn_status_disconnect">Disconnect</string>
     <string name="device_info_conn_status_connected">Connected</string>
+    <string name="device_info_title">详细信息</string>
 </resources>

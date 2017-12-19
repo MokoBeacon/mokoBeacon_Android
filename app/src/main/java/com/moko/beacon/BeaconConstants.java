@@ -29,6 +29,8 @@ public class BeaconConstants {
     public static final String EXTRA_KEY_DEVICE_MEASURE_POWER = "EXTRA_KEY_DEVICE_MEASURE_POWER";
     public static final String EXTRA_KEY_DEVICE_TRANSMISSION = "EXTRA_KEY_DEVICE_TRANSMISSION";
     public static final String EXTRA_KEY_DEVICE_BROADCASTINTERVAL = "EXTRA_KEY_DEVICE_BROADCASTINTERVAL";
+    public static final String EXTRA_KEY_DEVICE_DEVICE_ID = "EXTRA_KEY_DEVICE_DEVICE_ID";
+    public static final String EXTRA_KEY_DEVICE_IBEACON_NAME = "EXTRA_KEY_DEVICE_IBEACON_NAME";
     // request_code
     public static final int REQUEST_CODE_ENABLE_BT = 1001;
     public static final int REQUEST_CODE_DEVICE_INFO = 101;
@@ -38,6 +40,8 @@ public class BeaconConstants {
     public static final int REQUEST_CODE_SET_MEASURE_POWER = 105;
     public static final int REQUEST_CODE_SET_TRANSMISSION = 106;
     public static final int REQUEST_CODE_SET_BROADCASTINTERVAL = 107;
+    public static final int REQUEST_CODE_SET_DEVICE_ID = 108;
+    public static final int REQUEST_CODE_SET_IBEACON_NAME = 109;
     // result_code
     public static final int RESULT_CONN_DISCONNECTED = 2;
 }

@@ -381,12 +381,18 @@ public class DeviceInfoActivity extends Activity {
                     ToastUtils.showToast(this, "设备连接断开，请点击右上角按钮重连");
                     return;
                 }
+                intent = new Intent(this, SetDeviceIdActivity.class);
+                intent.putExtra(BeaconConstants.EXTRA_KEY_DEVICE_DEVICE_ID, mBeaconParam.serialID);
+                startActivityForResult(intent, BeaconConstants.REQUEST_CODE_SET_DEVICE_ID);
                 break;
             case R.id.rl_ibeacon_device_name:
                 if (!BeaconModule.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
                     ToastUtils.showToast(this, "设备连接断开，请点击右上角按钮重连");
                     return;
                 }
+                intent = new Intent(this, SetIBeaconNameActivity.class);
+                intent.putExtra(BeaconConstants.EXTRA_KEY_DEVICE_IBEACON_NAME, mBeaconParam.iBeaconName);
+                startActivityForResult(intent, BeaconConstants.REQUEST_CODE_SET_IBEACON_NAME);
                 break;
             case R.id.rl_ibeacon_device_conn_mode:
                 if (!BeaconModule.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
@@ -477,6 +483,20 @@ public class DeviceInfoActivity extends Activity {
                         int broadcastInterval = data.getExtras().getInt(BeaconConstants.EXTRA_KEY_DEVICE_BROADCASTINTERVAL, 0);
                         tvIbeaconBroadcastingInterval.setText(String.valueOf(broadcastInterval));
                         mBeaconParam.broadcastingInterval = broadcastInterval;
+                    }
+                    break;
+                case BeaconConstants.REQUEST_CODE_SET_DEVICE_ID:
+                    if (data != null && data.getExtras() != null) {
+                        String deviceId = data.getExtras().getString(BeaconConstants.EXTRA_KEY_DEVICE_DEVICE_ID);
+                        tvIbeaconSerialID.setText(String.valueOf(deviceId));
+                        mBeaconParam.serialID = deviceId;
+                    }
+                    break;
+                case BeaconConstants.REQUEST_CODE_SET_IBEACON_NAME:
+                    if (data != null && data.getExtras() != null) {
+                        String deviceName = data.getExtras().getString(BeaconConstants.EXTRA_KEY_DEVICE_IBEACON_NAME);
+                        tvIbeaconDeviceName.setText(String.valueOf(deviceName));
+                        mBeaconParam.iBeaconName = deviceName;
                     }
                     break;
             }
