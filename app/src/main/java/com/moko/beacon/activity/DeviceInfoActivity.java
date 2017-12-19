@@ -408,6 +408,8 @@ public class DeviceInfoActivity extends Activity {
                     ToastUtils.showToast(this, "设备连接断开，请点击右上角按钮重连");
                     return;
                 }
+                intent = new Intent(this, SetPasswordActivity.class);
+                startActivityForResult(intent, BeaconConstants.REQUEST_CODE_SET_PASSWORD);
                 break;
             case R.id.rl_ibeacon_device_info:
                 if (!BeaconModule.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
@@ -507,6 +509,12 @@ public class DeviceInfoActivity extends Activity {
                         String connectionMode = data.getExtras().getString(BeaconConstants.EXTRA_KEY_DEVICE_CONNECTION_MODE);
                         tvIbeaconDeviceConnMode.setText("00".equals(connectionMode) ? "YES" : "NO");
                         mBeaconParam.connectionMode = connectionMode;
+                    }
+                    break;
+                case BeaconConstants.REQUEST_CODE_SET_PASSWORD:
+                    if (data != null && data.getExtras() != null) {
+                        String password = data.getExtras().getString(BeaconConstants.EXTRA_KEY_DEVICE_PASSWORD);
+                        mBeaconParam.password = password;
                     }
                     break;
             }

@@ -32,6 +32,7 @@ public class BeaconConstants {
     public static final String EXTRA_KEY_DEVICE_DEVICE_ID = "EXTRA_KEY_DEVICE_DEVICE_ID";
     public static final String EXTRA_KEY_DEVICE_IBEACON_NAME = "EXTRA_KEY_DEVICE_IBEACON_NAME";
     public static final String EXTRA_KEY_DEVICE_CONNECTION_MODE = "EXTRA_KEY_DEVICE_CONNECTION_MODE";
+    public static final String EXTRA_KEY_DEVICE_PASSWORD = "EXTRA_KEY_DEVICE_PASSWORD";
     // request_code
     public static final int REQUEST_CODE_ENABLE_BT = 1001;
     public static final int REQUEST_CODE_DEVICE_INFO = 101;
@@ -44,6 +45,7 @@ public class BeaconConstants {
     public static final int REQUEST_CODE_SET_DEVICE_ID = 108;
     public static final int REQUEST_CODE_SET_IBEACON_NAME = 109;
     public static final int REQUEST_CODE_SET_CONNECTION_MODE = 110;
+    public static final int REQUEST_CODE_SET_PASSWORD = 111;
     // result_code
     public static final int RESULT_CONN_DISCONNECTED = 2;
 }
