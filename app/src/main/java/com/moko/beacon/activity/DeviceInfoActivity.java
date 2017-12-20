@@ -132,8 +132,6 @@ public class DeviceInfoActivity extends Activity {
                     OrderType orderType = (OrderType) intent.getSerializableExtra(BeaconConstants.EXTRA_KEY_RESPONSE_ORDER_TYPE);
                     switch (orderType) {
                         case iBeaconUuid:
-                            // 读取UUID失败
-                            ToastUtils.showToast(DeviceInfoActivity.this, "读取UUID失败");
                             break;
                     }
                 }
@@ -146,6 +144,7 @@ public class DeviceInfoActivity extends Activity {
                             ToastUtils.showToast(DeviceInfoActivity.this, "Connect Success");
                         }
                     }, 1000);
+
                 }
                 if (BeaconConstants.ACTION_RESPONSE_SUCCESS.equals(action)) {
                     OrderType orderType = (OrderType) intent.getSerializableExtra(BeaconConstants.EXTRA_KEY_RESPONSE_ORDER_TYPE);
@@ -256,7 +255,6 @@ public class DeviceInfoActivity extends Activity {
                             break;
                         case changePassword:
                             if ("00".equals(Utils.bytesToHexString(value))) {
-                                LogModule.i("修改密码成功");
                                 changeValue();
                             }
                             break;
@@ -324,7 +322,7 @@ public class DeviceInfoActivity extends Activity {
                 break;
             case R.id.rl_ibeacon_uuid:
                 if (!BeaconModule.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
-                    ToastUtils.showToast(this, "设备连接断开，请点击右上角按钮重连");
+                    ToastUtils.showToast(this, getString(R.string.alert_click_reconnect));
                     return;
                 }
                 intent = new Intent(this, SetUUIDActivity.class);
@@ -333,7 +331,7 @@ public class DeviceInfoActivity extends Activity {
                 break;
             case R.id.rl_ibeacon_major:
                 if (!BeaconModule.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
-                    ToastUtils.showToast(this, "设备连接断开，请点击右上角按钮重连");
+                    ToastUtils.showToast(this, getString(R.string.alert_click_reconnect));
                     return;
                 }
                 intent = new Intent(this, SetMajorActivity.class);
@@ -342,7 +340,7 @@ public class DeviceInfoActivity extends Activity {
                 break;
             case R.id.rl_ibeacon_minor:
                 if (!BeaconModule.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
-                    ToastUtils.showToast(this, "设备连接断开，请点击右上角按钮重连");
+                    ToastUtils.showToast(this, getString(R.string.alert_click_reconnect));
                     return;
                 }
                 intent = new Intent(this, SetMinorActivity.class);
@@ -351,7 +349,7 @@ public class DeviceInfoActivity extends Activity {
                 break;
             case R.id.rl_ibeacon_measure_power:
                 if (!BeaconModule.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
-                    ToastUtils.showToast(this, "设备连接断开，请点击右上角按钮重连");
+                    ToastUtils.showToast(this, getString(R.string.alert_click_reconnect));
                     return;
                 }
                 intent = new Intent(this, SetMeasurePowerActivity.class);
@@ -360,7 +358,7 @@ public class DeviceInfoActivity extends Activity {
                 break;
             case R.id.rl_ibeacon_transmission:
                 if (!BeaconModule.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
-                    ToastUtils.showToast(this, "设备连接断开，请点击右上角按钮重连");
+                    ToastUtils.showToast(this, getString(R.string.alert_click_reconnect));
                     return;
                 }
                 intent = new Intent(this, SetTransmissionActivity.class);
@@ -369,7 +367,7 @@ public class DeviceInfoActivity extends Activity {
                 break;
             case R.id.rl_ibeacon_broadcasting_interval:
                 if (!BeaconModule.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
-                    ToastUtils.showToast(this, "设备连接断开，请点击右上角按钮重连");
+                    ToastUtils.showToast(this, getString(R.string.alert_click_reconnect));
                     return;
                 }
                 intent = new Intent(this, SetBroadcastIntervalActivity.class);
@@ -378,7 +376,7 @@ public class DeviceInfoActivity extends Activity {
                 break;
             case R.id.rl_ibeacon_serialID:
                 if (!BeaconModule.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
-                    ToastUtils.showToast(this, "设备连接断开，请点击右上角按钮重连");
+                    ToastUtils.showToast(this, getString(R.string.alert_click_reconnect));
                     return;
                 }
                 intent = new Intent(this, SetDeviceIdActivity.class);
@@ -387,7 +385,7 @@ public class DeviceInfoActivity extends Activity {
                 break;
             case R.id.rl_ibeacon_device_name:
                 if (!BeaconModule.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
-                    ToastUtils.showToast(this, "设备连接断开，请点击右上角按钮重连");
+                    ToastUtils.showToast(this, getString(R.string.alert_click_reconnect));
                     return;
                 }
                 intent = new Intent(this, SetIBeaconNameActivity.class);
@@ -396,7 +394,7 @@ public class DeviceInfoActivity extends Activity {
                 break;
             case R.id.rl_ibeacon_device_conn_mode:
                 if (!BeaconModule.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
-                    ToastUtils.showToast(this, "设备连接断开，请点击右上角按钮重连");
+                    ToastUtils.showToast(this, getString(R.string.alert_click_reconnect));
                     return;
                 }
                 intent = new Intent(this, SetConnectionModeActivity.class);
@@ -405,7 +403,7 @@ public class DeviceInfoActivity extends Activity {
                 break;
             case R.id.rl_ibeacon_change_password:
                 if (!BeaconModule.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
-                    ToastUtils.showToast(this, "设备连接断开，请点击右上角按钮重连");
+                    ToastUtils.showToast(this, getString(R.string.alert_click_reconnect));
                     return;
                 }
                 intent = new Intent(this, SetPasswordActivity.class);
@@ -413,12 +411,18 @@ public class DeviceInfoActivity extends Activity {
                 break;
             case R.id.rl_ibeacon_device_info:
                 if (!BeaconModule.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
-                    ToastUtils.showToast(this, "设备连接断开，请点击右上角按钮重连");
+                    ToastUtils.showToast(this, getString(R.string.alert_click_reconnect));
                     return;
                 }
                 intent = new Intent(this, SystemInfoActivity.class);
                 intent.putExtra(BeaconConstants.EXTRA_KEY_DEVICE_INFO, mBeaconParam.beaconInfo);
                 startActivity(intent);
+                break;
+            case R.id.rl_ibeacon_mac:
+                ToastUtils.showToast(this, getString(R.string.device_info_cannot_modify));
+                break;
+            case R.id.rl_ibeacon_battery:
+                ToastUtils.showToast(this, getString(R.string.device_info_cannot_modify));
                 break;
         }
     }
@@ -431,7 +435,7 @@ public class DeviceInfoActivity extends Activity {
         mLoadingDialog.setCanceledOnTouchOutside(false);
         mLoadingDialog.setCancelable(false);
         mLoadingDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        mLoadingDialog.setMessage("连接中...");
+        mLoadingDialog.setMessage(getString(R.string.dialog_connecting));
         if (!isFinishing() && mLoadingDialog != null && !mLoadingDialog.isShowing()) {
             mLoadingDialog.show();
         }

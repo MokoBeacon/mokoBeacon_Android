@@ -62,7 +62,7 @@ public class SetIBeaconNameActivity extends Activity {
             if (intent != null) {
                 String action = intent.getAction();
                 if (BeaconConstants.ACTION_CONNECT_DISCONNECTED.equals(action)) {
-                    ToastUtils.showToast(SetIBeaconNameActivity.this, "设备断开连接");
+                    ToastUtils.showToast(SetIBeaconNameActivity.this, getString(R.string.alert_diconnected));
                     SetIBeaconNameActivity.this.setResult(BeaconConstants.RESULT_CONN_DISCONNECTED);
                     finish();
                 }
@@ -71,7 +71,7 @@ public class SetIBeaconNameActivity extends Activity {
                     switch (orderType) {
                         case iBeaconName:
                             // 修改ibeacon name失败
-                            ToastUtils.showToast(SetIBeaconNameActivity.this, "修改ibeacon name失败");
+                            ToastUtils.showToast(SetIBeaconNameActivity.this, getString(R.string.read_data_failed));
                             finish();
                             break;
                     }
@@ -81,7 +81,6 @@ public class SetIBeaconNameActivity extends Activity {
                     switch (orderType) {
                         case iBeaconName:
                             // 修改ibeacon name成功
-                            ToastUtils.showToast(SetIBeaconNameActivity.this, "修改ibeacon name成功");
                             Intent i = new Intent();
                             i.putExtra(BeaconConstants.EXTRA_KEY_DEVICE_IBEACON_NAME, etIBeaconName.getText().toString());
                             SetIBeaconNameActivity.this.setResult(RESULT_OK, i);
@@ -122,11 +121,11 @@ public class SetIBeaconNameActivity extends Activity {
                 break;
             case R.id.iv_save:
                 if (TextUtils.isEmpty(etIBeaconName.getText().toString())) {
-                    ToastUtils.showToast(this, "ibeacon name is empty");
+                    ToastUtils.showToast(this, getString(R.string.alert_data_cannot_null));
                     return;
                 }
                 if (etIBeaconName.getText().toString().length() > 10){
-                    ToastUtils.showToast(this, "ibeacon name长度不能超过10");
+                    ToastUtils.showToast(this, getString(R.string.tips_ibeacon_name));
                     return;
                 }
                 mBeaconService.sendOrder(mBeaconService.setIBeaconName(etIBeaconName.getText().toString()));

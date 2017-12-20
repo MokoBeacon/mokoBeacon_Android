@@ -6,9 +6,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
+import android.widget.TextView;
 
 import com.moko.beacon.R;
+import com.moko.beacon.utils.Utils;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -19,13 +22,15 @@ import butterknife.OnClick;
  * @ClassPath com.moko.beacon.activity.AboutActivity
  */
 public class AboutActivity extends Activity {
-
+    @Bind(R.id.tv_soft_version)
+    TextView tvSoftVersion;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
         ButterKnife.bind(this);
+        tvSoftVersion.setText(getString(R.string.version_info, Utils.getVersionInfo(this)));
     }
 
     @OnClick({R.id.tv_back, R.id.tv_moko_url})

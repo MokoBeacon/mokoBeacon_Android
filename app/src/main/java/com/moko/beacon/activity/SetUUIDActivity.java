@@ -100,7 +100,7 @@ public class SetUUIDActivity extends Activity {
             if (intent != null) {
                 String action = intent.getAction();
                 if (BeaconConstants.ACTION_CONNECT_DISCONNECTED.equals(action)) {
-                    ToastUtils.showToast(SetUUIDActivity.this, "设备断开连接");
+                    ToastUtils.showToast(SetUUIDActivity.this, getString(R.string.alert_diconnected));
                     SetUUIDActivity.this.setResult(BeaconConstants.RESULT_CONN_DISCONNECTED);
                     finish();
                 }
@@ -109,7 +109,7 @@ public class SetUUIDActivity extends Activity {
                     switch (orderType) {
                         case iBeaconUuid:
                             // 修改UUID失败
-                            ToastUtils.showToast(SetUUIDActivity.this, "修改UUID失败");
+                            ToastUtils.showToast(SetUUIDActivity.this, getString(R.string.read_data_failed));
                             finish();
                             break;
                     }
@@ -122,7 +122,6 @@ public class SetUUIDActivity extends Activity {
                     switch (orderType) {
                         case iBeaconUuid:
                             // 修改UUID成功
-                            ToastUtils.showToast(SetUUIDActivity.this, "修改UUID成功");
                             Intent i = new Intent();
                             i.putExtra(BeaconConstants.EXTRA_KEY_DEVICE_UUID, etSeletcedUuid.getText().toString());
                             SetUUIDActivity.this.setResult(RESULT_OK, i);
@@ -164,7 +163,7 @@ public class SetUUIDActivity extends Activity {
             case R.id.iv_save:
                 String uuid = etSeletcedUuid.getText().toString();
                 if (TextUtils.isEmpty(uuid)) {
-                    ToastUtils.showToast(this, "uuid is empty");
+                    ToastUtils.showToast(this, getString(R.string.alert_data_cannot_null));
                     return;
                 }
                 if (isUUID(uuid)) {

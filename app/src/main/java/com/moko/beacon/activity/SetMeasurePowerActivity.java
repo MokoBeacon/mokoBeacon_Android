@@ -61,7 +61,7 @@ public class SetMeasurePowerActivity extends Activity {
             if (intent != null) {
                 String action = intent.getAction();
                 if (BeaconConstants.ACTION_CONNECT_DISCONNECTED.equals(action)) {
-                    ToastUtils.showToast(SetMeasurePowerActivity.this, "设备断开连接");
+                    ToastUtils.showToast(SetMeasurePowerActivity.this, getString(R.string.alert_diconnected));
                     SetMeasurePowerActivity.this.setResult(BeaconConstants.RESULT_CONN_DISCONNECTED);
                     finish();
                 }
@@ -70,7 +70,7 @@ public class SetMeasurePowerActivity extends Activity {
                     switch (orderType) {
                         case measurePower:
                             // 修改measure power失败
-                            ToastUtils.showToast(SetMeasurePowerActivity.this, "修改measure power失败");
+                            ToastUtils.showToast(SetMeasurePowerActivity.this, getString(R.string.read_data_failed));
                             finish();
                             break;
                     }
@@ -80,7 +80,6 @@ public class SetMeasurePowerActivity extends Activity {
                     switch (orderType) {
                         case measurePower:
                             // 修改measure power成功
-                            ToastUtils.showToast(SetMeasurePowerActivity.this, "修改measure power成功");
                             Intent i = new Intent();
                             i.putExtra(BeaconConstants.EXTRA_KEY_DEVICE_MEASURE_POWER, Integer.valueOf(etMeasurePower.getText().toString()));
                             SetMeasurePowerActivity.this.setResult(RESULT_OK, i);
@@ -121,7 +120,12 @@ public class SetMeasurePowerActivity extends Activity {
                 break;
             case R.id.iv_save:
                 if (TextUtils.isEmpty(etMeasurePower.getText().toString())) {
-                    ToastUtils.showToast(this, "measure power is empty");
+                    ToastUtils.showToast(this, getString(R.string.alert_data_cannot_null));
+                    return;
+                }
+                int power = Integer.valueOf(etMeasurePower.getText().toString());
+                if (power < 0 || power > 255) {
+                    ToastUtils.showToast(this, getString(R.string.alert_measure_power_range));
                     return;
                 }
                 mBeaconService.sendOrder(mBeaconService.setMeasurePower(Integer.valueOf(etMeasurePower.getText().toString())));

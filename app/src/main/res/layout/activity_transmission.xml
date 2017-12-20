@@ -25,7 +25,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="广播功率"
+            android:text="@string/device_info_transmission"
             android:textColor="@color/white_ffffff"
             android:textSize="17sp" />
 
@@ -51,7 +51,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="26dp"
             android:layout_marginTop="20dp"
-            android:text="请选择档位"
+            android:text="@string/please_select_grade"
             android:textColor="@color/black_333333"
             android:textSize="13sp" />
 
@@ -76,7 +76,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="11dp"
-                    android:text="最高档"
+                    android:text="@string/transmission_grade_0"
                     android:textColor="@color/blue_5691fc"
                     android:textSize="15sp" />
 
@@ -84,7 +84,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="功率：-4dBm"
+                    android:text="@string/transmission_grade_0_power"
                     android:textColor="@color/grey_a6a6a6"
                     android:textSize="11sp" />
 
@@ -92,7 +92,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="覆盖半径：约90米"
+                    android:text="@string/transmission_grade_0_range"
                     android:textColor="@color/grey_a6a6a6"
                     android:textSize="11sp" />
             </LinearLayout>
@@ -115,7 +115,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="11dp"
-                    android:text="1档"
+                    android:text="@string/transmission_grade_1"
                     android:textColor="@color/blue_5691fc"
                     android:textSize="15sp" />
 
@@ -123,7 +123,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="功率：0dBm"
+                    android:text="@string/transmission_grade_1_power"
                     android:textColor="@color/grey_a6a6a6"
                     android:textSize="11sp" />
 
@@ -131,7 +131,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="覆盖半径：约50米"
+                    android:text="@string/transmission_grade_1_range"
                     android:textColor="@color/grey_a6a6a6"
                     android:textSize="11sp" />
             </LinearLayout>
@@ -154,7 +154,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="11dp"
-                    android:text="2档"
+                    android:text="@string/transmission_grade_2"
                     android:textColor="@color/blue_5691fc"
                     android:textSize="15sp" />
 
@@ -162,7 +162,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="功率：-4dBm"
+                    android:text="@string/transmission_grade_2_power"
                     android:textColor="@color/grey_a6a6a6"
                     android:textSize="11sp" />
 
@@ -170,7 +170,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="覆盖半径：约27米"
+                    android:text="@string/transmission_grade_2_range"
                     android:textColor="@color/grey_a6a6a6"
                     android:textSize="11sp" />
             </LinearLayout>
@@ -198,7 +198,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="11dp"
-                    android:text="3档"
+                    android:text="@string/transmission_grade_3"
                     android:textColor="@color/blue_5691fc"
                     android:textSize="15sp" />
 
@@ -206,7 +206,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="功率：-8dBm"
+                    android:text="@string/transmission_grade_3_power"
                     android:textColor="@color/grey_a6a6a6"
                     android:textSize="11sp" />
 
@@ -214,7 +214,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="覆盖半径：约22米"
+                    android:text="@string/transmission_grade_3_range"
                     android:textColor="@color/grey_a6a6a6"
                     android:textSize="11sp" />
             </LinearLayout>
@@ -237,7 +237,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="11dp"
-                    android:text="4档"
+                    android:text="@string/transmission_grade_4"
                     android:textColor="@color/blue_5691fc"
                     android:textSize="15sp" />
 
@@ -245,7 +245,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="功率：-12dBm"
+                    android:text="@string/transmission_grade_4_power"
                     android:textColor="@color/grey_a6a6a6"
                     android:textSize="11sp" />
 
@@ -253,7 +253,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="覆盖半径：约15米"
+                    android:text="@string/transmission_grade_4_range"
                     android:textColor="@color/grey_a6a6a6"
                     android:textSize="11sp" />
             </LinearLayout>
@@ -276,7 +276,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="11dp"
-                    android:text="5档"
+                    android:text="@string/transmission_grade_5"
                     android:textColor="@color/blue_5691fc"
                     android:textSize="15sp" />
 
@@ -284,7 +284,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="功率：-16dBm"
+                    android:text="@string/transmission_grade_5_power"
                     android:textColor="@color/grey_a6a6a6"
                     android:textSize="11sp" />
 
@@ -292,7 +292,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="覆盖半径：约10米"
+                    android:text="@string/transmission_grade_5_range"
                     android:textColor="@color/grey_a6a6a6"
                     android:textSize="11sp" />
             </LinearLayout>
@@ -320,7 +320,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="11dp"
-                    android:text="6档"
+                    android:text="@string/transmission_grade_6"
                     android:textColor="@color/blue_5691fc"
                     android:textSize="15sp" />
 
@@ -328,7 +328,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="功率：-20dBm"
+                    android:text="@string/transmission_grade_6_power"
                     android:textColor="@color/grey_a6a6a6"
                     android:textSize="11sp" />
 
@@ -336,7 +336,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="覆盖半径：约7米"
+                    android:text="@string/transmission_grade_6_range"
                     android:textColor="@color/grey_a6a6a6"
                     android:textSize="11sp" />
             </LinearLayout>
@@ -359,7 +359,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="11dp"
-                    android:text="7档"
+                    android:text="@string/transmission_grade_7"
                     android:textColor="@color/blue_5691fc"
                     android:textSize="15sp" />
 
@@ -367,7 +367,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="功率：-30dBm"
+                    android:text="@string/transmission_grade_7_power"
                     android:textColor="@color/grey_a6a6a6"
                     android:textSize="11sp" />
 
@@ -375,7 +375,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="覆盖半径：约2米"
+                    android:text="@string/transmission_grade_7_range"
                     android:textColor="@color/grey_a6a6a6"
                     android:textSize="11sp" />
             </LinearLayout>
@@ -398,7 +398,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="11dp"
-                    android:text="8档"
+                    android:text="@string/transmission_grade_8"
                     android:textColor="@color/blue_5691fc"
                     android:textSize="15sp" />
 
@@ -406,7 +406,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="功率：-40dBm"
+                    android:text="@string/transmission_grade_8_power"
                     android:textColor="@color/grey_a6a6a6"
                     android:textSize="11sp" />
 
@@ -414,7 +414,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="覆盖半径：约1米"
+                    android:text="@string/transmission_grade_8_range"
                     android:textColor="@color/grey_a6a6a6"
                     android:textSize="11sp" />
             </LinearLayout>
@@ -426,7 +426,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="25dp"
             android:layout_marginTop="20dp"
-            android:text="提示：广播功率设置越高，信号覆盖范围越大耗电量也越大，修改参数后，重启生效"
+            android:text="@string/tips_transmission"
             android:textColor="@color/grey_737373"
             android:textSize="12sp" />
     </LinearLayout>

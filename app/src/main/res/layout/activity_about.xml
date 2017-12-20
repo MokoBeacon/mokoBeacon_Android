@@ -25,7 +25,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="关于我们"
+            android:text="@string/about_title"
             android:textColor="@color/white_ffffff"
             android:textSize="17sp" />
     </RelativeLayout>
@@ -45,12 +45,13 @@
             android:src="@drawable/icon" />
 
         <TextView
+            android:id="@+id/tv_soft_version"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/moko_icon"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="16dp"
-            android:text="@string/about_version"
+            android:text=""
             android:textColor="@color/black_373737"
             android:textSize="16sp" />
 

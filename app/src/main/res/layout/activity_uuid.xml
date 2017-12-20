@@ -25,7 +25,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="UUID"
+            android:text="@string/device_info_uuid"
             android:textColor="@color/white_ffffff"
             android:textSize="17sp" />
 
@@ -83,7 +83,7 @@
                     android:id="@+id/airLocate_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="AirLocate"
+                    android:text="@string/uuid_airlocate"
                     android:textColor="@color/blue_5691fc"
                     android:textSize="15sp" />
 
@@ -124,7 +124,7 @@
                     android:id="@+id/wechat_1_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="微信"
+                    android:text="@string/uuid_wechat"
                     android:textColor="@color/blue_5691fc"
                     android:textSize="15sp" />
 
@@ -164,7 +164,7 @@
                     android:id="@+id/wechat_2_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="微信"
+                    android:text="@string/uuid_wechat"
                     android:textColor="@color/blue_5691fc"
                     android:textSize="15sp" />
 
@@ -204,7 +204,7 @@
                     android:id="@+id/estimote_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Estimote"
+                    android:text="@string/uuid_estimote"
                     android:textColor="@color/blue_5691fc"
                     android:textSize="15sp" />
 
@@ -244,7 +244,7 @@
                     android:id="@+id/uuid_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="UUID"
+                    android:text="@string/device_info_uuid"
                     android:textColor="@color/blue_5691fc"
                     android:textSize="15sp" />
 

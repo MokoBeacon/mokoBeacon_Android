@@ -81,7 +81,7 @@ public class SetConnectionModeActivity extends Activity {
             if (intent != null) {
                 String action = intent.getAction();
                 if (BeaconConstants.ACTION_CONNECT_DISCONNECTED.equals(action)) {
-                    ToastUtils.showToast(SetConnectionModeActivity.this, "设备断开连接");
+                    ToastUtils.showToast(SetConnectionModeActivity.this, getString(R.string.alert_diconnected));
                     SetConnectionModeActivity.this.setResult(BeaconConstants.RESULT_CONN_DISCONNECTED);
                     finish();
                 }
@@ -90,7 +90,7 @@ public class SetConnectionModeActivity extends Activity {
                     switch (orderType) {
                         case connectionMode:
                             // 修改连接模式失败
-                            ToastUtils.showToast(SetConnectionModeActivity.this, "修改连接模式失败");
+                            ToastUtils.showToast(SetConnectionModeActivity.this, getString(R.string.read_data_failed));
                             finish();
                             break;
                     }
@@ -100,7 +100,6 @@ public class SetConnectionModeActivity extends Activity {
                     switch (orderType) {
                         case connectionMode:
                             // 修改连接模式成功
-                            ToastUtils.showToast(SetConnectionModeActivity.this, "修改连接模式成功");
                             Intent i = new Intent();
                             i.putExtra(BeaconConstants.EXTRA_KEY_DEVICE_CONNECTION_MODE, connectMode);
                             SetConnectionModeActivity.this.setResult(RESULT_OK, i);

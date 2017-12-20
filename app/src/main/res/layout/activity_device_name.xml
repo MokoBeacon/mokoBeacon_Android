@@ -25,7 +25,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="设备名称"
+            android:text="@string/device_info_ibeacon_name"
             android:textColor="@color/white_ffffff"
             android:textSize="17sp" />
 
@@ -70,7 +70,7 @@
             android:layout_marginLeft="25dp"
             android:layout_marginRight="25dp"
             android:layout_marginTop="20dp"
-            android:text="注：beacon广播的名字，只能是字母、数字和下划线，最多10个字符"
+            android:text="@string/tips_ibeacon_name"
             android:textColor="@color/grey_737373"
             android:textSize="12sp" />
     </LinearLayout>

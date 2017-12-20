@@ -25,7 +25,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="系统信息"
+            android:text="@string/device_info_system"
             android:textColor="@color/white_ffffff"
             android:textSize="17sp" />
     </RelativeLayout>
@@ -51,7 +51,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:text="制造商"
+                    android:text="@string/system_firmname"
                     android:textColor="@color/black_333333"
                     android:textSize="15sp" />
 
@@ -78,7 +78,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:text="产品型号"
+                    android:text="@string/system_device_name"
                     android:textColor="@color/black_333333"
                     android:textSize="15sp" />
 
@@ -105,7 +105,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:text="生产日期"
+                    android:text="@string/system_ibeacon_date"
                     android:textColor="@color/black_333333"
                     android:textSize="15sp" />
 
@@ -132,7 +132,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:text="MAC地址"
+                    android:text="@string/device_info_mac"
                     android:textColor="@color/black_333333"
                     android:textSize="15sp" />
 
@@ -159,7 +159,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:text="芯片型号"
+                    android:text="@string/system_chip_mode"
                     android:textColor="@color/black_333333"
                     android:textSize="15sp" />
 
@@ -186,7 +186,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:text="硬件版本"
+                    android:text="@string/system_hardware_version"
                     android:textColor="@color/black_333333"
                     android:textSize="15sp" />
 
@@ -213,7 +213,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:text="固件版本"
+                    android:text="@string/system_firmware_version"
                     android:textColor="@color/black_333333"
                     android:textSize="15sp" />
 
@@ -240,7 +240,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:text="运行时间"
+                    android:text="@string/system_ibeacon_runtime"
                     android:textColor="@color/black_333333"
                     android:textSize="15sp" />
 
@@ -267,7 +267,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:text="系统标示"
+                    android:text="@string/system_mark"
                     android:textColor="@color/black_333333"
                     android:textSize="15sp" />
 
@@ -294,7 +294,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:text="IEEE标准信息"
+                    android:text="@string/system_ieee_info"
                     android:textColor="@color/black_333333"
                     android:textSize="15sp" />
 

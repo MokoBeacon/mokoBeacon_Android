@@ -65,7 +65,7 @@ public class SetDeviceIdActivity extends Activity {
             if (intent != null) {
                 String action = intent.getAction();
                 if (BeaconConstants.ACTION_CONNECT_DISCONNECTED.equals(action)) {
-                    ToastUtils.showToast(SetDeviceIdActivity.this, "设备断开连接");
+                    ToastUtils.showToast(SetDeviceIdActivity.this, getString(R.string.alert_diconnected));
                     SetDeviceIdActivity.this.setResult(BeaconConstants.RESULT_CONN_DISCONNECTED);
                     finish();
                 }
@@ -74,7 +74,7 @@ public class SetDeviceIdActivity extends Activity {
                     switch (orderType) {
                         case serialID:
                             // 修改deviceId失败
-                            ToastUtils.showToast(SetDeviceIdActivity.this, "修改deviceId失败");
+                            ToastUtils.showToast(SetDeviceIdActivity.this, getString(R.string.read_data_failed));
                             finish();
                             break;
                     }
@@ -84,7 +84,6 @@ public class SetDeviceIdActivity extends Activity {
                     switch (orderType) {
                         case serialID:
                             // 修改deviceId成功
-                            ToastUtils.showToast(SetDeviceIdActivity.this, "修改deviceId成功");
                             Intent i = new Intent();
                             i.putExtra(BeaconConstants.EXTRA_KEY_DEVICE_DEVICE_ID, etDeviceId.getText().toString());
                             SetDeviceIdActivity.this.setResult(RESULT_OK, i);
@@ -125,11 +124,11 @@ public class SetDeviceIdActivity extends Activity {
                 break;
             case R.id.iv_save:
                 if (TextUtils.isEmpty(etDeviceId.getText().toString())) {
-                    ToastUtils.showToast(this, "deviceId is empty");
+                    ToastUtils.showToast(this, getString(R.string.alert_data_cannot_null));
                     return;
                 }
-                if (etDeviceId.getText().toString().length() > 5){
-                    ToastUtils.showToast(this, "deviceId长度不能超过5");
+                if (etDeviceId.getText().toString().length() > 5) {
+                    ToastUtils.showToast(this, getString(R.string.tips_device_id));
                     return;
                 }
                 mBeaconService.sendOrder(mBeaconService.setSerialID(etDeviceId.getText().toString()));

@@ -90,7 +90,7 @@ public class SetMinorActivity extends Activity {
             if (intent != null) {
                 String action = intent.getAction();
                 if (BeaconConstants.ACTION_CONNECT_DISCONNECTED.equals(action)) {
-                    ToastUtils.showToast(SetMinorActivity.this, "设备断开连接");
+                    ToastUtils.showToast(SetMinorActivity.this, getString(R.string.alert_diconnected));
                     SetMinorActivity.this.setResult(BeaconConstants.RESULT_CONN_DISCONNECTED);
                     finish();
                 }
@@ -99,7 +99,7 @@ public class SetMinorActivity extends Activity {
                     switch (orderType) {
                         case minor:
                             // 修改minor失败
-                            ToastUtils.showToast(SetMinorActivity.this, "修改minor失败");
+                            ToastUtils.showToast(SetMinorActivity.this, getString(R.string.read_data_failed));
                             finish();
                             break;
                     }
@@ -109,7 +109,6 @@ public class SetMinorActivity extends Activity {
                     switch (orderType) {
                         case minor:
                             // 修改minor成功
-                            ToastUtils.showToast(SetMinorActivity.this, "修改minor成功");
                             Intent i = new Intent();
                             i.putExtra(BeaconConstants.EXTRA_KEY_DEVICE_MINOR, Integer.valueOf(etMinor.getText().toString()));
                             SetMinorActivity.this.setResult(RESULT_OK, i);
@@ -150,11 +149,11 @@ public class SetMinorActivity extends Activity {
                 break;
             case R.id.iv_save:
                 if (TextUtils.isEmpty(etMinor.getText().toString())) {
-                    ToastUtils.showToast(this, "minor is empty");
+                    ToastUtils.showToast(this, getString(R.string.alert_data_cannot_null));
                     return;
                 }
                 if (Integer.valueOf(etMinor.getText().toString()) > 65535 || Integer.valueOf(etMinor.getText().toString()) < 0) {
-                    ToastUtils.showToast(this, "数值范围0-65535");
+                    ToastUtils.showToast(this, getString(R.string.alert_minor_range));
                     return;
                 }
                 mBeaconService.sendOrder(mBeaconService.setMinor(Integer.valueOf(etMinor.getText().toString())));

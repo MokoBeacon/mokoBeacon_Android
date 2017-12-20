@@ -63,7 +63,7 @@ public class SetPasswordActivity extends Activity {
             if (intent != null) {
                 String action = intent.getAction();
                 if (BeaconConstants.ACTION_CONNECT_DISCONNECTED.equals(action)) {
-                    ToastUtils.showToast(SetPasswordActivity.this, "设备断开连接");
+                    ToastUtils.showToast(SetPasswordActivity.this, getString(R.string.alert_diconnected));
                     SetPasswordActivity.this.setResult(BeaconConstants.RESULT_CONN_DISCONNECTED);
                     finish();
                 }
@@ -72,7 +72,7 @@ public class SetPasswordActivity extends Activity {
                     switch (orderType) {
                         case changePassword:
                             // 修改密码失败
-                            ToastUtils.showToast(SetPasswordActivity.this, "修改密码失败");
+                            ToastUtils.showToast(SetPasswordActivity.this, getString(R.string.read_data_failed));
                             finish();
                             break;
                     }
@@ -82,7 +82,6 @@ public class SetPasswordActivity extends Activity {
                     switch (orderType) {
                         case changePassword:
                             // 修改密码成功
-                            ToastUtils.showToast(SetPasswordActivity.this, "修改密码成功");
                             Intent i = new Intent();
                             i.putExtra(BeaconConstants.EXTRA_KEY_DEVICE_PASSWORD, etPassword.getText().toString());
                             SetPasswordActivity.this.setResult(RESULT_OK, i);
@@ -125,15 +124,15 @@ public class SetPasswordActivity extends Activity {
                 String password = etPassword.getText().toString();
                 String passwordConfirm = etPasswordConfirm.getText().toString();
                 if (TextUtils.isEmpty(password) || TextUtils.isEmpty(passwordConfirm)) {
-                    ToastUtils.showToast(SetPasswordActivity.this, "密码不能为空");
+                    ToastUtils.showToast(SetPasswordActivity.this, getString(R.string.main_password_null));
                     return;
                 }
                 if (!password.equals(passwordConfirm)) {
-                    ToastUtils.showToast(SetPasswordActivity.this, "密码必须一致");
+                    ToastUtils.showToast(SetPasswordActivity.this, getString(R.string.password_error));
                     return;
                 }
                 if (passwordConfirm.length() != 8) {
-                    ToastUtils.showToast(SetPasswordActivity.this, "密码长度必须为8");
+                    ToastUtils.showToast(SetPasswordActivity.this, getString(R.string.main_password_length));
                     return;
                 }
                 mBeaconService.sendOrder(mBeaconService.setChangePassword(passwordConfirm));

@@ -63,7 +63,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:text="设备电量"
+                    android:text="@string/device_info_battery"
                     android:textColor="@color/black_333333"
                     android:textSize="15sp" />
 
@@ -92,7 +92,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:text="UUID"
+                    android:text="@string/device_info_uuid"
                     android:textColor="@color/black_333333"
                     android:textSize="15sp" />
 
@@ -105,7 +105,7 @@
                     android:drawableRight="@drawable/right_arrow"
                     android:gravity="center"
                     android:singleLine="true"
-                    android:text="sdasdasdasdasdasdasdasdasdasdasdasdasd"
+                    android:text=""
                     android:textColor="@color/black_333333"
                     android:textSize="15sp" />
 
@@ -123,7 +123,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:text="MAJOR"
+                    android:text="@string/device_info_major"
                     android:textColor="@color/black_333333"
                     android:textSize="15sp" />
 
@@ -153,7 +153,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:text="MINOR"
+                    android:text="@string/device_info_minor"
                     android:textColor="@color/black_333333"
                     android:textSize="15sp" />
 
@@ -183,7 +183,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:text="校验距离"
+                    android:text="@string/device_info_measure_power"
                     android:textColor="@color/black_333333"
                     android:textSize="15sp" />
 
@@ -213,7 +213,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:text="广播功率"
+                    android:text="@string/device_info_transmission"
                     android:textColor="@color/black_333333"
                     android:textSize="15sp" />
 
@@ -243,7 +243,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:text="广播周期"
+                    android:text="@string/device_info_broadcast_interval"
                     android:textColor="@color/black_333333"
                     android:textSize="15sp" />
 
@@ -273,7 +273,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:text="设备ID"
+                    android:text="@string/device_info_device_id"
                     android:textColor="@color/black_333333"
                     android:textSize="15sp" />
 
@@ -303,7 +303,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:text="MAC地址"
+                    android:text="@string/device_info_mac"
                     android:textColor="@color/black_333333"
                     android:textSize="15sp" />
 
@@ -332,7 +332,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:text="设备名称"
+                    android:text="@string/device_info_ibeacon_name"
                     android:textColor="@color/black_333333"
                     android:textSize="15sp" />
 
@@ -362,7 +362,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:text="连接模式"
+                    android:text="@string/device_info_connection_mode"
                     android:textColor="@color/black_333333"
                     android:textSize="15sp" />
 
@@ -392,7 +392,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:text="修改重启密码"
+                    android:text="@string/device_info_password"
                     android:textColor="@color/black_333333"
                     android:textSize="15sp" />
 
@@ -422,7 +422,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:text="系统信息"
+                    android:text="@string/device_info_system"
                     android:textColor="@color/black_333333"
                     android:textSize="15sp" />
 

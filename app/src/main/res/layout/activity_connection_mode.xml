@@ -25,7 +25,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="连接模式"
+            android:text="@string/device_info_connection_mode"
             android:textColor="@color/white_ffffff"
             android:textSize="17sp" />
 
@@ -116,7 +116,7 @@
             android:layout_marginLeft="25dp"
             android:layout_marginRight="25dp"
             android:layout_marginTop="20dp"
-            android:text="注：YES代表手机可以与iBeacon连接，NO代表不能与iBeacon连接。正常情况下不能去修改这个值，修改参数后，重连后生效。"
+            android:text="@string/tips_connection_mode"
             android:textColor="@color/grey_737373"
             android:textSize="12sp" />
     </LinearLayout>

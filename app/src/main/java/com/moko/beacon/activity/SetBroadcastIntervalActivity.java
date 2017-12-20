@@ -97,7 +97,7 @@ public class SetBroadcastIntervalActivity extends Activity {
             if (intent != null) {
                 String action = intent.getAction();
                 if (BeaconConstants.ACTION_CONNECT_DISCONNECTED.equals(action)) {
-                    ToastUtils.showToast(SetBroadcastIntervalActivity.this, "设备断开连接");
+                    ToastUtils.showToast(SetBroadcastIntervalActivity.this, getString(R.string.alert_diconnected));
                     SetBroadcastIntervalActivity.this.setResult(BeaconConstants.RESULT_CONN_DISCONNECTED);
                     finish();
                 }
@@ -106,7 +106,7 @@ public class SetBroadcastIntervalActivity extends Activity {
                     switch (orderType) {
                         case broadcastingInterval:
                             // 修改broadcastingInterval失败
-                            ToastUtils.showToast(SetBroadcastIntervalActivity.this, "修改broadcastingInterval失败");
+                            ToastUtils.showToast(SetBroadcastIntervalActivity.this, getString(R.string.read_data_failed));
                             finish();
                             break;
                     }
@@ -116,7 +116,6 @@ public class SetBroadcastIntervalActivity extends Activity {
                     switch (orderType) {
                         case broadcastingInterval:
                             // 修改broadcastingInterval成功
-                            ToastUtils.showToast(SetBroadcastIntervalActivity.this, "修改broadcastingInterval成功");
                             Intent i = new Intent();
                             i.putExtra(BeaconConstants.EXTRA_KEY_DEVICE_BROADCASTINTERVAL, Integer.parseInt(etBroadcastInterval.getText().toString()));
                             SetBroadcastIntervalActivity.this.setResult(RESULT_OK, i);
@@ -161,12 +160,12 @@ public class SetBroadcastIntervalActivity extends Activity {
             case R.id.iv_save:
                 String broadcastIntervalStr = etBroadcastInterval.getText().toString();
                 if (TextUtils.isEmpty(broadcastIntervalStr)) {
-                    ToastUtils.showToast(this, "broadcast interval is empty");
+                    ToastUtils.showToast(this, getString(R.string.alert_data_cannot_null));
                     return;
                 }
                 int broadcastIntervalValue = Integer.parseInt(broadcastIntervalStr);
                 if (broadcastIntervalValue > 10 || broadcastIntervalValue <= 0) {
-                    ToastUtils.showToast(this, "广播周期范围是100ms-1000ms");
+                    ToastUtils.showToast(this, getString(R.string.alert_broadcast_interval_range));
                     return;
                 }
                 mBeaconService.sendOrder(mBeaconService.setBroadcastingInterval(broadcastIntervalValue));

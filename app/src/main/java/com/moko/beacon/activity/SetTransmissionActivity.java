@@ -92,7 +92,7 @@ public class SetTransmissionActivity extends Activity {
             if (intent != null) {
                 String action = intent.getAction();
                 if (BeaconConstants.ACTION_CONNECT_DISCONNECTED.equals(action)) {
-                    ToastUtils.showToast(SetTransmissionActivity.this, "设备断开连接");
+                    ToastUtils.showToast(SetTransmissionActivity.this, getString(R.string.alert_diconnected));
                     SetTransmissionActivity.this.setResult(BeaconConstants.RESULT_CONN_DISCONNECTED);
                     finish();
                 }
@@ -101,7 +101,7 @@ public class SetTransmissionActivity extends Activity {
                     switch (orderType) {
                         case transmission:
                             // 修改transmission失败
-                            ToastUtils.showToast(SetTransmissionActivity.this, "修改transmission失败");
+                            ToastUtils.showToast(SetTransmissionActivity.this, getString(R.string.read_data_failed));
                             finish();
                             break;
                     }
@@ -111,7 +111,6 @@ public class SetTransmissionActivity extends Activity {
                     switch (orderType) {
                         case transmission:
                             // 修改transmission成功
-                            ToastUtils.showToast(SetTransmissionActivity.this, "修改transmission成功");
                             Intent i = new Intent();
                             i.putExtra(BeaconConstants.EXTRA_KEY_DEVICE_TRANSMISSION, transmissionGrade);
                             SetTransmissionActivity.this.setResult(RESULT_OK, i);

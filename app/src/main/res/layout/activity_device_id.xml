@@ -25,7 +25,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="设备ID"
+            android:text="@string/device_info_device_id"
             android:textColor="@color/white_ffffff"
             android:textSize="17sp" />
 
@@ -70,7 +70,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="25dp"
             android:layout_marginTop="20dp"
-            android:text="注：beacon设备广播出来的设备ID，最大5个字符"
+            android:text="@string/tips_device_id"
             android:textColor="@color/grey_737373"
             android:textSize="12sp" />
     </LinearLayout>

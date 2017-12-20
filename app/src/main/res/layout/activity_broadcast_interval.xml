@@ -25,7 +25,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="广播周期"
+            android:text="@string/device_info_broadcast_interval"
             android:textColor="@color/white_ffffff"
             android:textSize="17sp" />
 
@@ -51,7 +51,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:gravity="center_horizontal"
-            android:text="请选择档位"
+            android:text="@string/please_select_grade"
             android:textColor="@color/black_333333"
             android:textSize="13sp" />
 
@@ -277,7 +277,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginRight="10dp"
                 android:layout_toLeftOf="@id/et_broadcast_interval"
-                android:text="输入："
+                android:text="@string/broadcast_interval_input"
                 android:textColor="@color/blue_5691fc"
                 android:textSize="15sp" />
 
@@ -287,7 +287,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="18dp"
                 android:layout_toRightOf="@id/et_broadcast_interval"
-                android:text="单位：100ms"
+                android:text="@string/broadcast_interval_unit"
                 android:textColor="@color/grey_737373"
                 android:textSize="13sp" />
 
@@ -299,7 +299,7 @@
             android:layout_marginLeft="25dp"
             android:layout_marginRight="25dp"
             android:layout_marginTop="40dp"
-            android:text="提示：广播功率设置越高，信号覆盖范围越大耗电量也越大，修改参数后，重启生效"
+            android:text="@string/tips_broadcast_interval"
             android:textColor="@color/grey_737373"
             android:textSize="12sp" />
     </LinearLayout>

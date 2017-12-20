@@ -92,7 +92,7 @@ public class SystemInfoActivity extends Activity {
             if (intent != null) {
                 String action = intent.getAction();
                 if (BeaconConstants.ACTION_CONNECT_DISCONNECTED.equals(action)) {
-                    ToastUtils.showToast(SystemInfoActivity.this, "设备断开连接");
+                    ToastUtils.showToast(SystemInfoActivity.this, getString(R.string.alert_diconnected));
                     finish();
                 }
             }

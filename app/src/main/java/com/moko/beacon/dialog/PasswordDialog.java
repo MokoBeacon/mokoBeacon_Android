@@ -48,11 +48,11 @@ public class PasswordDialog extends BaseDialog {
             case R.id.tv_password_ensure:
                 dismiss();
                 if (TextUtils.isEmpty(etPassword.getText().toString())) {
-                    ToastUtils.showToast(getContext(), "密码不能为空");
+                    ToastUtils.showToast(getContext(), getContext().getString(R.string.main_password_null));
                     return;
                 }
                 if (etPassword.getText().toString().length() != 8) {
-                    ToastUtils.showToast(getContext(), "密码长度8位");
+                    ToastUtils.showToast(getContext(), getContext().getString(R.string.main_password_length));
                     return;
                 }
                 passwordClickListener.onEnsureClicked(etPassword.getText().toString());

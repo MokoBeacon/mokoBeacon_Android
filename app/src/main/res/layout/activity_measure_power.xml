@@ -25,7 +25,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="校验距离"
+            android:text="@string/device_info_measure_power"
             android:textColor="@color/white_ffffff"
             android:textSize="17sp" />
 
@@ -64,7 +64,7 @@
                 android:digits="0123456789"
                 android:gravity="center"
                 android:inputType="number"
-                android:maxLength="5"
+                android:maxLength="3"
                 android:paddingLeft="15dp"
                 android:paddingRight="15dp"
                 android:singleLine="true"
@@ -100,7 +100,7 @@
             android:layout_marginLeft="25dp"
             android:layout_marginRight="25dp"
             android:layout_marginTop="20dp"
-            android:text="注：这个数值用于标准iBeacon和手机的距离，数值必须为负，通常是-55和-59。不是专业认识，不建议去修改这个值"
+            android:text="@string/tips_measure_power"
             android:textColor="@color/grey_737373"
             android:textSize="12sp" />
     </LinearLayout>

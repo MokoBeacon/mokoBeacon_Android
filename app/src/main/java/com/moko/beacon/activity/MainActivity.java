@@ -382,7 +382,7 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
         dialog.setCanceledOnTouchOutside(false);
         dialog.setCancelable(false);
         dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        dialog.setMessage("扫描中...");
+        dialog.setMessage(getString(R.string.main_scan));
         if (!isFinishing() && dialog != null && !dialog.isShowing()) {
             dialog.show();
             mBeaconService.mHandler.postDelayed(new Runnable() {
@@ -501,7 +501,7 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
         mLoadingDialog.setCanceledOnTouchOutside(false);
         mLoadingDialog.setCancelable(false);
         mLoadingDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        mLoadingDialog.setMessage("连接中...");
+        mLoadingDialog.setMessage(getString(R.string.dialog_connecting));
         if (!isFinishing() && mLoadingDialog != null && !mLoadingDialog.isShowing()) {
             mLoadingDialog.show();
         }

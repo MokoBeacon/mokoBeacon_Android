@@ -90,7 +90,7 @@ public class SetMajorActivity extends Activity {
             if (intent != null) {
                 String action = intent.getAction();
                 if (BeaconConstants.ACTION_CONNECT_DISCONNECTED.equals(action)) {
-                    ToastUtils.showToast(SetMajorActivity.this, "设备断开连接");
+                    ToastUtils.showToast(SetMajorActivity.this, getString(R.string.alert_diconnected));
                     SetMajorActivity.this.setResult(BeaconConstants.RESULT_CONN_DISCONNECTED);
                     finish();
                 }
@@ -99,7 +99,7 @@ public class SetMajorActivity extends Activity {
                     switch (orderType) {
                         case major:
                             // 修改major失败
-                            ToastUtils.showToast(SetMajorActivity.this, "修改major失败");
+                            ToastUtils.showToast(SetMajorActivity.this, getString(R.string.read_data_failed));
                             finish();
                             break;
                     }
@@ -109,7 +109,6 @@ public class SetMajorActivity extends Activity {
                     switch (orderType) {
                         case major:
                             // 修改major成功
-                            ToastUtils.showToast(SetMajorActivity.this, "修改major成功");
                             Intent i = new Intent();
                             i.putExtra(BeaconConstants.EXTRA_KEY_DEVICE_MAJOR, Integer.valueOf(etMajor.getText().toString()));
                             SetMajorActivity.this.setResult(RESULT_OK, i);
@@ -150,11 +149,11 @@ public class SetMajorActivity extends Activity {
                 break;
             case R.id.iv_save:
                 if (TextUtils.isEmpty(etMajor.getText().toString())) {
-                    ToastUtils.showToast(this, "major is empty");
+                    ToastUtils.showToast(this, getString(R.string.alert_data_cannot_null));
                     return;
                 }
                 if (Integer.valueOf(etMajor.getText().toString()) > 65535 || Integer.valueOf(etMajor.getText().toString()) < 0) {
-                    ToastUtils.showToast(this, "数值范围0-65535");
+                    ToastUtils.showToast(this, getString(R.string.alert_minor_range));
                     return;
                 }
                 mBeaconService.sendOrder(mBeaconService.setMajor(Integer.valueOf(etMajor.getText().toString())));
