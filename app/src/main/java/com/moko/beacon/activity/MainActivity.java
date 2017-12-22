@@ -512,16 +512,4 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
             mLoadingDialog.dismiss();
         }
     }
-
-
-    private class CustomHandler extends BaseHandler<MainActivity> {
-
-        public CustomHandler(MainActivity activity) {
-            super(activity);
-        }
-
-        @Override
-        protected void handleMessage(MainActivity activity, Message msg) {
-        }
-    }
 }

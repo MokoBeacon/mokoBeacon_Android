@@ -10,7 +10,9 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -67,6 +69,8 @@ public class SetUUIDActivity extends Activity {
     RelativeLayout rlUuid;
     private BeaconService mBeaconService;
     private HashMap<Integer, View> mUUIDViews;
+    private Pattern pattern;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -76,12 +80,51 @@ public class SetUUIDActivity extends Activity {
         bindService(new Intent(this, BeaconService.class), mServiceConnection, BIND_AUTO_CREATE);
         String uuid = getIntent().getStringExtra(BeaconConstants.EXTRA_KEY_DEVICE_UUID);
         tvUuid.setText(uuid);
+        pattern = Pattern.compile(UUID_PATTERN);
         mUUIDViews = new HashMap<>();
         mUUIDViews.put(R.id.rl_airLocate, ivAirLocateSelected);
         mUUIDViews.put(R.id.rl_wechat_1, ivWechat1Selected);
         mUUIDViews.put(R.id.rl_wechat_2, ivWechat2Selected);
         mUUIDViews.put(R.id.rl_estimote, ivEstimoteSelected);
         mUUIDViews.put(R.id.rl_uuid, ivUuidSelected);
+        etSeletcedUuid.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String input = s.toString();
+                if (!pattern.matcher(input).matches()) {
+                    if (input.length() == 9 && !input.endsWith("-")) {
+                        String show = input.substring(0, 8) + "-" + input.substring(8, input.length());
+                        etSeletcedUuid.setText(show);
+                        etSeletcedUuid.setSelection(show.length());
+                    }
+                    if (input.length() == 14 && !input.endsWith("-")) {
+                        String show = input.substring(0, 13) + "-" + input.substring(13, input.length());
+                        etSeletcedUuid.setText(show);
+                        etSeletcedUuid.setSelection(show.length());
+                    }
+                    if (input.length() == 19 && !input.endsWith("-")) {
+                        String show = input.substring(0, 18) + "-" + input.substring(18, input.length());
+                        etSeletcedUuid.setText(show);
+                        etSeletcedUuid.setSelection(show.length());
+                    }
+                    if (input.length() == 24 && !input.endsWith("-")) {
+                        String show = input.substring(0, 23) + "-" + input.substring(23, input.length());
+                        etSeletcedUuid.setText(show);
+                        etSeletcedUuid.setSelection(show.length());
+                    }
+                }
+            }
+        });
         setUUIDSelected(rlUuid);
     }
 
@@ -214,7 +257,6 @@ public class SetUUIDActivity extends Activity {
     }
 
     private boolean isUUID(String etUUid) {
-        Pattern pattern = Pattern.compile(UUID_PATTERN);
         Matcher m = pattern.matcher(etUUid);
         return m.matches();
     }
