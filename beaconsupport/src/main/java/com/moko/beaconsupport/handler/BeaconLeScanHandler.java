@@ -6,13 +6,9 @@ import android.text.TextUtils;
 
 import com.moko.beaconsupport.callback.ScanDeviceCallback;
 import com.moko.beaconsupport.entity.BeaconInfo;
-import com.moko.beaconsupport.log.LogModule;
 import com.moko.beaconsupport.utils.Utils;
 
-import java.lang.reflect.Method;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * @Date 2017/12/12 0012
@@ -22,11 +18,9 @@ import java.util.HashMap;
  */
 public class BeaconLeScanHandler implements BluetoothAdapter.LeScanCallback {
     private ScanDeviceCallback callback;
-    private HashMap<String, BeaconInfo> beaconMap;
 
     public BeaconLeScanHandler(ScanDeviceCallback callback) {
         this.callback = callback;
-        beaconMap = new HashMap<>();
     }
 
     @Override
@@ -49,7 +43,7 @@ public class BeaconLeScanHandler implements BluetoothAdapter.LeScanCallback {
                 }
                 startByte++;
             }
-            if (patternFound == false) {
+            if (!patternFound) {
                 // This is not an iBeacon
                 return;
             }
@@ -102,38 +96,22 @@ public class BeaconLeScanHandler implements BluetoothAdapter.LeScanCallback {
 //                LogModule.i("isConnected: " + returnValue.booleanValue());
 //            } catch (Exception e) {
 //            }
-            if (!beaconMap.isEmpty() && beaconMap.containsKey(mac)) {
-                BeaconInfo beaconInfo = beaconMap.get(mac);
-                beaconInfo.name = device.getName();
-                beaconInfo.rssi = rssi;
-                beaconInfo.distance = distanceStr;
-                beaconInfo.distanceDesc = distanceDesc;
-                beaconInfo.major = major;
-                beaconInfo.minor = minor;
-                beaconInfo.txPower = txPower;
-                beaconInfo.uuid = uuid;
-                beaconInfo.batteryPower = battery;
-                beaconInfo.version = version;
-                beaconInfo.isConnected = isConnected;
-                beaconInfo.scanRecord = log;
-            } else {
-                BeaconInfo beaconInfo = new BeaconInfo();
-                beaconInfo.name = device.getName();
-                beaconInfo.rssi = rssi;
-                beaconInfo.distance = distanceStr;
-                beaconInfo.distanceDesc = distanceDesc;
-                beaconInfo.major = major;
-                beaconInfo.minor = minor;
-                beaconInfo.txPower = txPower;
-                beaconInfo.uuid = uuid;
-                beaconInfo.batteryPower = battery;
-                beaconInfo.version = version;
-                beaconInfo.scanRecord = log;
-                beaconInfo.isConnected = isConnected;
-                beaconInfo.mac = mac;
-                beaconMap.put(beaconInfo.mac, beaconInfo);
-            }
-            callback.onScanDevice(new ArrayList<>(beaconMap.values()));
+            BeaconInfo beaconInfo = new BeaconInfo();
+            beaconInfo.name = device.getName();
+            beaconInfo.rssi = rssi;
+            beaconInfo.distance = distanceStr;
+            beaconInfo.distanceDesc = distanceDesc;
+            beaconInfo.major = major;
+            beaconInfo.minor = minor;
+            beaconInfo.txPower = txPower;
+            beaconInfo.uuid = uuid;
+            beaconInfo.batteryPower = battery;
+            beaconInfo.version = version;
+            beaconInfo.scanRecord = log;
+            beaconInfo.isConnected = isConnected;
+            beaconInfo.mac = mac;
+
+            callback.onScanDevice(beaconInfo);
         }
     }
 }

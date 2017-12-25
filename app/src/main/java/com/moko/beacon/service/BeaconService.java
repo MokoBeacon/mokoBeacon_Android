@@ -88,13 +88,17 @@ public class BeaconService extends Service implements BeaconConnStateCallback, O
     // 处理扫描
     ///////////////////////////////////////////////////////////////////////////
 
-    public void startScanDevice(ScanDeviceCallback callback) {
+    public void startScanDevice(final ScanDeviceCallback callback) {
         BeaconModule.getInstance().startScanDevice(callback);
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                BeaconModule.getInstance().stopScanDevice();
+                callback.onStopScan();
+            }
+        }, 2000);
     }
 
-    public void stopScanDevice() {
-        BeaconModule.getInstance().stopScanDevice();
-    }
 
     ///////////////////////////////////////////////////////////////////////////
     // 处理连接

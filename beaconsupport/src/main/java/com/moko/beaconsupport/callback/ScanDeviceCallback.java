@@ -2,8 +2,6 @@ package com.moko.beaconsupport.callback;
 
 import com.moko.beaconsupport.entity.BeaconInfo;
 
-import java.util.ArrayList;
-
 /**
  * @Date 2017/12/8 0008
  * @Author wenzheng.liu
@@ -13,7 +11,7 @@ import java.util.ArrayList;
 public interface ScanDeviceCallback {
     void onStartScan();
 
-    void onScanDevice(ArrayList<BeaconInfo> beaconInfos);
+    void onScanDevice(BeaconInfo beaconInfos);
 
     void onStopScan();
 }

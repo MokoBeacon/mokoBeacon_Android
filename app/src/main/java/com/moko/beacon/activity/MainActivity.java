@@ -11,7 +11,6 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.os.Message;
 import android.support.annotation.IdRes;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -27,7 +26,6 @@ import android.widget.RadioGroup;
 import com.moko.beacon.BeaconConstants;
 import com.moko.beacon.R;
 import com.moko.beacon.adapter.BeaconListAdapter;
-import com.moko.beacon.base.BaseHandler;
 import com.moko.beacon.dialog.PasswordDialog;
 import com.moko.beacon.entity.BeaconDeviceInfo;
 import com.moko.beacon.entity.BeaconParam;
@@ -44,6 +42,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -81,6 +80,9 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
     private String mFilterText;
     private BeaconService mBeaconService;
     private boolean mIsChangePasswordSuccess;
+    private boolean mIsConnAndSyncData;
+    private HashMap<String, BeaconInfo> beaconMap;
+    private ArrayList<BeaconInfo> mBeaconInfosTemp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +91,8 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
         ButterKnife.bind(this);
         mAdapter = new BeaconListAdapter(this);
         mBeaconInfos = new ArrayList<>();
+        mBeaconInfosTemp = new ArrayList<>();
+        beaconMap = new HashMap<>();
         mAdapter.setItems(mBeaconInfos);
         lvDeviceList.setAdapter(mAdapter);
         rgDeviceSort.setOnCheckedChangeListener(this);
@@ -132,7 +136,9 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
                 Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                 startActivityForResult(enableBtIntent, BeaconConstants.REQUEST_CODE_ENABLE_BT);
             } else {
+                showProgressDialog();
                 mBeaconService.startScanDevice(MainActivity.this);
+                mIsScaning = true;
             }
         }
 
@@ -179,8 +185,7 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
                         public void run() {
                             dismissLoadingProgressDialog();
                             if (mIsChangePasswordSuccess) {
-                                mBeaconService.stopScanDevice();
-                                mIsScaning = false;
+                                mIsConnAndSyncData = true;
                                 LogModule.i(mBeaconParam.toString());
                                 Intent deviceInfoIntent = new Intent(MainActivity.this, DeviceInfoActivity.class);
                                 deviceInfoIntent.putExtra(BeaconConstants.EXTRA_KEY_DEVICE_PARAM, mBeaconParam);
@@ -313,6 +318,7 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
                 case BeaconConstants.REQUEST_CODE_ENABLE_BT:
                     // 打开蓝牙
                     if (!mIsScaning) {
+                        showProgressDialog();
                         mBeaconService.startScanDevice(MainActivity.this);
                         mIsScaning = true;
                     }
@@ -327,6 +333,8 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
                 case BeaconConstants.REQUEST_CODE_DEVICE_INFO:
                     mIsChangePasswordSuccess = false;
                     if (!mIsScaning) {
+                        mIsConnAndSyncData = false;
+                        showProgressDialog();
                         mBeaconService.startScanDevice(MainActivity.this);
                         mIsScaning = true;
                     }
@@ -339,8 +347,6 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(mReceiver);
-        mBeaconService.stopScanDevice();
-        mIsScaning = false;
         unbindService(mServiceConnection);
     }
 
@@ -373,7 +379,6 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
 
     @Override
     public void onStartScan() {
-        showProgressDialog();
     }
 
     private void showProgressDialog() {
@@ -395,23 +400,26 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
     }
 
     @Override
-    public void onScanDevice(ArrayList<BeaconInfo> beaconInfos) {
-        mBeaconInfos.clear();
+    public void onScanDevice(BeaconInfo beaconInfo) {
+        if (!beaconMap.isEmpty() && beaconMap.containsKey(beaconInfo.mac)) {
+            return;
+        }
         // 名称过滤
         if (TextUtils.isEmpty(mFilterText)) {
-            mBeaconInfos.addAll(beaconInfos);
+            beaconMap.put(beaconInfo.mac, beaconInfo);
         } else {
-            for (BeaconInfo beaconInfo : beaconInfos) {
-                if (beaconInfo.name.toLowerCase().contains(mFilterText.toLowerCase())) {
-                    mBeaconInfos.add(beaconInfo);
-                }
+            if (beaconInfo.name.toLowerCase().contains(mFilterText.toLowerCase())) {
+                beaconMap.put(beaconInfo.mac, beaconInfo);
             }
         }
+
+        mBeaconInfosTemp = new ArrayList<>(beaconMap.values());
+        LogModule.i("扫描到的设备数：" + mBeaconInfosTemp.size());
         // 排序
         switch (mSortType) {
             case SORT_TYPE_RSSI:
-                if (!mBeaconInfos.isEmpty()) {
-                    Collections.sort(mBeaconInfos, new Comparator<BeaconInfo>() {
+                if (!mBeaconInfosTemp.isEmpty()) {
+                    Collections.sort(mBeaconInfosTemp, new Comparator<BeaconInfo>() {
                         @Override
                         public int compare(BeaconInfo lhs, BeaconInfo rhs) {
                             if (lhs.rssi > rhs.rssi) {
@@ -425,8 +433,8 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
                 }
                 break;
             case SORT_TYPE_MAJOR:
-                if (!mBeaconInfos.isEmpty()) {
-                    Collections.sort(mBeaconInfos, new Comparator<BeaconInfo>() {
+                if (!mBeaconInfosTemp.isEmpty()) {
+                    Collections.sort(mBeaconInfosTemp, new Comparator<BeaconInfo>() {
                         @Override
                         public int compare(BeaconInfo lhs, BeaconInfo rhs) {
                             if (lhs.major > rhs.major) {
@@ -440,8 +448,8 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
                 }
                 break;
             case SORT_TYPE_MINOR:
-                if (!mBeaconInfos.isEmpty()) {
-                    Collections.sort(mBeaconInfos, new Comparator<BeaconInfo>() {
+                if (!mBeaconInfosTemp.isEmpty()) {
+                    Collections.sort(mBeaconInfosTemp, new Comparator<BeaconInfo>() {
                         @Override
                         public int compare(BeaconInfo lhs, BeaconInfo rhs) {
                             if (lhs.minor > rhs.minor) {
@@ -455,12 +463,25 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
                 }
                 break;
         }
-        mAdapter.notifyDataSetChanged();
     }
 
     @Override
     public void onStopScan() {
-
+        mBeaconInfos.clear();
+        mBeaconInfos.addAll(mBeaconInfosTemp);
+        mAdapter.notifyDataSetChanged();
+        mIsScaning = false;
+        if (!isFinishing() && !mIsConnAndSyncData) {
+            beaconMap.clear();
+            mBeaconInfosTemp.clear();
+            mBeaconService.mHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mBeaconService.startScanDevice(MainActivity.this);
+                }
+            }, 2000);
+            mIsScaning = true;
+        }
     }
 
     private BeaconParam mBeaconParam;
