@@ -231,11 +231,19 @@ public class BeaconModule implements BeaconResponseCallback {
         }
         if (mQueue.isEmpty()) {
             for (OrderTask ordertask : orderTasks) {
+                if (ordertask == null) {
+                    continue;
+                }
                 mQueue.offer(ordertask);
             }
-            executeTask(null);
+            if (!mQueue.isEmpty()) {
+                executeTask(null);
+            }
         } else {
             for (OrderTask ordertask : orderTasks) {
+                if (ordertask == null) {
+                    continue;
+                }
                 mQueue.offer(ordertask);
             }
         }
@@ -249,6 +257,10 @@ public class BeaconModule implements BeaconResponseCallback {
         final OrderTask orderTask = mQueue.peek();
         if (mBluetoothGatt == null) {
             LogModule.i("executeTask : BluetoothGatt is null");
+            return;
+        }
+        if (orderTask == null) {
+            LogModule.i("executeTask : orderTask is null");
             return;
         }
         final BeaconCharacteristic beaconCharacteristic = mBeaconCharacteristicMap.get(orderTask.orderType);

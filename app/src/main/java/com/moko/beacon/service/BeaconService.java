@@ -96,7 +96,7 @@ public class BeaconService extends Service implements BeaconConnStateCallback, O
                 BeaconModule.getInstance().stopScanDevice();
                 callback.onStopScan();
             }
-        }, 2000);
+        }, 4000);
     }
 
 

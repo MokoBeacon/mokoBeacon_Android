@@ -474,12 +474,12 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
         if (!isFinishing() && !mIsConnAndSyncData) {
             beaconMap.clear();
             mBeaconInfosTemp.clear();
-            mBeaconService.mHandler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
+//            mBeaconService.mHandler.postDelayed(new Runnable() {
+//                @Override
+//                public void run() {
                     mBeaconService.startScanDevice(MainActivity.this);
-                }
-            }, 2000);
+//                }
+//            }, 2000);
             mIsScaning = true;
         }
     }

@@ -46,6 +46,7 @@ public class BeaconConstants {
     public static final int REQUEST_CODE_SET_IBEACON_NAME = 109;
     public static final int REQUEST_CODE_SET_CONNECTION_MODE = 110;
     public static final int REQUEST_CODE_SET_PASSWORD = 111;
+    public static final int REQUEST_CODE_SET_SYSTEM_INFO = 112;
     // result_code
     public static final int RESULT_CONN_DISCONNECTED = 2;
 }
