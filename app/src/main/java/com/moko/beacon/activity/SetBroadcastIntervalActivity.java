@@ -79,7 +79,12 @@ public class SetBroadcastIntervalActivity extends Activity {
         mViews.add(tvBroadcastInterval8);
         mViews.add(tvBroadcastInterval9);
         mViews.add(tvBroadcastInterval10);
-        setViewSeleceted(broadcastInterval);
+        if (broadcastInterval > 9) {
+            etBroadcastInterval.setText((broadcastInterval + 1) + "");
+            etBroadcastInterval.setSelection(String.valueOf(broadcastInterval + 1).length());
+        } else {
+            setViewSeleceted(broadcastInterval);
+        }
     }
 
     @Override
@@ -164,7 +169,7 @@ public class SetBroadcastIntervalActivity extends Activity {
                     return;
                 }
                 int broadcastIntervalValue = Integer.parseInt(broadcastIntervalStr);
-                if (broadcastIntervalValue > 10 || broadcastIntervalValue <= 0) {
+                if (broadcastIntervalValue > 100 || broadcastIntervalValue <= 0) {
                     ToastUtils.showToast(this, getString(R.string.alert_broadcast_interval_range));
                     return;
                 }

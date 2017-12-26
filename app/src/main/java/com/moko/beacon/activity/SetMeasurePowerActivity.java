@@ -124,7 +124,7 @@ public class SetMeasurePowerActivity extends Activity {
                     return;
                 }
                 int power = Integer.valueOf(etMeasurePower.getText().toString());
-                if (power < 0 || power > 255) {
+                if (power < 0 || power > 119) {
                     ToastUtils.showToast(this, getString(R.string.alert_measure_power_range));
                     return;
                 }

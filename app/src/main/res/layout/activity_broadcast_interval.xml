@@ -263,7 +263,7 @@
                 android:digits="0123456789"
                 android:gravity="center"
                 android:inputType="number"
-                android:maxLength="2"
+                android:maxLength="3"
                 android:paddingLeft="15dp"
                 android:paddingRight="15dp"
                 android:singleLine="true"
