@@ -1,7 +1,6 @@
 package com.moko.beacon.activity;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -18,7 +17,7 @@ import com.moko.beacon.utils.ToastUtils;
  * @Description
  * @ClassPath com.moko.beacon.activity.GuideActivity
  */
-public class GuideActivity extends Activity {
+public class GuideActivity extends BaseActivity {
 
     private static final int PERMISSION_REQUEST_CODE = 1;
 

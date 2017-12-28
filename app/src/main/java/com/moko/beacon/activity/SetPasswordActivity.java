@@ -1,6 +1,5 @@
 package com.moko.beacon.activity;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -30,7 +29,7 @@ import butterknife.OnClick;
  * @Description
  * @ClassPath com.moko.beacon.activity.SetPasswordActivity
  */
-public class SetPasswordActivity extends Activity {
+public class SetPasswordActivity extends BaseActivity {
 
 
     @Bind(R.id.et_password)

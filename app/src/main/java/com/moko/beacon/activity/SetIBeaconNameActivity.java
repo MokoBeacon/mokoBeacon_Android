@@ -1,6 +1,5 @@
 package com.moko.beacon.activity;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -30,7 +29,7 @@ import butterknife.OnClick;
  * @Description
  * @ClassPath com.moko.beacon.activity.SetIBeaconNameActivity
  */
-public class SetIBeaconNameActivity extends Activity {
+public class SetIBeaconNameActivity extends BaseActivity {
     @Bind(R.id.et_ibeacon_name)
     EditText etIBeaconName;
     private BeaconService mBeaconService;

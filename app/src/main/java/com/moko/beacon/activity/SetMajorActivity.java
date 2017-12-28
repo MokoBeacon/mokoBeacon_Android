@@ -1,6 +1,5 @@
 package com.moko.beacon.activity;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -33,7 +32,7 @@ import butterknife.OnClick;
  * @Description
  * @ClassPath com.moko.beacon.activity.SetMajorActivity
  */
-public class SetMajorActivity extends Activity {
+public class SetMajorActivity extends BaseActivity {
     @Bind(R.id.et_major)
     EditText etMajor;
     @Bind(R.id.tv_decimalism)

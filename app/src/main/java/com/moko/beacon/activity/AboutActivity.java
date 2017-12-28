@@ -1,6 +1,5 @@
 package com.moko.beacon.activity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -21,7 +20,7 @@ import butterknife.OnClick;
  * @Description
  * @ClassPath com.moko.beacon.activity.AboutActivity
  */
-public class AboutActivity extends Activity {
+public class AboutActivity extends BaseActivity {
     @Bind(R.id.tv_soft_version)
     TextView tvSoftVersion;
 

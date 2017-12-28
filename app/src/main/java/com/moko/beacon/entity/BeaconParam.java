@@ -10,16 +10,16 @@ import java.io.Serializable;
  */
 public class BeaconParam implements Serializable {
     // 设备电量
-    public int battery;
+    public String battery;
     public String uuid;
-    public int major;
-    public int minor;
+    public String major;
+    public String minor;
     // 校验距离
-    public int measurePower;
+    public String measurePower;
     // 广播功率
-    public int transmission;
+    public String transmission;
     // 广播周期
-    public int broadcastingInterval;
+    public String broadcastingInterval;
     // 设备ID
     public String serialID;
     // MAC地址

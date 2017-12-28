@@ -1,6 +1,5 @@
 package com.moko.beacon.activity;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -34,7 +33,7 @@ import butterknife.OnClick;
  * @Description
  * @ClassPath com.moko.beacon.activity.SetIBeaconNameActivity
  */
-public class SetConnectionModeActivity extends Activity {
+public class SetConnectionModeActivity extends BaseActivity {
 
     @Bind(R.id.iv_conn_yes)
     ImageView ivConnYes;

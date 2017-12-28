@@ -1,6 +1,5 @@
 package com.moko.beacon.activity;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
@@ -41,7 +40,7 @@ import butterknife.OnClick;
  * @Description
  * @ClassPath com.moko.beacon.activity.DeviceInfoActivity
  */
-public class DeviceInfoActivity extends Activity {
+public class DeviceInfoActivity extends BaseActivity {
     @Bind(R.id.tv_conn_state)
     TextView tvConnState;
     @Bind(R.id.tv_ibeacon_battery)
@@ -89,13 +88,13 @@ public class DeviceInfoActivity extends Activity {
     }
 
     private void changeValue() {
-        tvIbeaconBattery.setText(mBeaconParam.battery + "");
+        tvIbeaconBattery.setText(mBeaconParam.battery);
         tvIbeaconUuid.setText(mBeaconParam.uuid);
-        tvIbeaconMajor.setText(mBeaconParam.major + "");
-        tvIbeaconMinor.setText(mBeaconParam.minor + "");
-        tvIbeaconMeasurePower.setText(String.format("-%ddBm", mBeaconParam.measurePower));
-        tvIbeaconTransmission.setText(mBeaconParam.transmission + "");
-        tvIbeaconBroadcastingInterval.setText(mBeaconParam.broadcastingInterval + "");
+        tvIbeaconMajor.setText(mBeaconParam.major);
+        tvIbeaconMinor.setText(mBeaconParam.minor);
+        tvIbeaconMeasurePower.setText(String.format("-%sdBm", mBeaconParam.measurePower));
+        tvIbeaconTransmission.setText(mBeaconParam.transmission);
+        tvIbeaconBroadcastingInterval.setText(mBeaconParam.broadcastingInterval);
         tvIbeaconSerialID.setText(mBeaconParam.serialID);
         tvIbeaconMac.setText(mBeaconParam.iBeaconMAC);
         tvIbeaconDeviceName.setText(mBeaconParam.iBeaconName);
@@ -117,6 +116,7 @@ public class DeviceInfoActivity extends Activity {
                 abortBroadcast();
                 String action = intent.getAction();
                 if (BeaconConstants.ACTION_CONNECT_SUCCESS.equals(action)) {
+                    tvConnState.setText(getString(R.string.device_info_conn_status_connected));
                     // 读取全部可读数据
                     mBeaconService.mHandler.postDelayed(new Runnable() {
                         @Override
@@ -129,20 +129,16 @@ public class DeviceInfoActivity extends Activity {
                     tvConnState.setText(getString(R.string.device_info_conn_status_disconnect));
                     ToastUtils.showToast(DeviceInfoActivity.this, "Connect Failed");
                     dismissLoadingProgressDialog();
+                    dismissSyncProgressDialog();
                 }
                 if (BeaconConstants.ACTION_RESPONSE_TIMEOUT.equals(action)) {
-                    OrderType orderType = (OrderType) intent.getSerializableExtra(BeaconConstants.EXTRA_KEY_RESPONSE_ORDER_TYPE);
-                    switch (orderType) {
-                        case iBeaconUuid:
-                            break;
-                    }
                 }
                 if (BeaconConstants.ACTION_RESPONSE_FINISH.equals(action)) {
                     mBeaconService.mHandler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
                             dismissLoadingProgressDialog();
-                            tvConnState.setText(getString(R.string.device_info_conn_status_connected));
+                            dismissSyncProgressDialog();
                         }
                     }, 1000);
 
@@ -152,8 +148,8 @@ public class DeviceInfoActivity extends Activity {
                     byte[] value = intent.getByteArrayExtra(BeaconConstants.EXTRA_KEY_RESPONSE_VALUE);
                     switch (orderType) {
                         case battery:
-                            mBeaconParam.battery = Integer.parseInt(Utils.bytesToHexString(value), 16);
-                            tvIbeaconBattery.setText(mBeaconParam.battery + "");
+                            mBeaconParam.battery = Integer.parseInt(Utils.bytesToHexString(value), 16) + "";
+                            tvIbeaconBattery.setText(mBeaconParam.battery);
                             break;
                         case iBeaconUuid:
                             // 读取UUID成功
@@ -177,24 +173,24 @@ public class DeviceInfoActivity extends Activity {
                             }
                             break;
                         case major:
-                            mBeaconParam.major = Integer.parseInt(Utils.bytesToHexString(value), 16);
-                            tvIbeaconMajor.setText(mBeaconParam.major + "");
+                            mBeaconParam.major = Integer.parseInt(Utils.bytesToHexString(value), 16) + "";
+                            tvIbeaconMajor.setText(mBeaconParam.major);
                             break;
                         case minor:
-                            mBeaconParam.minor = Integer.parseInt(Utils.bytesToHexString(value), 16);
-                            tvIbeaconMinor.setText(mBeaconParam.minor + "");
+                            mBeaconParam.minor = Integer.parseInt(Utils.bytesToHexString(value), 16) + "";
+                            tvIbeaconMinor.setText(mBeaconParam.minor);
                             break;
                         case measurePower:
-                            mBeaconParam.measurePower = Integer.parseInt(Utils.bytesToHexString(value), 16);
-                            tvIbeaconMeasurePower.setText(String.format("-%ddBm", mBeaconParam.measurePower));
+                            mBeaconParam.measurePower = Integer.parseInt(Utils.bytesToHexString(value), 16) + "";
+                            tvIbeaconMeasurePower.setText(String.format("-%sdBm", mBeaconParam.measurePower));
                             break;
                         case transmission:
-                            mBeaconParam.transmission = Integer.parseInt(Utils.bytesToHexString(value), 16);
-                            tvIbeaconTransmission.setText(mBeaconParam.transmission + "");
+                            mBeaconParam.transmission = Integer.parseInt(Utils.bytesToHexString(value), 16) + "";
+                            tvIbeaconTransmission.setText(mBeaconParam.transmission);
                             break;
                         case broadcastingInterval:
-                            mBeaconParam.broadcastingInterval = Integer.parseInt(Utils.bytesToHexString(value), 16);
-                            tvIbeaconBroadcastingInterval.setText(mBeaconParam.broadcastingInterval + "");
+                            mBeaconParam.broadcastingInterval = Integer.parseInt(Utils.bytesToHexString(value), 16) + "";
+                            tvIbeaconBroadcastingInterval.setText(mBeaconParam.broadcastingInterval);
                             break;
                         case serialID:
                             mBeaconParam.serialID = Utils.hex2String(Utils.bytesToHexString(value));
@@ -346,7 +342,7 @@ public class DeviceInfoActivity extends Activity {
                     return;
                 }
                 intent = new Intent(this, SetMajorActivity.class);
-                intent.putExtra(BeaconConstants.EXTRA_KEY_DEVICE_MAJOR, mBeaconParam.major);
+                intent.putExtra(BeaconConstants.EXTRA_KEY_DEVICE_MAJOR, Integer.parseInt(mBeaconParam.major));
                 startActivityForResult(intent, BeaconConstants.REQUEST_CODE_SET_MAJOR);
                 break;
             case R.id.rl_ibeacon_minor:
@@ -355,7 +351,7 @@ public class DeviceInfoActivity extends Activity {
                     return;
                 }
                 intent = new Intent(this, SetMinorActivity.class);
-                intent.putExtra(BeaconConstants.EXTRA_KEY_DEVICE_MINOR, mBeaconParam.minor);
+                intent.putExtra(BeaconConstants.EXTRA_KEY_DEVICE_MINOR, Integer.parseInt(mBeaconParam.minor));
                 startActivityForResult(intent, BeaconConstants.REQUEST_CODE_SET_MINOR);
                 break;
             case R.id.rl_ibeacon_measure_power:
@@ -364,7 +360,7 @@ public class DeviceInfoActivity extends Activity {
                     return;
                 }
                 intent = new Intent(this, SetMeasurePowerActivity.class);
-                intent.putExtra(BeaconConstants.EXTRA_KEY_DEVICE_MEASURE_POWER, mBeaconParam.measurePower);
+                intent.putExtra(BeaconConstants.EXTRA_KEY_DEVICE_MEASURE_POWER, Integer.parseInt(mBeaconParam.measurePower));
                 startActivityForResult(intent, BeaconConstants.REQUEST_CODE_SET_MEASURE_POWER);
                 break;
             case R.id.rl_ibeacon_transmission:
@@ -373,7 +369,7 @@ public class DeviceInfoActivity extends Activity {
                     return;
                 }
                 intent = new Intent(this, SetTransmissionActivity.class);
-                intent.putExtra(BeaconConstants.EXTRA_KEY_DEVICE_TRANSMISSION, mBeaconParam.transmission);
+                intent.putExtra(BeaconConstants.EXTRA_KEY_DEVICE_TRANSMISSION, Integer.parseInt(mBeaconParam.transmission));
                 startActivityForResult(intent, BeaconConstants.REQUEST_CODE_SET_TRANSMISSION);
                 break;
             case R.id.rl_ibeacon_broadcasting_interval:
@@ -382,7 +378,7 @@ public class DeviceInfoActivity extends Activity {
                     return;
                 }
                 intent = new Intent(this, SetBroadcastIntervalActivity.class);
-                intent.putExtra(BeaconConstants.EXTRA_KEY_DEVICE_BROADCASTINTERVAL, mBeaconParam.broadcastingInterval);
+                intent.putExtra(BeaconConstants.EXTRA_KEY_DEVICE_BROADCASTINTERVAL, Integer.parseInt(mBeaconParam.broadcastingInterval));
                 startActivityForResult(intent, BeaconConstants.REQUEST_CODE_SET_BROADCASTINTERVAL);
                 break;
             case R.id.rl_ibeacon_serialID:
@@ -455,6 +451,26 @@ public class DeviceInfoActivity extends Activity {
     private void dismissLoadingProgressDialog() {
         if (!isFinishing() && mLoadingDialog != null && mLoadingDialog.isShowing()) {
             mLoadingDialog.dismiss();
+        }
+    }
+
+    private ProgressDialog mSyncingDialog;
+
+    private void showSyncProgressDialog(String tips) {
+        mSyncingDialog = new ProgressDialog(DeviceInfoActivity.this);
+        mSyncingDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        mSyncingDialog.setCanceledOnTouchOutside(false);
+        mSyncingDialog.setCancelable(false);
+        mSyncingDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        mSyncingDialog.setMessage(tips);
+        if (!isFinishing() && mSyncingDialog != null && !mSyncingDialog.isShowing()) {
+            mSyncingDialog.show();
+        }
+    }
+
+    private void dismissSyncProgressDialog() {
+        if (!isFinishing() && mSyncingDialog != null && mSyncingDialog.isShowing()) {
+            mSyncingDialog.dismiss();
         }
     }
 
@@ -551,27 +567,27 @@ public class DeviceInfoActivity extends Activity {
                     break;
                 case BeaconConstants.REQUEST_CODE_SET_MAJOR:
                     if (resultCode == RESULT_OK) {
-                        mBeaconParam.major = 0;
+                        mBeaconParam.major = null;
                     }
                     break;
                 case BeaconConstants.REQUEST_CODE_SET_MINOR:
                     if (resultCode == RESULT_OK) {
-                        mBeaconParam.minor = 0;
+                        mBeaconParam.minor = null;
                     }
                     break;
                 case BeaconConstants.REQUEST_CODE_SET_MEASURE_POWER:
                     if (resultCode == RESULT_OK) {
-                        mBeaconParam.measurePower = 0;
+                        mBeaconParam.measurePower = null;
                     }
                     break;
                 case BeaconConstants.REQUEST_CODE_SET_TRANSMISSION:
                     if (resultCode == RESULT_OK) {
-                        mBeaconParam.transmission = 0;
+                        mBeaconParam.transmission = null;
                     }
                     break;
                 case BeaconConstants.REQUEST_CODE_SET_BROADCASTINTERVAL:
                     if (resultCode == RESULT_OK) {
-                        mBeaconParam.broadcastingInterval = 0;
+                        mBeaconParam.broadcastingInterval = null;
                     }
                     break;
                 case BeaconConstants.REQUEST_CODE_SET_DEVICE_ID:
@@ -589,6 +605,15 @@ public class DeviceInfoActivity extends Activity {
                         mBeaconParam.connectionMode = null;
                     }
                     break;
+                case BeaconConstants.REQUEST_CODE_SET_PASSWORD:
+                    if (resultCode == RESULT_OK) {
+                        if (data != null && data.getExtras() != null) {
+                            String password = data.getExtras().getString(BeaconConstants.EXTRA_KEY_DEVICE_PASSWORD);
+                            mBeaconParam.password = password;
+                            back();
+                        }
+                        return;
+                    }
             }
             getEmptyInfo();
         }
@@ -597,25 +622,25 @@ public class DeviceInfoActivity extends Activity {
     private void getEmptyInfo() {
         final ArrayList<OrderTask> orderTasks = new ArrayList<>();
 
-        if (mBeaconParam.battery == 0) {
+        if (TextUtils.isEmpty(mBeaconParam.battery)) {
             orderTasks.add(mBeaconService.getBattery());
         }
         if (TextUtils.isEmpty(mBeaconParam.uuid)) {
             orderTasks.add(mBeaconService.getIBeaconUuid());
         }
-        if (mBeaconParam.major == 0) {
+        if (TextUtils.isEmpty(mBeaconParam.major)) {
             orderTasks.add(mBeaconService.getMajor());
         }
-        if (mBeaconParam.minor == 0) {
+        if (TextUtils.isEmpty(mBeaconParam.minor)) {
             orderTasks.add(mBeaconService.getMinor());
         }
-        if (mBeaconParam.measurePower == 0) {
+        if (TextUtils.isEmpty(mBeaconParam.measurePower)) {
             orderTasks.add(mBeaconService.getMeasurePower());
         }
-        if (mBeaconParam.transmission == 0) {
+        if (TextUtils.isEmpty(mBeaconParam.transmission)) {
             orderTasks.add(mBeaconService.getTransmission());
         }
-        if (mBeaconParam.broadcastingInterval == 0) {
+        if (TextUtils.isEmpty(mBeaconParam.broadcastingInterval)) {
             orderTasks.add(mBeaconService.getBroadcastingInterval());
         }
         if (TextUtils.isEmpty(mBeaconParam.serialID)) {
@@ -631,12 +656,12 @@ public class DeviceInfoActivity extends Activity {
             orderTasks.add(mBeaconService.getConnectionMode());
         }
         if (!orderTasks.isEmpty()) {
-            showLoadingProgressDialog("Syncing...");
+            showSyncProgressDialog("Syncing...");
             mBeaconService.mHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     for (OrderTask ordertask : orderTasks) {
-                        mBeaconService.sendOrder(ordertask);
+                        mBeaconService.sendOrder(mBeaconService.setOvertime(), ordertask);
                     }
                 }
             }, 1000);

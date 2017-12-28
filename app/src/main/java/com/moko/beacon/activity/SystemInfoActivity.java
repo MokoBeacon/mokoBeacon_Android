@@ -1,6 +1,5 @@
 package com.moko.beacon.activity;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
@@ -41,7 +40,7 @@ import butterknife.OnClick;
  * @Description
  * @ClassPath com.moko.beacon.activity.SystemInfoActivity
  */
-public class SystemInfoActivity extends Activity {
+public class SystemInfoActivity extends BaseActivity {
     @Bind(R.id.tv_ibeacon_firmname)
     TextView tvIbeaconFirmname;
     @Bind(R.id.tv_ibeacon_device_name)

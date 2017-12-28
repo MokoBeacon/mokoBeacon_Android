@@ -1,6 +1,5 @@
 package com.moko.beacon.activity;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -34,7 +33,7 @@ import butterknife.OnClick;
  * @Description
  * @ClassPath com.moko.beacon.activity.SetBroadcastIntervalActivity
  */
-public class SetBroadcastIntervalActivity extends Activity {
+public class SetBroadcastIntervalActivity extends BaseActivity {
 
     @Bind(R.id.tv_broadcast_interval_1)
     TextView tvBroadcastInterval1;

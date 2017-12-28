@@ -1,6 +1,5 @@
 package com.moko.beacon.activity;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -34,7 +33,7 @@ import butterknife.OnClick;
  * @Description
  * @ClassPath com.moko.beacon.activity.SetTransmissionActivity
  */
-public class SetTransmissionActivity extends Activity {
+public class SetTransmissionActivity extends BaseActivity {
     @Bind(R.id.ll_transmission_grade_0)
     LinearLayout llTransmissionGrade0;
     @Bind(R.id.ll_transmission_grade_1)

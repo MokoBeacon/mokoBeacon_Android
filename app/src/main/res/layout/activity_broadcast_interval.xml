@@ -101,7 +101,7 @@
                 android:layout_height="match_parent"
                 android:background="@drawable/shape_radius_big_white_bg"
                 android:gravity="center"
-                android:tag="2"
+                android:tag="3"
                 android:text="300ms"
                 android:textColor="@color/blue_5691fc"
                 android:textSize="15sp" />

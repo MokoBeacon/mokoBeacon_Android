@@ -1,6 +1,5 @@
 package com.moko.beacon.activity;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
@@ -56,7 +55,7 @@ import butterknife.OnClick;
  * @Description
  * @ClassPath com.moko.beacon.activity.MainActivity
  */
-public class MainActivity extends Activity implements RadioGroup.OnCheckedChangeListener, ScanDeviceCallback, AdapterView.OnItemClickListener {
+public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedChangeListener, ScanDeviceCallback, AdapterView.OnItemClickListener {
 
     public static final int SORT_TYPE_RSSI = 0;
     public static final int SORT_TYPE_MAJOR = 1;
@@ -79,7 +78,6 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
     private int mSortType;
     private String mFilterText;
     private BeaconService mBeaconService;
-    private boolean mIsChangePasswordSuccess;
     private boolean mIsConnAndSyncData;
     private HashMap<String, BeaconInfo> beaconMap;
     private ArrayList<BeaconInfo> mBeaconInfosTemp;
@@ -176,32 +174,19 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
                     switch (orderType) {
                         case changePassword:
                             // 修改密码超时
+                            dismissLoadingProgressDialog();
+                            ToastUtils.showToast(MainActivity.this, "password error");
                             break;
                     }
                 }
                 if (BeaconConstants.ACTION_RESPONSE_FINISH.equals(action)) {
-                    mBeaconService.mHandler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            dismissLoadingProgressDialog();
-                            if (mIsChangePasswordSuccess) {
-                                mIsConnAndSyncData = true;
-                                LogModule.i(mBeaconParam.toString());
-                                Intent deviceInfoIntent = new Intent(MainActivity.this, DeviceInfoActivity.class);
-                                deviceInfoIntent.putExtra(BeaconConstants.EXTRA_KEY_DEVICE_PARAM, mBeaconParam);
-                                startActivityForResult(deviceInfoIntent, BeaconConstants.REQUEST_CODE_DEVICE_INFO);
-                            } else {
-                                ToastUtils.showToast(MainActivity.this, "password error");
-                            }
-                        }
-                    }, 1000);
                 }
                 if (BeaconConstants.ACTION_RESPONSE_SUCCESS.equals(action)) {
                     OrderType orderType = (OrderType) intent.getSerializableExtra(BeaconConstants.EXTRA_KEY_RESPONSE_ORDER_TYPE);
                     byte[] value = intent.getByteArrayExtra(BeaconConstants.EXTRA_KEY_RESPONSE_VALUE);
                     switch (orderType) {
                         case battery:
-                            mBeaconParam.battery = Integer.parseInt(Utils.bytesToHexString(value), 16);
+                            mBeaconParam.battery = Integer.parseInt(Utils.bytesToHexString(value), 16) + "";
                             break;
                         case iBeaconUuid:
                             String hexString = Utils.bytesToHexString(value).toUpperCase();
@@ -221,19 +206,19 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
                             }
                             break;
                         case major:
-                            mBeaconParam.major = Integer.parseInt(Utils.bytesToHexString(value), 16);
+                            mBeaconParam.major = Integer.parseInt(Utils.bytesToHexString(value), 16) + "";
                             break;
                         case minor:
-                            mBeaconParam.minor = Integer.parseInt(Utils.bytesToHexString(value), 16);
+                            mBeaconParam.minor = Integer.parseInt(Utils.bytesToHexString(value), 16) + "";
                             break;
                         case measurePower:
-                            mBeaconParam.measurePower = Integer.parseInt(Utils.bytesToHexString(value), 16);
+                            mBeaconParam.measurePower = Integer.parseInt(Utils.bytesToHexString(value), 16) + "";
                             break;
                         case transmission:
-                            mBeaconParam.transmission = Integer.parseInt(Utils.bytesToHexString(value), 16);
+                            mBeaconParam.transmission = Integer.parseInt(Utils.bytesToHexString(value), 16) + "";
                             break;
                         case broadcastingInterval:
-                            mBeaconParam.broadcastingInterval = Integer.parseInt(Utils.bytesToHexString(value), 16);
+                            mBeaconParam.broadcastingInterval = Integer.parseInt(Utils.bytesToHexString(value), 16) + "";
                             break;
                         case serialID:
                             mBeaconParam.serialID = Utils.hex2String(Utils.bytesToHexString(value));
@@ -301,7 +286,19 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
                             break;
                         case changePassword:
                             if ("00".equals(Utils.bytesToHexString(value))) {
-                                mIsChangePasswordSuccess = true;
+                                mBeaconService.mHandler.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        dismissLoadingProgressDialog();
+                                        mIsConnAndSyncData = true;
+                                        LogModule.i(mBeaconParam.toString());
+                                        Intent deviceInfoIntent = new Intent(MainActivity.this, DeviceInfoActivity.class);
+                                        deviceInfoIntent.putExtra(BeaconConstants.EXTRA_KEY_DEVICE_PARAM, mBeaconParam);
+                                        startActivityForResult(deviceInfoIntent, BeaconConstants.REQUEST_CODE_DEVICE_INFO);
+                                    }
+                                }, 1000);
+                            } else {
+                                ToastUtils.showToast(MainActivity.this, "password error");
                             }
                             break;
                     }
@@ -331,7 +328,6 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
                     // 未打开蓝牙
                     break;
                 case BeaconConstants.REQUEST_CODE_DEVICE_INFO:
-                    mIsChangePasswordSuccess = false;
                     if (!mIsScaning) {
                         mIsConnAndSyncData = false;
                         showProgressDialog();
@@ -477,7 +473,7 @@ public class MainActivity extends Activity implements RadioGroup.OnCheckedChange
 //            mBeaconService.mHandler.postDelayed(new Runnable() {
 //                @Override
 //                public void run() {
-                    mBeaconService.startScanDevice(MainActivity.this);
+            mBeaconService.startScanDevice(MainActivity.this);
 //                }
 //            }, 2000);
             mIsScaning = true;
