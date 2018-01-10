@@ -5,7 +5,8 @@ import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.v4.app.FragmentActivity;
 
-import com.moko.beaconsupport.log.LogModule;
+import com.moko.support.log.LogModule;
+
 
 public class BaseActivity extends FragmentActivity {
 

@@ -44,6 +44,7 @@ public class PasswordDialog extends BaseDialog {
         switch (view.getId()) {
             case R.id.tv_password_cancel:
                 dismiss();
+                passwordClickListener.onDismiss();
                 break;
             case R.id.tv_password_ensure:
                 dismiss();
@@ -69,6 +70,8 @@ public class PasswordDialog extends BaseDialog {
     public interface PasswordClickListener {
 
         void onEnsureClicked(String password);
+
+        void onDismiss();
     }
 
     public void showKeyboard() {

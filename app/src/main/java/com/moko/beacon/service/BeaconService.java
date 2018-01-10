@@ -6,38 +6,38 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.os.Message;
 
-import com.moko.beacon.BeaconConstants;
-import com.moko.beacon.base.BaseHandler;
-import com.moko.beaconsupport.beacon.BeaconModule;
-import com.moko.beaconsupport.callback.BeaconConnStateCallback;
-import com.moko.beaconsupport.callback.OrderTaskCallback;
-import com.moko.beaconsupport.callback.ScanDeviceCallback;
-import com.moko.beaconsupport.entity.OrderType;
-import com.moko.beaconsupport.log.LogModule;
-import com.moko.beaconsupport.task.BatteryTask;
-import com.moko.beaconsupport.task.BroadcastingIntervalTask;
-import com.moko.beaconsupport.task.ChangePasswordTask;
-import com.moko.beaconsupport.task.ChipModelTask;
-import com.moko.beaconsupport.task.ConnectionModeTask;
-import com.moko.beaconsupport.task.DevicenameTask;
-import com.moko.beaconsupport.task.FirmnameTask;
-import com.moko.beaconsupport.task.FirmwareVersionTask;
-import com.moko.beaconsupport.task.HardwareVersionTask;
-import com.moko.beaconsupport.task.IBeaconDateTask;
-import com.moko.beaconsupport.task.IBeaconMacTask;
-import com.moko.beaconsupport.task.IBeaconNameTask;
-import com.moko.beaconsupport.task.IBeaconUuidTask;
-import com.moko.beaconsupport.task.IEEEInfoTask;
-import com.moko.beaconsupport.task.MajorTask;
-import com.moko.beaconsupport.task.MeasurePowerTask;
-import com.moko.beaconsupport.task.MinorTask;
-import com.moko.beaconsupport.task.OrderTask;
-import com.moko.beaconsupport.task.OvertimeTask;
-import com.moko.beaconsupport.task.RunntimeTask;
-import com.moko.beaconsupport.task.SerialIDTask;
-import com.moko.beaconsupport.task.SoftRebootModeTask;
-import com.moko.beaconsupport.task.SystemMarkTask;
-import com.moko.beaconsupport.task.TransmissionTask;
+import com.moko.support.MokoConstants;
+import com.moko.support.MokoSupport;
+import com.moko.support.callback.MokoConnStateCallback;
+import com.moko.support.callback.MokoOrderTaskCallback;
+import com.moko.support.callback.MokoScanDeviceCallback;
+import com.moko.support.entity.OrderType;
+import com.moko.support.handler.BaseMessageHandler;
+import com.moko.support.log.LogModule;
+import com.moko.support.task.BatteryTask;
+import com.moko.support.task.BroadcastingIntervalTask;
+import com.moko.support.task.ChangePasswordTask;
+import com.moko.support.task.ChipModelTask;
+import com.moko.support.task.ConnectionModeTask;
+import com.moko.support.task.DevicenameTask;
+import com.moko.support.task.FirmnameTask;
+import com.moko.support.task.FirmwareVersionTask;
+import com.moko.support.task.HardwareVersionTask;
+import com.moko.support.task.IBeaconDateTask;
+import com.moko.support.task.IBeaconMacTask;
+import com.moko.support.task.IBeaconNameTask;
+import com.moko.support.task.IBeaconUuidTask;
+import com.moko.support.task.IEEEInfoTask;
+import com.moko.support.task.MajorTask;
+import com.moko.support.task.MeasurePowerTask;
+import com.moko.support.task.MinorTask;
+import com.moko.support.task.OrderTask;
+import com.moko.support.task.OvertimeTask;
+import com.moko.support.task.RunntimeTask;
+import com.moko.support.task.SerialIDTask;
+import com.moko.support.task.SoftRebootModeTask;
+import com.moko.support.task.SystemMarkTask;
+import com.moko.support.task.TransmissionTask;
 
 /**
  * @Date 2017/12/7 0007
@@ -45,7 +45,7 @@ import com.moko.beaconsupport.task.TransmissionTask;
  * @Description
  * @ClassPath com.moko.beacon.service.BeaconService
  */
-public class BeaconService extends Service implements BeaconConnStateCallback, OrderTaskCallback {
+public class BeaconService extends Service implements MokoConnStateCallback, MokoOrderTaskCallback {
     private IBinder mBinder = new LocalBinder();
 
     public class LocalBinder extends Binder {
@@ -75,7 +75,7 @@ public class BeaconService extends Service implements BeaconConnStateCallback, O
     @Override
     public void onDestroy() {
         LogModule.i("关闭后台服务");
-        BeaconModule.getInstance().disConnectBle();
+        MokoSupport.getInstance().disConnectBle();
         super.onDestroy();
     }
 
@@ -88,13 +88,13 @@ public class BeaconService extends Service implements BeaconConnStateCallback, O
     // 处理扫描
     ///////////////////////////////////////////////////////////////////////////
 
-    public void startScanDevice(final ScanDeviceCallback callback) {
-        BeaconModule.getInstance().startScanDevice(callback);
+    public void startScanDevice(final MokoScanDeviceCallback callback) {
+
+        MokoSupport.getInstance().startScanDevice(callback);
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                BeaconModule.getInstance().stopScanDevice();
-                callback.onStopScan();
+                MokoSupport.getInstance().stopScanDevice();
             }
         }, 4000);
     }
@@ -105,18 +105,18 @@ public class BeaconService extends Service implements BeaconConnStateCallback, O
     ///////////////////////////////////////////////////////////////////////////
 
     public void connDevice(String address) {
-        BeaconModule.getInstance().connDevice(this, address, this);
+        MokoSupport.getInstance().connDevice(this, address, this);
     }
 
     @Override
     public void onConnectSuccess() {
-        Intent intent = new Intent(BeaconConstants.ACTION_CONNECT_SUCCESS);
+        Intent intent = new Intent(MokoConstants.ACTION_CONNECT_SUCCESS);
         sendOrderedBroadcast(intent, null);
     }
 
     @Override
     public void onDisConnected() {
-        Intent intent = new Intent(BeaconConstants.ACTION_CONNECT_DISCONNECTED);
+        Intent intent = new Intent(MokoConstants.ACTION_CONNECT_DISCONNECTED);
         sendOrderedBroadcast(intent, null);
     }
 
@@ -130,16 +130,19 @@ public class BeaconService extends Service implements BeaconConnStateCallback, O
      * @Description 获取可读信息
      */
     public void getReadableData(String password) {
-        BeaconModule.getInstance().sendOrder(getBattery(), getFirmname(), getDevicename(), getiBeaconDate(),
+        MokoSupport.getInstance().sendOrder(getBattery(), getFirmname(), getDevicename(), getiBeaconDate(),
                 getHardwareVersion(), getFirmwareVersion(), getSystemMark(), getIEEEInfo(), getIBeaconUuid(),
                 getMajor(), getMinor(), getMeasurePower(), getTransmission(), getBroadcastingInterval(),
                 getSerialID(), getIBeaconName(), getConnectionMode(), getIBeaconMac(),
+                setRunntimeAndChipModelNotify(),
                 getRunntime(), getChipModel(),
-                setOvertime(), setChangePassword(password));
+                setOvertime(),
+                setChangePasswordNotify(),
+                setChangePassword(password));
     }
 
     public void sendOrder(OrderTask... orderTasks) {
-        BeaconModule.getInstance().sendOrder(orderTasks);
+        MokoSupport.getInstance().sendOrder(orderTasks);
     }
 
     public OrderTask getBattery() {
@@ -182,18 +185,28 @@ public class BeaconService extends Service implements BeaconConnStateCallback, O
         return ieeeInfoTask;
     }
 
-    public OrderTask getRunntime() {
+    public OrderTask setRunntimeAndChipModelNotify() {
         RunntimeTask runntimeTask = new RunntimeTask(this, OrderTask.RESPONSE_TYPE_NOTIFY);
         return runntimeTask;
     }
 
+    public OrderTask setChangePasswordNotify() {
+        ChangePasswordTask changePasswordTask = new ChangePasswordTask(this, OrderTask.RESPONSE_TYPE_NOTIFY);
+        return changePasswordTask;
+    }
+
+    public OrderTask getRunntime() {
+        RunntimeTask runntimeTask = new RunntimeTask(this, OrderTask.RESPONSE_TYPE_WRITE_NO_RESPONSE);
+        return runntimeTask;
+    }
+
     public OrderTask getChipModel() {
-        ChipModelTask chipModelTask = new ChipModelTask(this, OrderTask.RESPONSE_TYPE_NOTIFY);
+        ChipModelTask chipModelTask = new ChipModelTask(this, OrderTask.RESPONSE_TYPE_WRITE_NO_RESPONSE);
         return chipModelTask;
     }
 
     public OrderTask setChangePassword(String password) {
-        ChangePasswordTask changePasswordTask = new ChangePasswordTask(this, OrderTask.RESPONSE_TYPE_NOTIFY);
+        ChangePasswordTask changePasswordTask = new ChangePasswordTask(this, OrderTask.RESPONSE_TYPE_WRITE_NO_RESPONSE);
         changePasswordTask.setData(password);
         return changePasswordTask;
     }
@@ -315,29 +328,29 @@ public class BeaconService extends Service implements BeaconConnStateCallback, O
 
     @Override
     public void onOrderResult(OrderType orderType, byte[] value) {
-        Intent intent = new Intent(BeaconConstants.ACTION_RESPONSE_SUCCESS);
-        intent.putExtra(BeaconConstants.EXTRA_KEY_RESPONSE_ORDER_TYPE, orderType);
-        intent.putExtra(BeaconConstants.EXTRA_KEY_RESPONSE_VALUE, value);
+        Intent intent = new Intent(MokoConstants.ACTION_RESPONSE_SUCCESS);
+        intent.putExtra(MokoConstants.EXTRA_KEY_RESPONSE_ORDER_TYPE, orderType);
+        intent.putExtra(MokoConstants.EXTRA_KEY_RESPONSE_VALUE, value);
         sendOrderedBroadcast(intent, null);
     }
 
     @Override
     public void onOrderTimeout(OrderType orderType) {
-        Intent intent = new Intent(BeaconConstants.ACTION_RESPONSE_TIMEOUT);
-        intent.putExtra(BeaconConstants.EXTRA_KEY_RESPONSE_ORDER_TYPE, orderType);
+        Intent intent = new Intent(MokoConstants.ACTION_RESPONSE_TIMEOUT);
+        intent.putExtra(MokoConstants.EXTRA_KEY_RESPONSE_ORDER_TYPE, orderType);
         sendOrderedBroadcast(intent, null);
     }
 
     @Override
     public void onOrderFinish() {
         LogModule.i("任务完成");
-        Intent intent = new Intent(BeaconConstants.ACTION_RESPONSE_FINISH);
+        Intent intent = new Intent(MokoConstants.ACTION_RESPONSE_FINISH);
         sendOrderedBroadcast(intent, null);
     }
 
     public ServiceHandler mHandler;
 
-    public class ServiceHandler extends BaseHandler<BeaconService> {
+    public class ServiceHandler extends BaseMessageHandler<BeaconService> {
 
         public ServiceHandler(BeaconService service) {
             super(service);

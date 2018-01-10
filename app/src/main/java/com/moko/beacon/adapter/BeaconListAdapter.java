@@ -8,7 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.moko.beacon.R;
-import com.moko.beaconsupport.entity.BeaconInfo;
+import com.moko.beacon.entity.BeaconInfo;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;

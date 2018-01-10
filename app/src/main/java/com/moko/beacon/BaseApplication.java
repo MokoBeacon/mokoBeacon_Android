@@ -4,7 +4,7 @@ import android.app.Application;
 import android.content.Intent;
 
 import com.moko.beacon.service.BeaconService;
-import com.moko.beaconsupport.beacon.BeaconModule;
+import com.moko.support.MokoSupport;
 
 /**
  * @Date 2017/12/7 0007
@@ -16,7 +16,7 @@ public class BaseApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        BeaconModule.getInstance().init(getApplicationContext());
+        MokoSupport.getInstance().init(getApplicationContext());
         // 启动蓝牙服务
         startService(new Intent(this, BeaconService.class));
     }

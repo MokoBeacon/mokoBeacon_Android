@@ -22,10 +22,11 @@ import com.moko.beacon.R;
 import com.moko.beacon.entity.BeaconDeviceInfo;
 import com.moko.beacon.service.BeaconService;
 import com.moko.beacon.utils.ToastUtils;
-import com.moko.beaconsupport.beacon.BeaconModule;
-import com.moko.beaconsupport.entity.OrderType;
-import com.moko.beaconsupport.task.OrderTask;
-import com.moko.beaconsupport.utils.Utils;
+import com.moko.support.MokoConstants;
+import com.moko.support.MokoSupport;
+import com.moko.support.entity.OrderType;
+import com.moko.support.task.OrderTask;
+import com.moko.support.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -147,11 +148,11 @@ public class SystemInfoActivity extends BaseActivity {
         public void onReceive(Context context, Intent intent) {
             if (intent != null) {
                 String action = intent.getAction();
-                if (BeaconConstants.ACTION_CONNECT_DISCONNECTED.equals(action)) {
+                if (MokoConstants.ACTION_CONNECT_DISCONNECTED.equals(action)) {
                     ToastUtils.showToast(SystemInfoActivity.this, getString(R.string.alert_diconnected));
                     finish();
                 }
-                if (BeaconConstants.ACTION_RESPONSE_FINISH.equals(action)) {
+                if (MokoConstants.ACTION_RESPONSE_FINISH.equals(action)) {
                     mBeaconService.mHandler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
@@ -160,9 +161,9 @@ public class SystemInfoActivity extends BaseActivity {
                     }, 1000);
 
                 }
-                if (BeaconConstants.ACTION_RESPONSE_SUCCESS.equals(action)) {
-                    OrderType orderType = (OrderType) intent.getSerializableExtra(BeaconConstants.EXTRA_KEY_RESPONSE_ORDER_TYPE);
-                    byte[] value = intent.getByteArrayExtra(BeaconConstants.EXTRA_KEY_RESPONSE_VALUE);
+                if (MokoConstants.ACTION_RESPONSE_SUCCESS.equals(action)) {
+                    OrderType orderType = (OrderType) intent.getSerializableExtra(MokoConstants.EXTRA_KEY_RESPONSE_ORDER_TYPE);
+                    byte[] value = intent.getByteArrayExtra(MokoConstants.EXTRA_KEY_RESPONSE_VALUE);
                     switch (orderType) {
                         case iBeaconMac:
                             String hexMac = Utils.bytesToHexString(value);
@@ -241,13 +242,13 @@ public class SystemInfoActivity extends BaseActivity {
             mBeaconService = ((BeaconService.LocalBinder) service).getService();
             // 注册广播接收器
             IntentFilter filter = new IntentFilter();
-            filter.addAction(BeaconConstants.ACTION_CONNECT_DISCONNECTED);
+            filter.addAction(MokoConstants.ACTION_CONNECT_DISCONNECTED);
             filter.setPriority(300);
             registerReceiver(mReceiver, filter);
-            if (!BeaconModule.getInstance().isBluetoothOpen()) {
+            if (!MokoSupport.getInstance().isBluetoothOpen()) {
                 // 蓝牙未打开，开启蓝牙
                 Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                startActivityForResult(enableBtIntent, BeaconConstants.REQUEST_CODE_ENABLE_BT);
+                startActivityForResult(enableBtIntent, MokoConstants.REQUEST_CODE_ENABLE_BT);
             }
         }
 

@@ -17,7 +17,8 @@ import com.moko.beacon.BeaconConstants;
 import com.moko.beacon.R;
 import com.moko.beacon.service.BeaconService;
 import com.moko.beacon.utils.ToastUtils;
-import com.moko.beaconsupport.entity.OrderType;
+import com.moko.support.MokoConstants;
+import com.moko.support.entity.OrderType;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -61,13 +62,13 @@ public class SetPasswordActivity extends BaseActivity {
             abortBroadcast();
             if (intent != null) {
                 String action = intent.getAction();
-                if (BeaconConstants.ACTION_CONNECT_DISCONNECTED.equals(action)) {
+                if (MokoConstants.ACTION_CONNECT_DISCONNECTED.equals(action)) {
                     ToastUtils.showToast(SetPasswordActivity.this, getString(R.string.alert_diconnected));
                     SetPasswordActivity.this.setResult(BeaconConstants.RESULT_CONN_DISCONNECTED);
                     finish();
                 }
-                if (BeaconConstants.ACTION_RESPONSE_TIMEOUT.equals(action)) {
-                    OrderType orderType = (OrderType) intent.getSerializableExtra(BeaconConstants.EXTRA_KEY_RESPONSE_ORDER_TYPE);
+                if (MokoConstants.ACTION_RESPONSE_TIMEOUT.equals(action)) {
+                    OrderType orderType = (OrderType) intent.getSerializableExtra(MokoConstants.EXTRA_KEY_RESPONSE_ORDER_TYPE);
                     switch (orderType) {
                         case changePassword:
                             // 修改密码失败
@@ -76,8 +77,8 @@ public class SetPasswordActivity extends BaseActivity {
                             break;
                     }
                 }
-                if (BeaconConstants.ACTION_RESPONSE_SUCCESS.equals(action)) {
-                    OrderType orderType = (OrderType) intent.getSerializableExtra(BeaconConstants.EXTRA_KEY_RESPONSE_ORDER_TYPE);
+                if (MokoConstants.ACTION_RESPONSE_SUCCESS.equals(action)) {
+                    OrderType orderType = (OrderType) intent.getSerializableExtra(MokoConstants.EXTRA_KEY_RESPONSE_ORDER_TYPE);
                     switch (orderType) {
                         case changePassword:
                             // 修改密码成功
@@ -99,11 +100,11 @@ public class SetPasswordActivity extends BaseActivity {
             mBeaconService = ((BeaconService.LocalBinder) service).getService();
             // 注册广播接收器
             IntentFilter filter = new IntentFilter();
-            filter.addAction(BeaconConstants.ACTION_CONNECT_SUCCESS);
-            filter.addAction(BeaconConstants.ACTION_CONNECT_DISCONNECTED);
-            filter.addAction(BeaconConstants.ACTION_RESPONSE_SUCCESS);
-            filter.addAction(BeaconConstants.ACTION_RESPONSE_TIMEOUT);
-            filter.addAction(BeaconConstants.ACTION_RESPONSE_FINISH);
+            filter.addAction(MokoConstants.ACTION_CONNECT_SUCCESS);
+            filter.addAction(MokoConstants.ACTION_CONNECT_DISCONNECTED);
+            filter.addAction(MokoConstants.ACTION_RESPONSE_SUCCESS);
+            filter.addAction(MokoConstants.ACTION_RESPONSE_TIMEOUT);
+            filter.addAction(MokoConstants.ACTION_RESPONSE_FINISH);
             filter.setPriority(300);
             registerReceiver(mReceiver, filter);
         }

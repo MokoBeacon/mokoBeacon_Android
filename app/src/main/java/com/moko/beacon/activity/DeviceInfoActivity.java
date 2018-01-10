@@ -22,10 +22,11 @@ import com.moko.beacon.R;
 import com.moko.beacon.entity.BeaconParam;
 import com.moko.beacon.service.BeaconService;
 import com.moko.beacon.utils.ToastUtils;
-import com.moko.beaconsupport.beacon.BeaconModule;
-import com.moko.beaconsupport.entity.OrderType;
-import com.moko.beaconsupport.task.OrderTask;
-import com.moko.beaconsupport.utils.Utils;
+import com.moko.support.MokoConstants;
+import com.moko.support.MokoSupport;
+import com.moko.support.entity.OrderType;
+import com.moko.support.task.OrderTask;
+import com.moko.support.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -79,7 +80,7 @@ public class DeviceInfoActivity extends BaseActivity {
             finish();
             return;
         }
-        if (BeaconModule.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
+        if (MokoSupport.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
             tvConnState.setText(getString(R.string.device_info_conn_status_connected));
         } else {
             tvConnState.setText(getString(R.string.device_info_conn_status_disconnect));
@@ -115,7 +116,7 @@ public class DeviceInfoActivity extends BaseActivity {
             if (intent != null) {
                 abortBroadcast();
                 String action = intent.getAction();
-                if (BeaconConstants.ACTION_CONNECT_SUCCESS.equals(action)) {
+                if (MokoConstants.ACTION_CONNECT_SUCCESS.equals(action)) {
                     tvConnState.setText(getString(R.string.device_info_conn_status_connected));
                     // 读取全部可读数据
                     mBeaconService.mHandler.postDelayed(new Runnable() {
@@ -125,15 +126,15 @@ public class DeviceInfoActivity extends BaseActivity {
                         }
                     }, 1000);
                 }
-                if (BeaconConstants.ACTION_CONNECT_DISCONNECTED.equals(action)) {
+                if (MokoConstants.ACTION_CONNECT_DISCONNECTED.equals(action)) {
                     tvConnState.setText(getString(R.string.device_info_conn_status_disconnect));
                     ToastUtils.showToast(DeviceInfoActivity.this, "Connect Failed");
                     dismissLoadingProgressDialog();
                     dismissSyncProgressDialog();
                 }
-                if (BeaconConstants.ACTION_RESPONSE_TIMEOUT.equals(action)) {
+                if (MokoConstants.ACTION_RESPONSE_TIMEOUT.equals(action)) {
                 }
-                if (BeaconConstants.ACTION_RESPONSE_FINISH.equals(action)) {
+                if (MokoConstants.ACTION_RESPONSE_FINISH.equals(action)) {
                     mBeaconService.mHandler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
@@ -143,9 +144,9 @@ public class DeviceInfoActivity extends BaseActivity {
                     }, 1000);
 
                 }
-                if (BeaconConstants.ACTION_RESPONSE_SUCCESS.equals(action)) {
-                    OrderType orderType = (OrderType) intent.getSerializableExtra(BeaconConstants.EXTRA_KEY_RESPONSE_ORDER_TYPE);
-                    byte[] value = intent.getByteArrayExtra(BeaconConstants.EXTRA_KEY_RESPONSE_VALUE);
+                if (MokoConstants.ACTION_RESPONSE_SUCCESS.equals(action)) {
+                    OrderType orderType = (OrderType) intent.getSerializableExtra(MokoConstants.EXTRA_KEY_RESPONSE_ORDER_TYPE);
+                    byte[] value = intent.getByteArrayExtra(MokoConstants.EXTRA_KEY_RESPONSE_VALUE);
                     switch (orderType) {
                         case battery:
                             mBeaconParam.battery = Integer.parseInt(Utils.bytesToHexString(value), 16) + "";
@@ -278,17 +279,17 @@ public class DeviceInfoActivity extends BaseActivity {
             mBeaconService = ((BeaconService.LocalBinder) service).getService();
             // 注册广播接收器
             IntentFilter filter = new IntentFilter();
-            filter.addAction(BeaconConstants.ACTION_CONNECT_SUCCESS);
-            filter.addAction(BeaconConstants.ACTION_CONNECT_DISCONNECTED);
-            filter.addAction(BeaconConstants.ACTION_RESPONSE_SUCCESS);
-            filter.addAction(BeaconConstants.ACTION_RESPONSE_TIMEOUT);
-            filter.addAction(BeaconConstants.ACTION_RESPONSE_FINISH);
+            filter.addAction(MokoConstants.ACTION_CONNECT_SUCCESS);
+            filter.addAction(MokoConstants.ACTION_CONNECT_DISCONNECTED);
+            filter.addAction(MokoConstants.ACTION_RESPONSE_SUCCESS);
+            filter.addAction(MokoConstants.ACTION_RESPONSE_TIMEOUT);
+            filter.addAction(MokoConstants.ACTION_RESPONSE_FINISH);
             filter.setPriority(200);
             registerReceiver(mReceiver, filter);
-            if (!BeaconModule.getInstance().isBluetoothOpen()) {
+            if (!MokoSupport.getInstance().isBluetoothOpen()) {
                 // 蓝牙未打开，开启蓝牙
                 Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                startActivityForResult(enableBtIntent, BeaconConstants.REQUEST_CODE_ENABLE_BT);
+                startActivityForResult(enableBtIntent, MokoConstants.REQUEST_CODE_ENABLE_BT);
             }
         }
 
@@ -307,8 +308,8 @@ public class DeviceInfoActivity extends BaseActivity {
     }
 
     private void back() {
-        if (BeaconModule.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
-            BeaconModule.getInstance().disConnectBle();
+        if (MokoSupport.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
+            MokoSupport.getInstance().disConnectBle();
         }
         finish();
     }
@@ -322,13 +323,13 @@ public class DeviceInfoActivity extends BaseActivity {
                 back();
                 break;
             case R.id.tv_conn_state:
-                if (!BeaconModule.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
+                if (!MokoSupport.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
                     mBeaconService.connDevice(mBeaconParam.iBeaconMAC);
                     showLoadingProgressDialog(getString(R.string.dialog_connecting));
                 }
                 break;
             case R.id.rl_ibeacon_uuid:
-                if (!BeaconModule.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
+                if (!MokoSupport.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
                     ToastUtils.showToast(this, getString(R.string.alert_click_reconnect));
                     return;
                 }
@@ -337,7 +338,7 @@ public class DeviceInfoActivity extends BaseActivity {
                 startActivityForResult(intent, BeaconConstants.REQUEST_CODE_SET_UUID);
                 break;
             case R.id.rl_ibeacon_major:
-                if (!BeaconModule.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
+                if (!MokoSupport.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
                     ToastUtils.showToast(this, getString(R.string.alert_click_reconnect));
                     return;
                 }
@@ -346,7 +347,7 @@ public class DeviceInfoActivity extends BaseActivity {
                 startActivityForResult(intent, BeaconConstants.REQUEST_CODE_SET_MAJOR);
                 break;
             case R.id.rl_ibeacon_minor:
-                if (!BeaconModule.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
+                if (!MokoSupport.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
                     ToastUtils.showToast(this, getString(R.string.alert_click_reconnect));
                     return;
                 }
@@ -355,7 +356,7 @@ public class DeviceInfoActivity extends BaseActivity {
                 startActivityForResult(intent, BeaconConstants.REQUEST_CODE_SET_MINOR);
                 break;
             case R.id.rl_ibeacon_measure_power:
-                if (!BeaconModule.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
+                if (!MokoSupport.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
                     ToastUtils.showToast(this, getString(R.string.alert_click_reconnect));
                     return;
                 }
@@ -364,7 +365,7 @@ public class DeviceInfoActivity extends BaseActivity {
                 startActivityForResult(intent, BeaconConstants.REQUEST_CODE_SET_MEASURE_POWER);
                 break;
             case R.id.rl_ibeacon_transmission:
-                if (!BeaconModule.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
+                if (!MokoSupport.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
                     ToastUtils.showToast(this, getString(R.string.alert_click_reconnect));
                     return;
                 }
@@ -373,7 +374,7 @@ public class DeviceInfoActivity extends BaseActivity {
                 startActivityForResult(intent, BeaconConstants.REQUEST_CODE_SET_TRANSMISSION);
                 break;
             case R.id.rl_ibeacon_broadcasting_interval:
-                if (!BeaconModule.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
+                if (!MokoSupport.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
                     ToastUtils.showToast(this, getString(R.string.alert_click_reconnect));
                     return;
                 }
@@ -382,7 +383,7 @@ public class DeviceInfoActivity extends BaseActivity {
                 startActivityForResult(intent, BeaconConstants.REQUEST_CODE_SET_BROADCASTINTERVAL);
                 break;
             case R.id.rl_ibeacon_serialID:
-                if (!BeaconModule.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
+                if (!MokoSupport.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
                     ToastUtils.showToast(this, getString(R.string.alert_click_reconnect));
                     return;
                 }
@@ -391,7 +392,7 @@ public class DeviceInfoActivity extends BaseActivity {
                 startActivityForResult(intent, BeaconConstants.REQUEST_CODE_SET_DEVICE_ID);
                 break;
             case R.id.rl_ibeacon_device_name:
-                if (!BeaconModule.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
+                if (!MokoSupport.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
                     ToastUtils.showToast(this, getString(R.string.alert_click_reconnect));
                     return;
                 }
@@ -400,7 +401,7 @@ public class DeviceInfoActivity extends BaseActivity {
                 startActivityForResult(intent, BeaconConstants.REQUEST_CODE_SET_IBEACON_NAME);
                 break;
             case R.id.rl_ibeacon_device_conn_mode:
-                if (!BeaconModule.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
+                if (!MokoSupport.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
                     ToastUtils.showToast(this, getString(R.string.alert_click_reconnect));
                     return;
                 }
@@ -409,7 +410,7 @@ public class DeviceInfoActivity extends BaseActivity {
                 startActivityForResult(intent, BeaconConstants.REQUEST_CODE_SET_CONNECTION_MODE);
                 break;
             case R.id.rl_ibeacon_change_password:
-                if (!BeaconModule.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
+                if (!MokoSupport.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
                     ToastUtils.showToast(this, getString(R.string.alert_click_reconnect));
                     return;
                 }
@@ -417,7 +418,7 @@ public class DeviceInfoActivity extends BaseActivity {
                 startActivityForResult(intent, BeaconConstants.REQUEST_CODE_SET_PASSWORD);
                 break;
             case R.id.rl_ibeacon_device_info:
-                if (!BeaconModule.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
+                if (!MokoSupport.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
                     ToastUtils.showToast(this, getString(R.string.alert_click_reconnect));
                     return;
                 }

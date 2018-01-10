@@ -1,1 +1,1 @@
-include ':app', ':beaconsupport'
+include ':app', ':mokosupport'
