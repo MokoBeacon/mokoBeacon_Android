@@ -13,21 +13,14 @@ public class DeviceInfo implements Serializable {
     public int rssi;
     public String mac;
     public String scanRecord;
-    public String saveDate;
-    public String productDate;
-    public String version;
-
 
     @Override
     public String toString() {
-        return "DeviceInfo{" +
+        return "BeaconInfo{" +
                 "name='" + name + '\'' +
                 ", rssi=" + rssi +
                 ", mac='" + mac + '\'' +
                 ", scanRecord='" + scanRecord + '\'' +
-                ", saveDate='" + saveDate + '\'' +
-                ", productDate='" + productDate + '\'' +
-                ", version='" + version + '\'' +
                 '}';
     }
 }
