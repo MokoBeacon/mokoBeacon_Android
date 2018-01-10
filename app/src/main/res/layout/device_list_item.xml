@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/white_ffffff"
     android:orientation="vertical">
 
     <View
@@ -12,8 +13,6 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white_ffffff"
-        android:paddingBottom="12dp"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
         android:paddingTop="12dp">
@@ -141,15 +140,31 @@
         </LinearLayout>
 
         <TextView
-            android:id="@+id/tv_device_uuid"
+            android:id="@+id/tv_device_three_axis"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/ll_device_info_3"
-            android:layout_marginTop="9dp"
+            android:layout_marginLeft="31dp"
+            android:layout_marginTop="6dp"
             android:singleLine="true"
-            android:text="UUID:Unknown"
-            android:textColor="@color/black_333333"
-            android:textSize="12sp" />
+            android:text="3-Axes:X:AA;Y:BB;Z:CC"
+            android:textColor="@color/grey_737373"
+            android:textSize="12sp"
+            android:visibility="gone" />
 
     </RelativeLayout>
+
+    <TextView
+        android:id="@+id/tv_device_uuid"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/ll_device_info_3"
+        android:paddingBottom="12dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingTop="9dp"
+        android:singleLine="true"
+        android:text="UUID:Unknown"
+        android:textColor="@color/black_333333"
+        android:textSize="12sp" />
 </LinearLayout>

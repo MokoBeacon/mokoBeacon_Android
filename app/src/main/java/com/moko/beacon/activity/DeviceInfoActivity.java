@@ -241,8 +241,8 @@ public class DeviceInfoActivity extends BaseActivity {
                         case firmwareVersion:
                             mBeaconParam.beaconInfo.firmwareVersion = Utils.hex2String(Utils.bytesToHexString(value));
                             break;
-                        case runtimeAndChipModel:
-                            if ("0004".equals(Utils.bytesToHexString(Arrays.copyOfRange(value, 0, 2)))) {
+                        case writeAndNotify:
+                            if ("ea59".equals(Utils.bytesToHexString(Arrays.copyOfRange(value, 0, 2)).toLowerCase())) {
                                 byte[] runtimeBytes = Arrays.copyOfRange(value, 2, value.length);
                                 int runtime = Integer.parseInt(Utils.bytesToHexString(runtimeBytes), 16);
                                 int runtimeDays = runtime / (60 * 60 * 24);
@@ -251,7 +251,7 @@ public class DeviceInfoActivity extends BaseActivity {
                                 int runtimeSeconds = (runtime % (60)) / 1000;
                                 mBeaconParam.beaconInfo.runtime = String.format("%dD%dh%dm%ds", runtimeDays, runtimeHours, runtimeMinutes, runtimeSeconds);
                             }
-                            if ("000c".equals(Utils.bytesToHexString(Arrays.copyOfRange(value, 0, 2)).toLowerCase())) {
+                            if ("ea5b".equals(Utils.bytesToHexString(Arrays.copyOfRange(value, 0, 2)).toLowerCase())) {
                                 byte[] chipModelBytes = Arrays.copyOfRange(value, 2, value.length);
                                 mBeaconParam.beaconInfo.chipModel = Utils.hex2String(Utils.bytesToHexString(chipModelBytes));
                             }

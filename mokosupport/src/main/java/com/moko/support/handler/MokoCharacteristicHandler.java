@@ -113,10 +113,10 @@ public class MokoCharacteristicHandler {
                     if (TextUtils.isEmpty(characteristicUuid)) {
                         continue;
                     }
-                    // 运行时间
-                    if (characteristicUuid.equals(OrderType.runtimeAndChipModel.getUuid())) {
+                    // 写和通知
+                    if (characteristicUuid.equals(OrderType.writeAndNotify.getUuid())) {
                         gatt.setCharacteristicNotification(characteristic, true);
-                        mokoCharacteristicMap.put(OrderType.runtimeAndChipModel, new MokoCharacteristic(characteristic, OrderType.runtimeAndChipModel));
+                        mokoCharacteristicMap.put(OrderType.writeAndNotify, new MokoCharacteristic(characteristic, OrderType.writeAndNotify));
                         continue;
                     }
                     // uuid

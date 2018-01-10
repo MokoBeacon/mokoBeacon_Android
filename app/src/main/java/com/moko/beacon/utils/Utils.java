@@ -4,6 +4,11 @@ import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 
+import com.moko.beacon.entity.BeaconInfo;
+import com.moko.support.entity.DeviceInfo;
+
+import java.text.DecimalFormat;
+
 /**
  * @Date 2017/12/7 0007
  * @Author wenzheng.liu
@@ -15,6 +20,7 @@ public class Utils {
      * A - 发射端和接收端相隔1米时的信号强度
      */
     private static final double n_Value = 2.0;/** n - 环境衰减因子*/
+
 
     /**
      * @Date 2017/12/11 0011

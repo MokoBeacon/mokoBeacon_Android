@@ -1,6 +1,7 @@
 package com.moko.beacon.adapter;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,6 +56,13 @@ public class BeaconListAdapter extends BeaconBaseAdapter<BeaconInfo> {
             holder.ivBatteryPower.setImageResource(R.drawable.battery_1);
         }
         holder.tvDeviceConnState.setText(device.isConnected ? "CONN:YES" : "CONN:NO");
+        if (TextUtils.isEmpty(device.threeAxis)) {
+            holder.tvDeviceThreeAxis.setVisibility(View.GONE);
+        } else {
+            holder.tvDeviceThreeAxis.setVisibility(View.VISIBLE);
+            String axis = String.format("3-Axis:X:%s;Y:%s;Z:%s", device.threeAxis.substring(0, 4), device.threeAxis.substring(4, 8), device.threeAxis.substring(8, 12));
+            holder.tvDeviceThreeAxis.setText(axis);
+        }
     }
 
     @Override
@@ -86,6 +94,8 @@ public class BeaconListAdapter extends BeaconBaseAdapter<BeaconInfo> {
         TextView tvDeviceMac;
         @Bind(R.id.tv_device_uuid)
         TextView tvDeviceUuid;
+        @Bind(R.id.tv_device_three_axis)
+        TextView tvDeviceThreeAxis;
 
         public DeviceViewHolder(View convertView) {
             super(convertView);

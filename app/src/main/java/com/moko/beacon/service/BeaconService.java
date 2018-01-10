@@ -37,6 +37,7 @@ import com.moko.support.task.RunntimeTask;
 import com.moko.support.task.SerialIDTask;
 import com.moko.support.task.SoftRebootModeTask;
 import com.moko.support.task.SystemMarkTask;
+import com.moko.support.task.ThreeAxesTask;
 import com.moko.support.task.TransmissionTask;
 
 /**
@@ -203,6 +204,12 @@ public class BeaconService extends Service implements MokoConnStateCallback, Mok
     public OrderTask getChipModel() {
         ChipModelTask chipModelTask = new ChipModelTask(this, OrderTask.RESPONSE_TYPE_WRITE_NO_RESPONSE);
         return chipModelTask;
+    }
+
+    public OrderTask setThreeAxes(boolean isOpen) {
+        ThreeAxesTask threeAxesTask = new ThreeAxesTask(this, OrderTask.RESPONSE_TYPE_WRITE_NO_RESPONSE);
+        threeAxesTask.setData(isOpen);
+        return threeAxesTask;
     }
 
     public OrderTask setChangePassword(String password) {

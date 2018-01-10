@@ -25,8 +25,8 @@ public enum OrderType implements Serializable {
     systemMark("systemMark", "00002a23-0000-1000-8000-00805f9b34fb"),
     // IEEE标准信息
     IEEEInfo("IEEEInfo", "00002a2a-0000-1000-8000-00805f9b34fb"),
-    // 运行总时间和芯片类型
-    runtimeAndChipModel("runtimeAndChipModel", "0000ffe0-0000-1000-8000-00805f9b34fb"),
+    // 带写和通知的特征
+    writeAndNotify("writeAndNotify", "0000ffe0-0000-1000-8000-00805f9b34fb"),
     // UUID
     iBeaconUuid("iBeaconUuid", "0000ff01-0000-1000-8000-00805f9b34fb"),
     // major

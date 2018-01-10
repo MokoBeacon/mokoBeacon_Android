@@ -15,7 +15,7 @@ public class ChipModelTask extends OrderTask {
     public byte[] data;
 
     public ChipModelTask(MokoOrderTaskCallback callback, int sendDataType) {
-        super(OrderType.runtimeAndChipModel, callback, sendDataType);
+        super(OrderType.writeAndNotify, callback, sendDataType);
         setData();
     }
 

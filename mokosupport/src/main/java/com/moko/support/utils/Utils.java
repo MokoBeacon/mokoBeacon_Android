@@ -11,7 +11,7 @@ import java.util.List;
  * @Date 2017/12/7 0007
  * @Author wenzheng.liu
  * @Description
- * @ClassPath com.moko.beacon.utils.Utils
+ * @ClassPath com.moko.support.utils.Utils
  */
 public class Utils {
     /**

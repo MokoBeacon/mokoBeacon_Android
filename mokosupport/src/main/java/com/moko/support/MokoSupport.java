@@ -28,7 +28,6 @@ import com.moko.support.utils.BleConnectionCompat;
 import com.moko.support.utils.Utils;
 
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.UUID;
 import java.util.concurrent.BlockingQueue;
@@ -386,15 +385,8 @@ public class MokoSupport implements MokoResponseCallback {
             OrderTask orderTask = mQueue.peek();
             if (value != null && value.length > 0) {
                 switch (orderTask.orderType) {
-                    case runtimeAndChipModel:
-                        if ("59".equals(Utils.byte2HexString(value[1]))) {
-                            byte[] runtime = Arrays.copyOfRange(value, 2, value.length);
-                            formatCommonOrder(orderTask, runtime);
-                        }
-                        if ("5b".equals(Utils.byte2HexString(value[1]).toLowerCase())) {
-                            byte[] chipModel = Arrays.copyOfRange(value, 2, value.length);
-                            formatCommonOrder(orderTask, chipModel);
-                        }
+                    case writeAndNotify:
+                        formatCommonOrder(orderTask, value);
                         break;
                     case changePassword:
                         formatCommonOrder(orderTask, value);

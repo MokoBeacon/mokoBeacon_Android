@@ -8,23 +8,23 @@ import com.moko.support.entity.OrderType;
  * @Date 2017/12/14 0014
  * @Author wenzheng.liu
  * @Description
- * @ClassPath com.moko.support.task.RunntimeTask
+ * @ClassPath com.moko.support.task.ThreeAxesTask
  */
-public class RunntimeTask extends OrderTask {
+public class ThreeAxesTask extends OrderTask {
 
     public byte[] data;
 
-    public RunntimeTask(MokoOrderTaskCallback callback, int sendDataType) {
+    public ThreeAxesTask(MokoOrderTaskCallback callback, int sendDataType) {
         super(OrderType.writeAndNotify, callback, sendDataType);
-        setData();
     }
 
-    public void setData() {
-        data = new byte[4];
+    public void setData(boolean isOpen) {
+        data = new byte[5];
         data[0] = Integer.valueOf(Integer.toHexString(234), 16).byteValue();
-        data[1] = (byte) 89;
+        data[1] = (byte) 91;
         data[2] = 0;
         data[3] = 0;
+        data[4] = (byte) (isOpen ? 0 : 1);
     }
 
     @Override

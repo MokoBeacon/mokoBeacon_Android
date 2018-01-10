@@ -22,6 +22,7 @@ public class BeaconInfo implements Serializable{
     public int batteryPower;
     public int version;
     public String scanRecord;
+    public String threeAxis;
 
     @Override
     public String toString() {
