@@ -32,6 +32,8 @@ public class BeaconParam implements Serializable {
     public BeaconDeviceInfo beaconInfo;
     // 密码
     public String password;
+    // 三轴数据
+    public String threeAxis;
 
     @Override
     public String toString() {

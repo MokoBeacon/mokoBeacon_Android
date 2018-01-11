@@ -159,6 +159,7 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
                     mBeaconParam = new BeaconParam();
                     BeaconDeviceInfo beaconInfo = new BeaconDeviceInfo();
                     mBeaconParam.beaconInfo = beaconInfo;
+                    mBeaconParam.threeAxis = mThreeAxis;
                     // 读取全部可读数据
                     mBeaconService.mHandler.postDelayed(new Runnable() {
                         @Override
@@ -278,8 +279,8 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
                             mBeaconParam.beaconInfo.firmwareVersion = Utils.hex2String(Utils.bytesToHexString(value));
                             break;
                         case writeAndNotify:
-                            if ("ea59".equals(Utils.bytesToHexString(Arrays.copyOfRange(value, 0, 2)).toLowerCase())) {
-                                byte[] runtimeBytes = Arrays.copyOfRange(value, 2, value.length);
+                            if ("eb59".equals(Utils.bytesToHexString(Arrays.copyOfRange(value, 0, 2)).toLowerCase())) {
+                                byte[] runtimeBytes = Arrays.copyOfRange(value, 4, value.length);
                                 int runtime = Integer.parseInt(Utils.bytesToHexString(runtimeBytes), 16);
                                 int runtimeDays = runtime / (60 * 60 * 24);
                                 int runtimeHours = (runtime % (60 * 60 * 24)) / (60 * 60);
@@ -287,8 +288,8 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
                                 int runtimeSeconds = (runtime % (60)) / 1000;
                                 mBeaconParam.beaconInfo.runtime = String.format("%dD%dh%dm%ds", runtimeDays, runtimeHours, runtimeMinutes, runtimeSeconds);
                             }
-                            if ("ea5b".equals(Utils.bytesToHexString(Arrays.copyOfRange(value, 0, 2)).toLowerCase())) {
-                                byte[] chipModelBytes = Arrays.copyOfRange(value, 2, value.length);
+                            if ("eb5b".equals(Utils.bytesToHexString(Arrays.copyOfRange(value, 0, 2)).toLowerCase())) {
+                                byte[] chipModelBytes = Arrays.copyOfRange(value, 4, value.length);
                                 mBeaconParam.beaconInfo.chipModel = Utils.hex2String(Utils.bytesToHexString(chipModelBytes));
                             }
                             break;
@@ -514,6 +515,7 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
 
     private BeaconParam mBeaconParam;
     private String mPassword;
+    private String mThreeAxis;
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -527,6 +529,7 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
                 public void onEnsureClicked(String password) {
                     LogModule.i(password);
                     mPassword = password;
+                    mThreeAxis = beaconInfo.threeAxis;
                     mBeaconService.connDevice(beaconInfo.mac);
                     showLoadingProgressDialog();
                 }

@@ -3,6 +3,7 @@ package com.moko.beacon;
 public class BeaconConstants {
     // data time pattern
     public static final String PATTERN_HH_MM = "HH:mm";
+    public static final String PATTERN_HH_MM_SS = "HH:mm:ss";
     public static final String PATTERN_YYYY_MM_DD = "yyyy-MM-dd";
     public static final String PATTERN_MM_DD = "MM/dd";
     public static final String PATTERN_MM_DD_2 = "MM-dd";
@@ -39,6 +40,7 @@ public class BeaconConstants {
     public static final int REQUEST_CODE_SET_CONNECTION_MODE = 110;
     public static final int REQUEST_CODE_SET_PASSWORD = 111;
     public static final int REQUEST_CODE_SET_SYSTEM_INFO = 112;
+    public static final int REQUEST_CODE_SET_THREE_AXIS = 113;
     // result_code
     public static final int RESULT_CONN_DISCONNECTED = 2;
 }

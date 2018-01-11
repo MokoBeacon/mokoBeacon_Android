@@ -396,12 +396,17 @@ public class MokoSupport implements MokoResponseCallback {
         } else {
             OrderType orderType = null;
             // 延时应答
+            if (characteristic.getUuid().toString().equals(OrderType.writeAndNotify.getUuid())) {
+                // 写通知命令
+                orderType = OrderType.writeAndNotify;
+            }
+
             if (orderType != null) {
                 LogModule.i(orderType.getName());
                 Intent intent = new Intent(MokoConstants.ACTION_RESPONSE_NOTIFY);
                 intent.putExtra(MokoConstants.EXTRA_KEY_RESPONSE_ORDER_TYPE, orderType);
                 intent.putExtra(MokoConstants.EXTRA_KEY_RESPONSE_VALUE, value);
-                mContext.sendBroadcast(intent);
+                mContext.sendOrderedBroadcast(intent, null);
             }
         }
 

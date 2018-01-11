@@ -67,17 +67,13 @@ public class CommonParseUtils {
         String versionBinary = isConnected ? "0" + versionStr.substring(1, versionStr.length()) : versionStr;
         int version = Integer.parseInt(Utils.binaryString2hexString(versionBinary), 16);
         // services
-        int acc;
+        int acc = (int) scanRecord[startByte + 37] & 0xff;
         String threeAxis = null;
         if (((int) scanRecord[startByte + 30] & 0xff) == 0x01
                 && ((int) scanRecord[startByte + 31] & 0xff) == 0xff) {
-            acc = (int) scanRecord[startByte + 24] & 0xff;
             byte[] threeAxisBytes = new byte[6];
-            System.arraycopy(scanRecord, startByte + 38, threeAxisBytes, 0, 6);
+            System.arraycopy(scanRecord, startByte + 39, threeAxisBytes, 0, 6);
             threeAxis = Utils.bytesToHexString(threeAxisBytes).toUpperCase();
-        } else {
-            // distance acc
-            acc = (int) scanRecord[startByte + 37] & 0xff;
         }
         String mac = device.mac;
         double distance = Utils.getDistance(device.rssi, acc);

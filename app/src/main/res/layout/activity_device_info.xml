@@ -414,6 +414,36 @@
             </RelativeLayout>
 
             <RelativeLayout
+                android:id="@+id/rl_ibeacon_three_axis"
+                android:layout_width="match_parent"
+                android:layout_height="49dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="@string/device_info_three_axis"
+                    android:textColor="@color/black_333333"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/tv_ibeacon_three_axis"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentRight="true"
+                    android:drawablePadding="15dp"
+                    android:drawableRight="@drawable/right_arrow"
+                    android:gravity="center"
+                    android:text=""
+                    android:textColor="@color/black_333333"
+                    android:textSize="15sp" />
+
+                <View
+                    style="@style/divider_line"
+                    android:layout_alignParentBottom="true" />
+            </RelativeLayout>
+
+            <RelativeLayout
                 android:id="@+id/rl_ibeacon_device_info"
                 android:layout_width="match_parent"
                 android:layout_height="49dp">

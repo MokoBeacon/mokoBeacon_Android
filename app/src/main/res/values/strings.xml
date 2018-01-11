@@ -95,4 +95,5 @@
     <string name="alert_minor_range">Reasonable range of 0-65535.</string>
     <string name="main_scan">Scaning...</string>
     <string name="tips_connection_mode">Tip:YES:iBeacon is connectable.NO:iBeacon isn\'t connectable</string>
+    <string name="device_info_three_axis">3-Axis Accelerometer</string>
 </resources>

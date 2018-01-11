@@ -24,6 +24,7 @@ public class BeaconInfo implements Serializable{
     public String scanRecord;
     public String threeAxis;
 
+
     @Override
     public String toString() {
         return "BeaconInfo{" +
@@ -33,13 +34,14 @@ public class BeaconInfo implements Serializable{
                 ", distanceDesc='" + distanceDesc + '\'' +
                 ", major=" + major +
                 ", minor=" + minor +
-                ", isConnected='" + isConnected + '\'' +
+                ", isConnected=" + isConnected +
                 ", txPower=" + txPower +
                 ", mac='" + mac + '\'' +
                 ", uuid='" + uuid + '\'' +
                 ", batteryPower=" + batteryPower +
                 ", version=" + version +
                 ", scanRecord='" + scanRecord + '\'' +
+                ", threeAxis='" + threeAxis + '\'' +
                 '}';
     }
 }

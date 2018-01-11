@@ -21,9 +21,9 @@ public class ThreeAxesTask extends OrderTask {
     public void setData(boolean isOpen) {
         data = new byte[5];
         data[0] = Integer.valueOf(Integer.toHexString(234), 16).byteValue();
-        data[1] = (byte) 91;
+        data[1] = (byte) 108;
         data[2] = 0;
-        data[3] = 0;
+        data[3] = 1;
         data[4] = (byte) (isOpen ? 0 : 1);
     }
 

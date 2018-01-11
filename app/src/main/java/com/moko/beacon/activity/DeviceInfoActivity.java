@@ -15,6 +15,7 @@ import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.moko.beacon.BeaconConstants;
@@ -66,6 +67,8 @@ public class DeviceInfoActivity extends BaseActivity {
     TextView tvIbeaconDeviceName;
     @Bind(R.id.tv_ibeacon_device_conn_mode)
     TextView tvIbeaconDeviceConnMode;
+    @Bind(R.id.rl_ibeacon_three_axis)
+    RelativeLayout rlIbeaconThreeAxis;
     private BeaconService mBeaconService;
     private BeaconParam mBeaconParam;
 
@@ -80,6 +83,7 @@ public class DeviceInfoActivity extends BaseActivity {
             finish();
             return;
         }
+        rlIbeaconThreeAxis.setVisibility(!TextUtils.isEmpty(mBeaconParam.threeAxis) ? View.VISIBLE : View.GONE);
         if (MokoSupport.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
             tvConnState.setText(getString(R.string.device_info_conn_status_connected));
         } else {
@@ -242,8 +246,8 @@ public class DeviceInfoActivity extends BaseActivity {
                             mBeaconParam.beaconInfo.firmwareVersion = Utils.hex2String(Utils.bytesToHexString(value));
                             break;
                         case writeAndNotify:
-                            if ("ea59".equals(Utils.bytesToHexString(Arrays.copyOfRange(value, 0, 2)).toLowerCase())) {
-                                byte[] runtimeBytes = Arrays.copyOfRange(value, 2, value.length);
+                            if ("eb59".equals(Utils.bytesToHexString(Arrays.copyOfRange(value, 0, 2)).toLowerCase())) {
+                                byte[] runtimeBytes = Arrays.copyOfRange(value, 4, value.length);
                                 int runtime = Integer.parseInt(Utils.bytesToHexString(runtimeBytes), 16);
                                 int runtimeDays = runtime / (60 * 60 * 24);
                                 int runtimeHours = (runtime % (60 * 60 * 24)) / (60 * 60);
@@ -251,8 +255,8 @@ public class DeviceInfoActivity extends BaseActivity {
                                 int runtimeSeconds = (runtime % (60)) / 1000;
                                 mBeaconParam.beaconInfo.runtime = String.format("%dD%dh%dm%ds", runtimeDays, runtimeHours, runtimeMinutes, runtimeSeconds);
                             }
-                            if ("ea5b".equals(Utils.bytesToHexString(Arrays.copyOfRange(value, 0, 2)).toLowerCase())) {
-                                byte[] chipModelBytes = Arrays.copyOfRange(value, 2, value.length);
+                            if ("eb5b".equals(Utils.bytesToHexString(Arrays.copyOfRange(value, 0, 2)).toLowerCase())) {
+                                byte[] chipModelBytes = Arrays.copyOfRange(value, 4, value.length);
                                 mBeaconParam.beaconInfo.chipModel = Utils.hex2String(Utils.bytesToHexString(chipModelBytes));
                             }
                             break;
@@ -315,7 +319,11 @@ public class DeviceInfoActivity extends BaseActivity {
     }
 
 
-    @OnClick({R.id.tv_back, R.id.tv_conn_state, R.id.rl_ibeacon_battery, R.id.rl_ibeacon_uuid, R.id.rl_ibeacon_major, R.id.rl_ibeacon_minor, R.id.rl_ibeacon_measure_power, R.id.rl_ibeacon_transmission, R.id.rl_ibeacon_broadcasting_interval, R.id.rl_ibeacon_serialID, R.id.rl_ibeacon_mac, R.id.rl_ibeacon_device_name, R.id.rl_ibeacon_device_conn_mode, R.id.rl_ibeacon_change_password, R.id.rl_ibeacon_device_info})
+    @OnClick({R.id.tv_back, R.id.tv_conn_state, R.id.rl_ibeacon_battery, R.id.rl_ibeacon_uuid,
+            R.id.rl_ibeacon_major, R.id.rl_ibeacon_minor, R.id.rl_ibeacon_measure_power,
+            R.id.rl_ibeacon_transmission, R.id.rl_ibeacon_broadcasting_interval, R.id.rl_ibeacon_serialID,
+            R.id.rl_ibeacon_mac, R.id.rl_ibeacon_device_name, R.id.rl_ibeacon_device_conn_mode,
+            R.id.rl_ibeacon_change_password, R.id.rl_ibeacon_device_info, R.id.rl_ibeacon_three_axis})
     public void onClick(View view) {
         Intent intent;
         switch (view.getId()) {
@@ -425,6 +433,14 @@ public class DeviceInfoActivity extends BaseActivity {
                 intent = new Intent(this, SystemInfoActivity.class);
                 intent.putExtra(BeaconConstants.EXTRA_KEY_DEVICE_INFO, mBeaconParam.beaconInfo);
                 startActivityForResult(intent, BeaconConstants.REQUEST_CODE_SET_SYSTEM_INFO);
+                break;
+            case R.id.rl_ibeacon_three_axis:
+                if (!MokoSupport.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
+                    ToastUtils.showToast(this, getString(R.string.alert_click_reconnect));
+                    return;
+                }
+                intent = new Intent(this, ThreeAxesActivity.class);
+                startActivityForResult(intent, BeaconConstants.REQUEST_CODE_SET_THREE_AXIS);
                 break;
             case R.id.rl_ibeacon_mac:
                 ToastUtils.showToast(this, getString(R.string.device_info_cannot_modify));
