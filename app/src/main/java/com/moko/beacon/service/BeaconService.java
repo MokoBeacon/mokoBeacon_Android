@@ -31,6 +31,7 @@ import com.moko.support.task.IEEEInfoTask;
 import com.moko.support.task.MajorTask;
 import com.moko.support.task.MeasurePowerTask;
 import com.moko.support.task.MinorTask;
+import com.moko.support.task.NotifyTask;
 import com.moko.support.task.OrderTask;
 import com.moko.support.task.OvertimeTask;
 import com.moko.support.task.RunntimeTask;
@@ -135,7 +136,7 @@ public class BeaconService extends Service implements MokoConnStateCallback, Mok
                 getHardwareVersion(), getFirmwareVersion(), getSystemMark(), getIEEEInfo(), getIBeaconUuid(),
                 getMajor(), getMinor(), getMeasurePower(), getTransmission(), getBroadcastingInterval(),
                 getSerialID(), getIBeaconName(), getConnectionMode(), getIBeaconMac(),
-                setRunntimeAndChipModelNotify(),
+                setNotify(),
                 getRunntime(), getChipModel(),
                 setOvertime(),
                 setChangePasswordNotify(),
@@ -186,9 +187,9 @@ public class BeaconService extends Service implements MokoConnStateCallback, Mok
         return ieeeInfoTask;
     }
 
-    public OrderTask setRunntimeAndChipModelNotify() {
-        RunntimeTask runntimeTask = new RunntimeTask(this, OrderTask.RESPONSE_TYPE_NOTIFY);
-        return runntimeTask;
+    public OrderTask setNotify() {
+        NotifyTask notifyTask = new NotifyTask(this, OrderTask.RESPONSE_TYPE_NOTIFY);
+        return notifyTask;
     }
 
     public OrderTask setChangePasswordNotify() {
@@ -318,8 +319,8 @@ public class BeaconService extends Service implements MokoConnStateCallback, Mok
         return connectionModeTask;
     }
 
-    public OrderTask getSoftReboot() {
-        SoftRebootModeTask softRebootModeTask = new SoftRebootModeTask(this, OrderTask.RESPONSE_TYPE_READ);
+    public OrderTask setSoftReboot() {
+        SoftRebootModeTask softRebootModeTask = new SoftRebootModeTask(this, OrderTask.RESPONSE_TYPE_WRITE);
         return softRebootModeTask;
     }
 

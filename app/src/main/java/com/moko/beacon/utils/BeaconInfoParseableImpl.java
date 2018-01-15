@@ -2,6 +2,7 @@ package com.moko.beacon.utils;
 
 import com.moko.beacon.entity.BeaconInfo;
 import com.moko.support.entity.DeviceInfo;
+import com.moko.support.service.DeviceInfoParseable;
 import com.moko.support.utils.Utils;
 
 import java.text.DecimalFormat;
@@ -10,11 +11,13 @@ import java.text.DecimalFormat;
  * @Date 2018/1/10
  * @Author wenzheng.liu
  * @Description 通用解析工具类
- * @ClassPath com.moko.beacon.utils.CommonParseUtils
+ * @ClassPath com.moko.beacon.utils.BeaconInfoParseableImpl
  */
-public class CommonParseUtils {
-    public static BeaconInfo parceDeviceInfo(DeviceInfo device) {
-        byte[] scanRecord = Utils.hex2bytes(device.scanRecord);
+public class BeaconInfoParseableImpl implements DeviceInfoParseable<BeaconInfo> {
+
+    @Override
+    public BeaconInfo parseDeviceInfo(DeviceInfo deviceInfo) {
+        byte[] scanRecord = Utils.hex2bytes(deviceInfo.scanRecord);
         int startByte = 2;
         boolean patternFound = false;
         // iBeacon filter 0215
@@ -75,8 +78,8 @@ public class CommonParseUtils {
             System.arraycopy(scanRecord, startByte + 39, threeAxisBytes, 0, 6);
             threeAxis = Utils.bytesToHexString(threeAxisBytes).toUpperCase();
         }
-        String mac = device.mac;
-        double distance = Utils.getDistance(device.rssi, acc);
+        String mac = deviceInfo.mac;
+        double distance = Utils.getDistance(deviceInfo.rssi, acc);
         String distanceDesc = "unknown";
         if (distance <= 0.1) {
             distanceDesc = "immediate";
@@ -88,8 +91,8 @@ public class CommonParseUtils {
         // ========================================================
         String distanceStr = new DecimalFormat("#0.00").format(distance);
         BeaconInfo beaconInfo = new BeaconInfo();
-        beaconInfo.name = device.name;
-        beaconInfo.rssi = device.rssi;
+        beaconInfo.name = deviceInfo.name;
+        beaconInfo.rssi = deviceInfo.rssi;
         beaconInfo.distance = distanceStr;
         beaconInfo.distanceDesc = distanceDesc;
         beaconInfo.major = major;

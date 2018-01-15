@@ -15,7 +15,7 @@ import com.moko.support.utils.Utils;
  * @Date 2017/5/10
  * @Author wenzheng.liu
  * @Description 自定义蓝牙连接回调
- * @ClassPath com.fitpolo.support.bluetooth.CustomGattCallback
+ * @ClassPath com.moko.support.bluetooth.CustomGattCallback
  */
 public class MokoConnStateHandler extends BluetoothGattCallback {
 

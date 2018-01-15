@@ -6,7 +6,7 @@ import com.moko.support.entity.OrderType;
  * @Date 2017/5/10
  * @Author wenzheng.liu
  * @Description 返回数据回调类
- * @ClassPath com.fitpolo.support.callback.OrderCallback
+ * @ClassPath com.moko.support.callback.OrderCallback
  */
 public interface MokoOrderTaskCallback {
 

@@ -30,7 +30,7 @@ import com.moko.beacon.entity.BeaconDeviceInfo;
 import com.moko.beacon.entity.BeaconInfo;
 import com.moko.beacon.entity.BeaconParam;
 import com.moko.beacon.service.BeaconService;
-import com.moko.beacon.utils.CommonParseUtils;
+import com.moko.beacon.utils.BeaconInfoParseableImpl;
 import com.moko.beacon.utils.ToastUtils;
 import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
@@ -397,7 +397,7 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
 
     @Override
     public void onScanDevice(DeviceInfo device) {
-        BeaconInfo beaconInfo = CommonParseUtils.parceDeviceInfo(device);
+        BeaconInfo beaconInfo = new BeaconInfoParseableImpl().parseDeviceInfo(device);
         if (beaconInfo == null) {
             return;
         }
