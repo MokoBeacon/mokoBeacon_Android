@@ -6,7 +6,7 @@ import android.bluetooth.BluetoothGattCharacteristic;
  * @Date 2017/12/12 0012
  * @Author wenzheng.liu
  * @Description
- * @ClassPath com.moko.beaconsupport.callback.MokoResponseCallback
+ * @ClassPath com.moko.support.callback.MokoResponseCallback
  */
 public interface MokoResponseCallback {
 

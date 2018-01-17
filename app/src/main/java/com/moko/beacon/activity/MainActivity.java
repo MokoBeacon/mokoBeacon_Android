@@ -172,6 +172,12 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
                 if (MokoConstants.ACTION_CONNECT_DISCONNECTED.equals(action)) {
                     dismissLoadingProgressDialog();
                     ToastUtils.showToast(MainActivity.this, "connect failed");
+                    if (!MokoSupport.getInstance().isBluetoothOpen()) {
+                        // 蓝牙未打开，开启蓝牙
+                        Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                        startActivityForResult(enableBtIntent, MokoConstants.REQUEST_CODE_ENABLE_BT);
+                        return;
+                    }
                     if (!mIsScaning) {
                         mIsConnAndSyncData = false;
                         mBeaconService.startScanDevice(MainActivity.this);
@@ -185,6 +191,12 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
                             // 修改密码超时
                             dismissLoadingProgressDialog();
                             ToastUtils.showToast(MainActivity.this, "password error");
+                            if (!MokoSupport.getInstance().isBluetoothOpen()) {
+                                // 蓝牙未打开，开启蓝牙
+                                Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                                startActivityForResult(enableBtIntent, MokoConstants.REQUEST_CODE_ENABLE_BT);
+                                return;
+                            }
                             if (!mIsScaning) {
                                 mIsConnAndSyncData = false;
                                 mBeaconService.startScanDevice(MainActivity.this);
@@ -311,12 +323,18 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
                                     }
                                 }, 1000);
                             } else {
+                                ToastUtils.showToast(MainActivity.this, "password error");
+                                if (!MokoSupport.getInstance().isBluetoothOpen()) {
+                                    // 蓝牙未打开，开启蓝牙
+                                    Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                                    startActivityForResult(enableBtIntent, MokoConstants.REQUEST_CODE_ENABLE_BT);
+                                    return;
+                                }
                                 if (!mIsScaning) {
                                     mIsConnAndSyncData = false;
                                     mBeaconService.startScanDevice(MainActivity.this);
                                     mIsScaning = true;
                                 }
-                                ToastUtils.showToast(MainActivity.this, "password error");
                             }
                             break;
                     }
@@ -346,6 +364,12 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
                     // 未打开蓝牙
                     break;
                 case BeaconConstants.REQUEST_CODE_DEVICE_INFO:
+                    if (!MokoSupport.getInstance().isBluetoothOpen()) {
+                        // 蓝牙未打开，开启蓝牙
+                        Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                        startActivityForResult(enableBtIntent, MokoConstants.REQUEST_CODE_ENABLE_BT);
+                        return;
+                    }
                     if (!mIsScaning) {
                         mIsConnAndSyncData = false;
                         showProgressDialog();
@@ -519,6 +543,12 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        if (!MokoSupport.getInstance().isBluetoothOpen()) {
+            // 蓝牙未打开，开启蓝牙
+            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableBtIntent, MokoConstants.REQUEST_CODE_ENABLE_BT);
+            return;
+        }
         final BeaconInfo beaconInfo = (BeaconInfo) parent.getItemAtPosition(position);
         LogModule.i(beaconInfo.toString());
         mIsConnAndSyncData = true;
@@ -527,6 +557,12 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
             dialog.setOnPasswordClicked(new PasswordDialog.PasswordClickListener() {
                 @Override
                 public void onEnsureClicked(String password) {
+                    if (!MokoSupport.getInstance().isBluetoothOpen()) {
+                        // 蓝牙未打开，开启蓝牙
+                        Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                        startActivityForResult(enableBtIntent, MokoConstants.REQUEST_CODE_ENABLE_BT);
+                        return;
+                    }
                     LogModule.i(password);
                     mPassword = password;
                     mThreeAxis = beaconInfo.threeAxis;
@@ -536,6 +572,12 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
 
                 @Override
                 public void onDismiss() {
+                    if (!MokoSupport.getInstance().isBluetoothOpen()) {
+                        // 蓝牙未打开，开启蓝牙
+                        Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                        startActivityForResult(enableBtIntent, MokoConstants.REQUEST_CODE_ENABLE_BT);
+                        return;
+                    }
                     if (!mIsScaning) {
                         mIsConnAndSyncData = false;
                         mBeaconService.startScanDevice(MainActivity.this);

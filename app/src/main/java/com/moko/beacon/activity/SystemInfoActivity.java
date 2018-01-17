@@ -128,6 +128,10 @@ public class SystemInfoActivity extends BaseActivity {
             tvIbeaconIeeeInfo.setText(mBeaconDeviceInfo.IEEEInfo);
         }
         if (!orderTasks.isEmpty()) {
+            if (!MokoSupport.getInstance().isBluetoothOpen()) {
+                ToastUtils.showToast(this, "bluetooth is closed,please open");
+                return;
+            }
             showLoadingProgressDialog();
             for (OrderTask ordertask : orderTasks) {
                 mBeaconService.sendOrder(ordertask);

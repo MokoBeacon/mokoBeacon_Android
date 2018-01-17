@@ -18,6 +18,7 @@ import com.moko.beacon.R;
 import com.moko.beacon.service.BeaconService;
 import com.moko.beacon.utils.ToastUtils;
 import com.moko.support.MokoConstants;
+import com.moko.support.MokoSupport;
 import com.moko.support.entity.OrderType;
 
 import butterknife.Bind;
@@ -119,6 +120,10 @@ public class SetMeasurePowerActivity extends BaseActivity {
                 finish();
                 break;
             case R.id.iv_save:
+                if (!MokoSupport.getInstance().isBluetoothOpen()) {
+                    ToastUtils.showToast(this, "bluetooth is closed,please open");
+                    return;
+                }
                 if (TextUtils.isEmpty(etMeasurePower.getText().toString())) {
                     ToastUtils.showToast(this, getString(R.string.alert_data_cannot_null));
                     return;

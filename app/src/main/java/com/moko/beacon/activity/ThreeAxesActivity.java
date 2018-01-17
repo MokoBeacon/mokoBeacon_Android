@@ -13,6 +13,7 @@ import android.support.annotation.Nullable;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.moko.beacon.BeaconConstants;
@@ -20,6 +21,7 @@ import com.moko.beacon.R;
 import com.moko.beacon.service.BeaconService;
 import com.moko.beacon.utils.ToastUtils;
 import com.moko.support.MokoConstants;
+import com.moko.support.MokoSupport;
 import com.moko.support.entity.OrderType;
 import com.moko.support.log.LogModule;
 import com.moko.support.utils.Utils;
@@ -41,6 +43,10 @@ public class ThreeAxesActivity extends BaseActivity {
 
     @Bind(R.id.tv_device_three_axis)
     TextView tvDeviceThreeAxis;
+    @Bind(R.id.tv_stop)
+    TextView tvStop;
+    @Bind(R.id.scroll_view)
+    ScrollView scrollView;
     private BeaconService mBeaconService;
     private StringBuilder builder;
     private SimpleDateFormat simpleDateFormat;
@@ -96,9 +102,11 @@ public class ThreeAxesActivity extends BaseActivity {
                                 if (isBack) {
                                     finish();
                                 } else {
+                                    tvStop.setText("Start");
                                     LogModule.i("三轴加速度计关闭");
                                 }
                             } else {
+                                tvStop.setText("Stop");
                                 LogModule.i("三轴加速度计打开");
                             }
                             break;
@@ -115,6 +123,12 @@ public class ThreeAxesActivity extends BaseActivity {
                                 builder.append(String.format("----<X：%s；Y：%s；Z：%s>", threeAxisStr.substring(8, 12), threeAxisStr.substring(12, 16), threeAxisStr.substring(16, 20)));
                                 builder.append("\n");
                                 tvDeviceThreeAxis.setText(builder.toString());
+                                scrollView.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        scrollView.fullScroll(ScrollView.FOCUS_DOWN);
+                                    }
+                                });
                             }
                             break;
                     }
@@ -138,6 +152,10 @@ public class ThreeAxesActivity extends BaseActivity {
             filter.addAction(MokoConstants.ACTION_RESPONSE_NOTIFY);
             filter.setPriority(300);
             registerReceiver(mReceiver, filter);
+            if (!MokoSupport.getInstance().isBluetoothOpen()) {
+                ToastUtils.showToast(ThreeAxesActivity.this, "bluetooth is closed,please open");
+                return;
+            }
             showLoadingProgressDialog("");
             mBeaconService.sendOrder(mBeaconService.setThreeAxes(true));
             isNotifyOn = true;
@@ -155,9 +173,19 @@ public class ThreeAxesActivity extends BaseActivity {
                 back();
                 break;
             case R.id.tv_stop:
-                showLoadingProgressDialog("");
-                mBeaconService.sendOrder(mBeaconService.setThreeAxes(false));
-                isNotifyOn = false;
+                if (!MokoSupport.getInstance().isBluetoothOpen()) {
+                    ToastUtils.showToast(this, "bluetooth is closed,please open");
+                    return;
+                }
+                if (isNotifyOn) {
+                    showLoadingProgressDialog("");
+                    mBeaconService.sendOrder(mBeaconService.setThreeAxes(false));
+                    isNotifyOn = false;
+                } else {
+                    showLoadingProgressDialog("");
+                    mBeaconService.sendOrder(mBeaconService.setThreeAxes(true));
+                    isNotifyOn = true;
+                }
                 break;
 
         }
@@ -173,6 +201,11 @@ public class ThreeAxesActivity extends BaseActivity {
     }
 
     private void back() {
+        if (!MokoSupport.getInstance().isBluetoothOpen()) {
+            ToastUtils.showToast(this, "bluetooth is closed,please open");
+            finish();
+            return;
+        }
         if (isNotifyOn) {
             showLoadingProgressDialog("");
             mBeaconService.sendOrder(mBeaconService.setThreeAxes(false));

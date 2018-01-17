@@ -331,12 +331,20 @@ public class DeviceInfoActivity extends BaseActivity {
                 back();
                 break;
             case R.id.tv_conn_state:
+                if (!MokoSupport.getInstance().isBluetoothOpen()) {
+                    ToastUtils.showToast(this, "bluetooth is closed,please open");
+                    return;
+                }
                 if (!MokoSupport.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
                     mBeaconService.connDevice(mBeaconParam.iBeaconMAC);
                     showLoadingProgressDialog(getString(R.string.dialog_connecting));
                 }
                 break;
             case R.id.rl_ibeacon_uuid:
+                if (!MokoSupport.getInstance().isBluetoothOpen()) {
+                    ToastUtils.showToast(this, "bluetooth is closed,please open");
+                    return;
+                }
                 if (!MokoSupport.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
                     ToastUtils.showToast(this, getString(R.string.alert_click_reconnect));
                     return;
@@ -346,6 +354,10 @@ public class DeviceInfoActivity extends BaseActivity {
                 startActivityForResult(intent, BeaconConstants.REQUEST_CODE_SET_UUID);
                 break;
             case R.id.rl_ibeacon_major:
+                if (!MokoSupport.getInstance().isBluetoothOpen()) {
+                    ToastUtils.showToast(this, "bluetooth is closed,please open");
+                    return;
+                }
                 if (!MokoSupport.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
                     ToastUtils.showToast(this, getString(R.string.alert_click_reconnect));
                     return;
@@ -355,6 +367,10 @@ public class DeviceInfoActivity extends BaseActivity {
                 startActivityForResult(intent, BeaconConstants.REQUEST_CODE_SET_MAJOR);
                 break;
             case R.id.rl_ibeacon_minor:
+                if (!MokoSupport.getInstance().isBluetoothOpen()) {
+                    ToastUtils.showToast(this, "bluetooth is closed,please open");
+                    return;
+                }
                 if (!MokoSupport.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
                     ToastUtils.showToast(this, getString(R.string.alert_click_reconnect));
                     return;
@@ -364,6 +380,10 @@ public class DeviceInfoActivity extends BaseActivity {
                 startActivityForResult(intent, BeaconConstants.REQUEST_CODE_SET_MINOR);
                 break;
             case R.id.rl_ibeacon_measure_power:
+                if (!MokoSupport.getInstance().isBluetoothOpen()) {
+                    ToastUtils.showToast(this, "bluetooth is closed,please open");
+                    return;
+                }
                 if (!MokoSupport.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
                     ToastUtils.showToast(this, getString(R.string.alert_click_reconnect));
                     return;
@@ -373,6 +393,10 @@ public class DeviceInfoActivity extends BaseActivity {
                 startActivityForResult(intent, BeaconConstants.REQUEST_CODE_SET_MEASURE_POWER);
                 break;
             case R.id.rl_ibeacon_transmission:
+                if (!MokoSupport.getInstance().isBluetoothOpen()) {
+                    ToastUtils.showToast(this, "bluetooth is closed,please open");
+                    return;
+                }
                 if (!MokoSupport.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
                     ToastUtils.showToast(this, getString(R.string.alert_click_reconnect));
                     return;
@@ -382,6 +406,10 @@ public class DeviceInfoActivity extends BaseActivity {
                 startActivityForResult(intent, BeaconConstants.REQUEST_CODE_SET_TRANSMISSION);
                 break;
             case R.id.rl_ibeacon_broadcasting_interval:
+                if (!MokoSupport.getInstance().isBluetoothOpen()) {
+                    ToastUtils.showToast(this, "bluetooth is closed,please open");
+                    return;
+                }
                 if (!MokoSupport.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
                     ToastUtils.showToast(this, getString(R.string.alert_click_reconnect));
                     return;
@@ -391,6 +419,10 @@ public class DeviceInfoActivity extends BaseActivity {
                 startActivityForResult(intent, BeaconConstants.REQUEST_CODE_SET_BROADCASTINTERVAL);
                 break;
             case R.id.rl_ibeacon_serialID:
+                if (!MokoSupport.getInstance().isBluetoothOpen()) {
+                    ToastUtils.showToast(this, "bluetooth is closed,please open");
+                    return;
+                }
                 if (!MokoSupport.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
                     ToastUtils.showToast(this, getString(R.string.alert_click_reconnect));
                     return;
@@ -400,6 +432,10 @@ public class DeviceInfoActivity extends BaseActivity {
                 startActivityForResult(intent, BeaconConstants.REQUEST_CODE_SET_DEVICE_ID);
                 break;
             case R.id.rl_ibeacon_device_name:
+                if (!MokoSupport.getInstance().isBluetoothOpen()) {
+                    ToastUtils.showToast(this, "bluetooth is closed,please open");
+                    return;
+                }
                 if (!MokoSupport.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
                     ToastUtils.showToast(this, getString(R.string.alert_click_reconnect));
                     return;
@@ -409,6 +445,10 @@ public class DeviceInfoActivity extends BaseActivity {
                 startActivityForResult(intent, BeaconConstants.REQUEST_CODE_SET_IBEACON_NAME);
                 break;
             case R.id.rl_ibeacon_device_conn_mode:
+                if (!MokoSupport.getInstance().isBluetoothOpen()) {
+                    ToastUtils.showToast(this, "bluetooth is closed,please open");
+                    return;
+                }
                 if (!MokoSupport.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
                     ToastUtils.showToast(this, getString(R.string.alert_click_reconnect));
                     return;
@@ -418,6 +458,10 @@ public class DeviceInfoActivity extends BaseActivity {
                 startActivityForResult(intent, BeaconConstants.REQUEST_CODE_SET_CONNECTION_MODE);
                 break;
             case R.id.rl_ibeacon_change_password:
+                if (!MokoSupport.getInstance().isBluetoothOpen()) {
+                    ToastUtils.showToast(this, "bluetooth is closed,please open");
+                    return;
+                }
                 if (!MokoSupport.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
                     ToastUtils.showToast(this, getString(R.string.alert_click_reconnect));
                     return;
@@ -426,6 +470,10 @@ public class DeviceInfoActivity extends BaseActivity {
                 startActivityForResult(intent, BeaconConstants.REQUEST_CODE_SET_PASSWORD);
                 break;
             case R.id.rl_ibeacon_device_info:
+                if (!MokoSupport.getInstance().isBluetoothOpen()) {
+                    ToastUtils.showToast(this, "bluetooth is closed,please open");
+                    return;
+                }
                 if (!MokoSupport.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
                     ToastUtils.showToast(this, getString(R.string.alert_click_reconnect));
                     return;
@@ -435,6 +483,10 @@ public class DeviceInfoActivity extends BaseActivity {
                 startActivityForResult(intent, BeaconConstants.REQUEST_CODE_SET_SYSTEM_INFO);
                 break;
             case R.id.rl_ibeacon_three_axis:
+                if (!MokoSupport.getInstance().isBluetoothOpen()) {
+                    ToastUtils.showToast(this, "bluetooth is closed,please open");
+                    return;
+                }
                 if (!MokoSupport.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
                     ToastUtils.showToast(this, getString(R.string.alert_click_reconnect));
                     return;
@@ -673,6 +725,10 @@ public class DeviceInfoActivity extends BaseActivity {
             orderTasks.add(mBeaconService.getConnectionMode());
         }
         if (!orderTasks.isEmpty()) {
+            if (!MokoSupport.getInstance().isBluetoothOpen()) {
+                ToastUtils.showToast(this, "bluetooth is closed,please open");
+                return;
+            }
             showSyncProgressDialog("Syncing...");
             mBeaconService.mHandler.postDelayed(new Runnable() {
                 @Override

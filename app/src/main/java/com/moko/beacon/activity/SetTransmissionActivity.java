@@ -20,6 +20,7 @@ import com.moko.beacon.R;
 import com.moko.beacon.service.BeaconService;
 import com.moko.beacon.utils.ToastUtils;
 import com.moko.support.MokoConstants;
+import com.moko.support.MokoSupport;
 import com.moko.support.entity.OrderType;
 
 import java.util.ArrayList;
@@ -152,6 +153,10 @@ public class SetTransmissionActivity extends BaseActivity {
                 finish();
                 break;
             case R.id.iv_save:
+                if (!MokoSupport.getInstance().isBluetoothOpen()) {
+                    ToastUtils.showToast(this, "bluetooth is closed,please open");
+                    return;
+                }
                 mBeaconService.sendOrder(mBeaconService.setTransmission(transmissionGrade));
                 break;
             case R.id.ll_transmission_grade_0:
