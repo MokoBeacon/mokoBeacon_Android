@@ -62,6 +62,7 @@
     <string name="device_info_mac">MAC地址</string>
     <string name="device_info_ibeacon_name">设备名称</string>
     <string name="tips_ibeacon_name">beacon广播的名字，只能是字母、数字和下划线，最多10个字符。</string>
+    <string name="tips_ibeacon_name_three_axis">beacon广播的名字，只能是字母、数字和下划线，最多4个字符。</string>
     <string name="device_info_connection_mode">连接模式</string>
     <string name="device_info_password">修改重启密码</string>
     <string name="tips_password">注：只能输入字母数字，长度必须为8位，修改参数后，重连后生效</string>

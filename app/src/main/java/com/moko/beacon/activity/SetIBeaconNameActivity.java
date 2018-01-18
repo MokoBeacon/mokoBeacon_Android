@@ -35,6 +35,7 @@ public class SetIBeaconNameActivity extends BaseActivity {
     @Bind(R.id.et_ibeacon_name)
     EditText etIBeaconName;
     private BeaconService mBeaconService;
+    private boolean isSupportThreeAxis;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -43,7 +44,8 @@ public class SetIBeaconNameActivity extends BaseActivity {
         ButterKnife.bind(this);
         bindService(new Intent(this, BeaconService.class), mServiceConnection, BIND_AUTO_CREATE);
         String ibeaconName = getIntent().getStringExtra(BeaconConstants.EXTRA_KEY_DEVICE_IBEACON_NAME);
-
+        String ibeaconThreeAxis = getIntent().getStringExtra(BeaconConstants.EXTRA_KEY_DEVICE_IBEACON_THREE_AXIS);
+        isSupportThreeAxis = !TextUtils.isEmpty(ibeaconThreeAxis);
         etIBeaconName.setText(ibeaconName);
         etIBeaconName.setSelection(String.valueOf(ibeaconName).length());
     }
@@ -129,8 +131,8 @@ public class SetIBeaconNameActivity extends BaseActivity {
                     ToastUtils.showToast(this, getString(R.string.alert_data_cannot_null));
                     return;
                 }
-                if (etIBeaconName.getText().toString().length() > 10){
-                    ToastUtils.showToast(this, getString(R.string.tips_ibeacon_name));
+                if (etIBeaconName.getText().toString().length() > (isSupportThreeAxis ? 4 : 10)) {
+                    ToastUtils.showToast(this, isSupportThreeAxis ? getString(R.string.tips_ibeacon_name_three_axis) : getString(R.string.tips_ibeacon_name));
                     return;
                 }
                 mBeaconService.sendOrder(mBeaconService.setIBeaconName(etIBeaconName.getText().toString()));

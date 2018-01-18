@@ -248,12 +248,15 @@ public class DeviceInfoActivity extends BaseActivity {
                         case writeAndNotify:
                             if ("eb59".equals(Utils.bytesToHexString(Arrays.copyOfRange(value, 0, 2)).toLowerCase())) {
                                 byte[] runtimeBytes = Arrays.copyOfRange(value, 4, value.length);
-                                int runtime = Integer.parseInt(Utils.bytesToHexString(runtimeBytes), 16);
-                                int runtimeDays = runtime / (60 * 60 * 24);
-                                int runtimeHours = (runtime % (60 * 60 * 24)) / (60 * 60);
-                                int runtimeMinutes = (runtime % (60 * 60)) / (60);
-                                int runtimeSeconds = (runtime % (60)) / 1000;
-                                mBeaconParam.beaconInfo.runtime = String.format("%dD%dh%dm%ds", runtimeDays, runtimeHours, runtimeMinutes, runtimeSeconds);
+                                int seconds = Integer.parseInt(Utils.bytesToHexString(runtimeBytes), 16);
+                                int day = 0, hours = 0, minutes = 0;
+                                day = seconds / (60 * 60 * 24);
+                                seconds -= day * 60 * 60 * 24;
+                                hours = seconds / (60 * 60);
+                                seconds -= hours * 60 * 60;
+                                minutes = seconds / 60;
+                                seconds -= minutes * 60;
+                                mBeaconParam.beaconInfo.runtime = String.format("%dD%dh%dm%ds", day, hours, minutes, seconds);
                             }
                             if ("eb5b".equals(Utils.bytesToHexString(Arrays.copyOfRange(value, 0, 2)).toLowerCase())) {
                                 byte[] chipModelBytes = Arrays.copyOfRange(value, 4, value.length);
@@ -442,6 +445,7 @@ public class DeviceInfoActivity extends BaseActivity {
                 }
                 intent = new Intent(this, SetIBeaconNameActivity.class);
                 intent.putExtra(BeaconConstants.EXTRA_KEY_DEVICE_IBEACON_NAME, mBeaconParam.iBeaconName);
+                intent.putExtra(BeaconConstants.EXTRA_KEY_DEVICE_IBEACON_THREE_AXIS, mBeaconParam.threeAxis);
                 startActivityForResult(intent, BeaconConstants.REQUEST_CODE_SET_IBEACON_NAME);
                 break;
             case R.id.rl_ibeacon_device_conn_mode:

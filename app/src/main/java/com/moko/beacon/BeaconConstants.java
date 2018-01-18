@@ -25,6 +25,7 @@ public class BeaconConstants {
     public static final String EXTRA_KEY_DEVICE_BROADCASTINTERVAL = "EXTRA_KEY_DEVICE_BROADCASTINTERVAL";
     public static final String EXTRA_KEY_DEVICE_DEVICE_ID = "EXTRA_KEY_DEVICE_DEVICE_ID";
     public static final String EXTRA_KEY_DEVICE_IBEACON_NAME = "EXTRA_KEY_DEVICE_IBEACON_NAME";
+    public static final String EXTRA_KEY_DEVICE_IBEACON_THREE_AXIS = "EXTRA_KEY_DEVICE_IBEACON_THREE_AXIS";
     public static final String EXTRA_KEY_DEVICE_CONNECTION_MODE = "EXTRA_KEY_DEVICE_CONNECTION_MODE";
     public static final String EXTRA_KEY_DEVICE_PASSWORD = "EXTRA_KEY_DEVICE_PASSWORD";
     // request_code

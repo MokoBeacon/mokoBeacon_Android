@@ -62,6 +62,7 @@
     <string name="device_info_mac">MAC Address</string>
     <string name="device_info_ibeacon_name">iBeacon Name</string>
     <string name="tips_ibeacon_name">Tip:The name of the radio beacon, can only be letters, Numbers, and underscores, up to 10 characters.</string>
+    <string name="tips_ibeacon_name_three_axis">Tip:The name of the radio beacon, can only be letters, Numbers, and underscores, up to 4 characters.</string>
     <string name="device_info_connection_mode">Connection Mode</string>
     <string name="device_info_password">Change password</string>
     <string name="tips_password">Tips: Enter only alphanumeric, length must for eight, after modifying parameters, reconnect to take effect.</string>
