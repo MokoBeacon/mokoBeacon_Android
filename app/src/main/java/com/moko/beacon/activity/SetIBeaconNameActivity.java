@@ -9,9 +9,11 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.text.InputFilter;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.moko.beacon.BeaconConstants;
 import com.moko.beacon.R;
@@ -34,6 +36,8 @@ import butterknife.OnClick;
 public class SetIBeaconNameActivity extends BaseActivity {
     @Bind(R.id.et_ibeacon_name)
     EditText etIBeaconName;
+    @Bind(R.id.tv_tips)
+    TextView tvTips;
     private BeaconService mBeaconService;
     private boolean isSupportThreeAxis;
 
@@ -46,8 +50,12 @@ public class SetIBeaconNameActivity extends BaseActivity {
         String ibeaconName = getIntent().getStringExtra(BeaconConstants.EXTRA_KEY_DEVICE_IBEACON_NAME);
         String ibeaconThreeAxis = getIntent().getStringExtra(BeaconConstants.EXTRA_KEY_DEVICE_IBEACON_THREE_AXIS);
         isSupportThreeAxis = !TextUtils.isEmpty(ibeaconThreeAxis);
+        ibeaconName = ibeaconName.substring(0, isSupportThreeAxis ? 4 : 10).trim();
+        InputFilter[] filters = {new InputFilter.LengthFilter(isSupportThreeAxis ? 4 : 10)};
+        etIBeaconName.setFilters(filters);
         etIBeaconName.setText(ibeaconName);
         etIBeaconName.setSelection(String.valueOf(ibeaconName).length());
+        tvTips.setText(isSupportThreeAxis ? getString(R.string.tips_ibeacon_name_three_axis) : getString(R.string.tips_ibeacon_name));
     }
 
     @Override

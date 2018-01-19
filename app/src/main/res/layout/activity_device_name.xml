@@ -46,25 +46,25 @@
         android:background="@color/grey_ebebeb"
         android:orientation="vertical">
 
-            <EditText
-                android:id="@+id/et_ibeacon_name"
-                android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginTop="20dp"
-                android:background="@drawable/shape_radius_grey_light_bg"
-                android:digits="_0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-                android:gravity="center"
-                android:maxLength="10"
-                android:paddingLeft="15dp"
-                android:paddingRight="15dp"
-                android:singleLine="true"
-                android:textColor="@color/black_333333"
-                android:textSize="12sp" />
+        <EditText
+            android:id="@+id/et_ibeacon_name"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/shape_radius_grey_light_bg"
+            android:digits="_0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+            android:gravity="center"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:singleLine="true"
+            android:textColor="@color/black_333333"
+            android:textSize="12sp" />
 
 
         <TextView
+            android:id="@+id/tv_tips"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="25dp"
