@@ -50,7 +50,7 @@ public class SetIBeaconNameActivity extends BaseActivity {
         String ibeaconName = getIntent().getStringExtra(BeaconConstants.EXTRA_KEY_DEVICE_IBEACON_NAME);
         String ibeaconThreeAxis = getIntent().getStringExtra(BeaconConstants.EXTRA_KEY_DEVICE_IBEACON_THREE_AXIS);
         isSupportThreeAxis = !TextUtils.isEmpty(ibeaconThreeAxis);
-        ibeaconName = ibeaconName.substring(0, isSupportThreeAxis ? 4 : 10).trim();
+        ibeaconName = ibeaconName.trim();
         InputFilter[] filters = {new InputFilter.LengthFilter(isSupportThreeAxis ? 4 : 10)};
         etIBeaconName.setFilters(filters);
         etIBeaconName.setText(ibeaconName);
