@@ -98,7 +98,7 @@ public class BeaconService extends Service implements MokoConnStateCallback, Mok
             public void run() {
                 MokoSupport.getInstance().stopScanDevice();
             }
-        }, 4000);
+        }, 20000);
     }
 
     public void stopScanDevice() {
