@@ -90,15 +90,8 @@ public class BeaconService extends Service implements MokoConnStateCallback, Mok
     // 处理扫描
     ///////////////////////////////////////////////////////////////////////////
 
-    public void startScanDevice(final MokoScanDeviceCallback callback) {
-
+    public void startScanDevice(MokoScanDeviceCallback callback) {
         MokoSupport.getInstance().startScanDevice(callback);
-        mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                MokoSupport.getInstance().stopScanDevice();
-            }
-        }, 20000);
     }
 
     public void stopScanDevice() {

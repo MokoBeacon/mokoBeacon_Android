@@ -10,6 +10,13 @@
         android:background="@color/blue_5691fc"
         android:paddingBottom="12dp">
 
+        <ImageView
+            android:id="@+id/iv_refresh"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:src="@drawable/refresh" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
