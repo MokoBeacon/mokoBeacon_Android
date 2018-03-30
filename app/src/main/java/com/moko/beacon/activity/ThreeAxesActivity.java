@@ -24,7 +24,8 @@ import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
 import com.moko.support.entity.OrderType;
 import com.moko.support.log.LogModule;
-import com.moko.support.utils.Utils;
+import com.moko.support.utils.MokoUtils;
+import com.moko.support.utils.MokoUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -118,7 +119,7 @@ public class ThreeAxesActivity extends BaseActivity {
                     switch (orderType) {
                         case writeAndNotify:
                             builder.append(simpleDateFormat.format(Calendar.getInstance().getTime()));
-                            String threeAxisStr = Utils.bytesToHexString(value);
+                            String threeAxisStr = MokoUtils.bytesToHexString(value);
                             if (threeAxisStr.length() >= 20) {
                                 builder.append(String.format("----<X：%s；Y：%s；Z：%s>", threeAxisStr.substring(8, 12), threeAxisStr.substring(12, 16), threeAxisStr.substring(16, 20)));
                                 builder.append("\n");

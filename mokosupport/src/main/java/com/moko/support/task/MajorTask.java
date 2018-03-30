@@ -2,7 +2,7 @@ package com.moko.support.task;
 
 import com.moko.support.callback.MokoOrderTaskCallback;
 import com.moko.support.entity.OrderType;
-import com.moko.support.utils.Utils;
+import com.moko.support.utils.MokoUtils;
 
 /**
  * @Date 2017/12/14 0014
@@ -19,7 +19,7 @@ public class MajorTask extends OrderTask {
     }
 
     public void setData(int marjor) {
-        byte[] marjorBytes = Utils.hex2bytes(Integer.toHexString(marjor));
+        byte[] marjorBytes = MokoUtils.hex2bytes(Integer.toHexString(marjor));
         if (marjorBytes.length < 2) {
             data = new byte[2];
             data[0] = 0;

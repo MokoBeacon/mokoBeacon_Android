@@ -5,7 +5,8 @@ import android.text.TextUtils;
 
 import com.moko.support.callback.MokoScanDeviceCallback;
 import com.moko.support.entity.DeviceInfo;
-import com.moko.support.utils.Utils;
+import com.moko.support.utils.MokoUtils;
+import com.moko.support.utils.MokoUtils;
 
 import no.nordicsemi.android.support.v18.scanner.ScanCallback;
 import no.nordicsemi.android.support.v18.scanner.ScanResult;
@@ -36,7 +37,7 @@ public class MokoLeScanHandler extends ScanCallback {
             deviceInfo.name = device.getName();
             deviceInfo.rssi = rssi;
             deviceInfo.mac = device.getAddress();
-            String scanRecordStr = Utils.bytesToHexString(scanRecord);
+            String scanRecordStr = MokoUtils.bytesToHexString(scanRecord);
             deviceInfo.scanRecord = scanRecordStr;
             deviceInfo.scanResult = result;
             callback.onScanDevice(deviceInfo);

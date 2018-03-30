@@ -8,25 +8,9 @@ import android.content.pm.PackageManager;
  * @Date 2017/12/7 0007
  * @Author wenzheng.liu
  * @Description
- * @ClassPath com.moko.beacon.utils.Utils
+ * @ClassPath com.moko.beacon.utils.MokoUtils
  */
 public class Utils {
-    /**
-     * A - 发射端和接收端相隔1米时的信号强度
-     */
-    private static final double n_Value = 2.0;/** n - 环境衰减因子*/
-
-
-    /**
-     * @Date 2017/12/11 0011
-     * @Author wenzheng.liu
-     * @Description 根据Rssi获得返回的距离, 返回数据单位为m
-     */
-    public static double getDistance(int rssi, int acc) {
-        int iRssi = Math.abs(rssi);
-        double power = (iRssi - acc) / (10 * n_Value);
-        return Math.pow(10, power);
-    }
 
     public static String getVersionInfo(Context context) {
         // 获取packagemanager的实例

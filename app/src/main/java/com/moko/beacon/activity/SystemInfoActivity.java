@@ -26,7 +26,8 @@ import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
 import com.moko.support.entity.OrderType;
 import com.moko.support.task.OrderTask;
-import com.moko.support.utils.Utils;
+import com.moko.support.utils.MokoUtils;
+import com.moko.support.utils.MokoUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -170,7 +171,7 @@ public class SystemInfoActivity extends BaseActivity {
                     byte[] value = intent.getByteArrayExtra(MokoConstants.EXTRA_KEY_RESPONSE_VALUE);
                     switch (orderType) {
                         case iBeaconMac:
-                            String hexMac = Utils.bytesToHexString(value);
+                            String hexMac = MokoUtils.bytesToHexString(value);
                             if (hexMac.length() > 11) {
                                 StringBuilder sb = new StringBuilder();
                                 sb.append(hexMac.substring(0, 2));
@@ -190,29 +191,29 @@ public class SystemInfoActivity extends BaseActivity {
                             }
                             break;
                         case firmname:
-                            mBeaconDeviceInfo.firmname = Utils.hex2String(Utils.bytesToHexString(value));
+                            mBeaconDeviceInfo.firmname = MokoUtils.hex2String(MokoUtils.bytesToHexString(value));
                             tvIbeaconFirmname.setText(mBeaconDeviceInfo.firmname);
                             break;
                         case devicename:
-                            mBeaconDeviceInfo.deviceName = Utils.hex2String(Utils.bytesToHexString(value));
+                            mBeaconDeviceInfo.deviceName = MokoUtils.hex2String(MokoUtils.bytesToHexString(value));
                             tvIbeaconDeviceName.setText(mBeaconDeviceInfo.deviceName);
                             break;
                         case iBeaconDate:
-                            mBeaconDeviceInfo.iBeaconDate = Utils.hex2String(Utils.bytesToHexString(value));
+                            mBeaconDeviceInfo.iBeaconDate = MokoUtils.hex2String(MokoUtils.bytesToHexString(value));
                             tvIbeaconDate.setText(mBeaconDeviceInfo.iBeaconDate);
                             break;
                         case hardwareVersion:
-                            mBeaconDeviceInfo.hardwareVersion = Utils.hex2String(Utils.bytesToHexString(value));
+                            mBeaconDeviceInfo.hardwareVersion = MokoUtils.hex2String(MokoUtils.bytesToHexString(value));
                             tvIbeaconHardwareVersion.setText(mBeaconDeviceInfo.hardwareVersion);
                             break;
                         case firmwareVersion:
-                            mBeaconDeviceInfo.firmwareVersion = Utils.hex2String(Utils.bytesToHexString(value));
+                            mBeaconDeviceInfo.firmwareVersion = MokoUtils.hex2String(MokoUtils.bytesToHexString(value));
                             tvIbeaconFirmwareVersion.setText(mBeaconDeviceInfo.firmwareVersion);
                             break;
                         case writeAndNotify:
-                            if ("eb59".equals(Utils.bytesToHexString(Arrays.copyOfRange(value, 0, 2)).toLowerCase())) {
+                            if ("eb59".equals(MokoUtils.bytesToHexString(Arrays.copyOfRange(value, 0, 2)).toLowerCase())) {
                                 byte[] runtimeBytes = Arrays.copyOfRange(value, 4, value.length);
-                                int seconds = Integer.parseInt(Utils.bytesToHexString(runtimeBytes), 16);
+                                int seconds = Integer.parseInt(MokoUtils.bytesToHexString(runtimeBytes), 16);
                                 int day = 0, hours = 0, minutes = 0;
                                 day = seconds / (60 * 60 * 24);
                                 seconds -= day * 60 * 60 * 24;
@@ -223,17 +224,17 @@ public class SystemInfoActivity extends BaseActivity {
                                 mBeaconDeviceInfo.runtime = String.format("%dD%dh%dm%ds", day, hours, minutes, seconds);
                                 tvIbeaconRuntime.setText(mBeaconDeviceInfo.runtime);
                             }
-                            if ("eb5b".equals(Utils.bytesToHexString(Arrays.copyOfRange(value, 0, 2)).toLowerCase())) {
+                            if ("eb5b".equals(MokoUtils.bytesToHexString(Arrays.copyOfRange(value, 0, 2)).toLowerCase())) {
                                 byte[] chipModelBytes = Arrays.copyOfRange(value, 4, value.length);
-                                mBeaconDeviceInfo.chipModel = Utils.hex2String(Utils.bytesToHexString(chipModelBytes));
+                                mBeaconDeviceInfo.chipModel = MokoUtils.hex2String(MokoUtils.bytesToHexString(chipModelBytes));
                                 tvIbeaconChipMode.setText(mBeaconDeviceInfo.chipModel);
                             }
                             break;
                         case systemMark:
-                            mBeaconDeviceInfo.systemMark = Utils.bytesToHexString(value);
+                            mBeaconDeviceInfo.systemMark = MokoUtils.bytesToHexString(value);
                             tvIbeaconSystemMark.setText(mBeaconDeviceInfo.systemMark);
                         case IEEEInfo:
-                            mBeaconDeviceInfo.IEEEInfo = Utils.bytesToHexString(value);
+                            mBeaconDeviceInfo.IEEEInfo = MokoUtils.bytesToHexString(value);
                             tvIbeaconIeeeInfo.setText(mBeaconDeviceInfo.IEEEInfo);
                             break;
                     }

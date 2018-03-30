@@ -25,7 +25,8 @@ import com.moko.support.handler.MokoLeScanHandler;
 import com.moko.support.log.LogModule;
 import com.moko.support.task.OrderTask;
 import com.moko.support.utils.BleConnectionCompat;
-import com.moko.support.utils.Utils;
+import com.moko.support.utils.MokoUtils;
+import com.moko.support.utils.MokoUtils;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -313,7 +314,7 @@ public class MokoSupport implements MokoResponseCallback {
     // 发送可写命令
     private void sendWriteOrder(OrderTask orderTask, final MokoCharacteristic mokoCharacteristic) {
         LogModule.i("app to device write : " + orderTask.orderType.getName());
-        LogModule.i(Utils.bytesToHexString(orderTask.assemble()));
+        LogModule.i(MokoUtils.bytesToHexString(orderTask.assemble()));
         mokoCharacteristic.characteristic.setValue(orderTask.assemble());
         mHandler.post(new Runnable() {
             @Override
@@ -326,7 +327,7 @@ public class MokoSupport implements MokoResponseCallback {
     // 发送可写无应答命令
     private void sendWriteNoResponseOrder(OrderTask orderTask, final MokoCharacteristic mokoCharacteristic) {
         LogModule.i("app to device write no response : " + orderTask.orderType.getName());
-        LogModule.i(Utils.bytesToHexString(orderTask.assemble()));
+        LogModule.i(MokoUtils.bytesToHexString(orderTask.assemble()));
         mokoCharacteristic.characteristic.setValue(orderTask.assemble());
         mokoCharacteristic.characteristic.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE);
         mHandler.post(new Runnable() {
@@ -356,7 +357,7 @@ public class MokoSupport implements MokoResponseCallback {
             return;
         }
         LogModule.i("app to device write no response : " + orderTask.orderType.getName());
-        LogModule.i(Utils.bytesToHexString(orderTask.assemble()));
+        LogModule.i(MokoUtils.bytesToHexString(orderTask.assemble()));
         mokoCharacteristic.characteristic.setValue(orderTask.assemble());
         mokoCharacteristic.characteristic.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE);
         mHandler.post(new Runnable() {

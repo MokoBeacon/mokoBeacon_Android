@@ -41,7 +41,8 @@ import com.moko.support.callback.MokoScanDeviceCallback;
 import com.moko.support.entity.DeviceInfo;
 import com.moko.support.entity.OrderType;
 import com.moko.support.log.LogModule;
-import com.moko.support.utils.Utils;
+import com.moko.support.utils.MokoUtils;
+import com.moko.support.utils.MokoUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -191,10 +192,10 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
                     byte[] value = intent.getByteArrayExtra(MokoConstants.EXTRA_KEY_RESPONSE_VALUE);
                     switch (orderType) {
                         case battery:
-                            mBeaconParam.battery = Integer.parseInt(Utils.bytesToHexString(value), 16) + "";
+                            mBeaconParam.battery = Integer.parseInt(MokoUtils.bytesToHexString(value), 16) + "";
                             break;
                         case iBeaconUuid:
-                            String hexString = Utils.bytesToHexString(value).toUpperCase();
+                            String hexString = MokoUtils.bytesToHexString(value).toUpperCase();
                             if (hexString.length() > 31) {
                                 StringBuilder sb = new StringBuilder();
                                 sb.append(hexString.substring(0, 8));
@@ -211,25 +212,25 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
                             }
                             break;
                         case major:
-                            mBeaconParam.major = Integer.parseInt(Utils.bytesToHexString(value), 16) + "";
+                            mBeaconParam.major = Integer.parseInt(MokoUtils.bytesToHexString(value), 16) + "";
                             break;
                         case minor:
-                            mBeaconParam.minor = Integer.parseInt(Utils.bytesToHexString(value), 16) + "";
+                            mBeaconParam.minor = Integer.parseInt(MokoUtils.bytesToHexString(value), 16) + "";
                             break;
                         case measurePower:
-                            mBeaconParam.measurePower = Integer.parseInt(Utils.bytesToHexString(value), 16) + "";
+                            mBeaconParam.measurePower = Integer.parseInt(MokoUtils.bytesToHexString(value), 16) + "";
                             break;
                         case transmission:
-                            mBeaconParam.transmission = Integer.parseInt(Utils.bytesToHexString(value), 16) + "";
+                            mBeaconParam.transmission = Integer.parseInt(MokoUtils.bytesToHexString(value), 16) + "";
                             break;
                         case broadcastingInterval:
-                            mBeaconParam.broadcastingInterval = Integer.parseInt(Utils.bytesToHexString(value), 16) + "";
+                            mBeaconParam.broadcastingInterval = Integer.parseInt(MokoUtils.bytesToHexString(value), 16) + "";
                             break;
                         case serialID:
-                            mBeaconParam.serialID = Utils.hex2String(Utils.bytesToHexString(value));
+                            mBeaconParam.serialID = MokoUtils.hex2String(MokoUtils.bytesToHexString(value));
                             break;
                         case iBeaconMac:
-                            String hexMac = Utils.bytesToHexString(value);
+                            String hexMac = MokoUtils.bytesToHexString(value);
                             if (hexMac.length() > 11) {
                                 StringBuilder sb = new StringBuilder();
                                 sb.append(hexMac.substring(0, 2));
@@ -249,30 +250,30 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
                             }
                             break;
                         case iBeaconName:
-                            mBeaconParam.iBeaconName = Utils.hex2String(Utils.bytesToHexString(value));
+                            mBeaconParam.iBeaconName = MokoUtils.hex2String(MokoUtils.bytesToHexString(value));
                             break;
                         case connectionMode:
-                            mBeaconParam.connectionMode = Utils.bytesToHexString(value);
+                            mBeaconParam.connectionMode = MokoUtils.bytesToHexString(value);
                             break;
                         case firmname:
-                            mBeaconParam.beaconInfo.firmname = Utils.hex2String(Utils.bytesToHexString(value));
+                            mBeaconParam.beaconInfo.firmname = MokoUtils.hex2String(MokoUtils.bytesToHexString(value));
                             break;
                         case devicename:
-                            mBeaconParam.beaconInfo.deviceName = Utils.hex2String(Utils.bytesToHexString(value));
+                            mBeaconParam.beaconInfo.deviceName = MokoUtils.hex2String(MokoUtils.bytesToHexString(value));
                             break;
                         case iBeaconDate:
-                            mBeaconParam.beaconInfo.iBeaconDate = Utils.hex2String(Utils.bytesToHexString(value));
+                            mBeaconParam.beaconInfo.iBeaconDate = MokoUtils.hex2String(MokoUtils.bytesToHexString(value));
                             break;
                         case hardwareVersion:
-                            mBeaconParam.beaconInfo.hardwareVersion = Utils.hex2String(Utils.bytesToHexString(value));
+                            mBeaconParam.beaconInfo.hardwareVersion = MokoUtils.hex2String(MokoUtils.bytesToHexString(value));
                             break;
                         case firmwareVersion:
-                            mBeaconParam.beaconInfo.firmwareVersion = Utils.hex2String(Utils.bytesToHexString(value));
+                            mBeaconParam.beaconInfo.firmwareVersion = MokoUtils.hex2String(MokoUtils.bytesToHexString(value));
                             break;
                         case writeAndNotify:
-                            if ("eb59".equals(Utils.bytesToHexString(Arrays.copyOfRange(value, 0, 2)).toLowerCase())) {
+                            if ("eb59".equals(MokoUtils.bytesToHexString(Arrays.copyOfRange(value, 0, 2)).toLowerCase())) {
                                 byte[] runtimeBytes = Arrays.copyOfRange(value, 4, value.length);
-                                int seconds = Integer.parseInt(Utils.bytesToHexString(runtimeBytes), 16);
+                                int seconds = Integer.parseInt(MokoUtils.bytesToHexString(runtimeBytes), 16);
                                 int day = 0, hours = 0, minutes = 0;
                                 day = seconds / (60 * 60 * 24);
                                 seconds -= day * 60 * 60 * 24;
@@ -282,18 +283,18 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
                                 seconds -= minutes * 60;
                                 mBeaconParam.beaconInfo.runtime = String.format("%dD%dh%dm%ds", day, hours, minutes, seconds);
                             }
-                            if ("eb5b".equals(Utils.bytesToHexString(Arrays.copyOfRange(value, 0, 2)).toLowerCase())) {
+                            if ("eb5b".equals(MokoUtils.bytesToHexString(Arrays.copyOfRange(value, 0, 2)).toLowerCase())) {
                                 byte[] chipModelBytes = Arrays.copyOfRange(value, 4, value.length);
-                                mBeaconParam.beaconInfo.chipModel = Utils.hex2String(Utils.bytesToHexString(chipModelBytes));
+                                mBeaconParam.beaconInfo.chipModel = MokoUtils.hex2String(MokoUtils.bytesToHexString(chipModelBytes));
                             }
                             break;
                         case systemMark:
-                            mBeaconParam.beaconInfo.systemMark = Utils.bytesToHexString(value);
+                            mBeaconParam.beaconInfo.systemMark = MokoUtils.bytesToHexString(value);
                         case IEEEInfo:
-                            mBeaconParam.beaconInfo.IEEEInfo = Utils.bytesToHexString(value);
+                            mBeaconParam.beaconInfo.IEEEInfo = MokoUtils.bytesToHexString(value);
                             break;
                         case changePassword:
-                            if ("00".equals(Utils.bytesToHexString(value))) {
+                            if ("00".equals(MokoUtils.bytesToHexString(value))) {
                                 mBeaconService.mHandler.postDelayed(new Runnable() {
                                     @Override
                                     public void run() {

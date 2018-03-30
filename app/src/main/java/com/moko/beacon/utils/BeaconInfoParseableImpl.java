@@ -7,7 +7,8 @@ import android.util.SparseArray;
 import com.moko.beacon.entity.BeaconInfo;
 import com.moko.support.entity.DeviceInfo;
 import com.moko.support.service.DeviceInfoParseable;
-import com.moko.support.utils.Utils;
+import com.moko.support.utils.MokoUtils;
+import com.moko.support.utils.MokoUtils;
 
 import java.text.DecimalFormat;
 import java.util.Map;
@@ -29,13 +30,13 @@ public class BeaconInfoParseableImpl implements DeviceInfoParseable<BeaconInfo> 
         if (manufacturer == null || manufacturer.size() == 0) {
             return null;
         }
-        String manufacturerSpecificData = Utils.bytesToHexString(result.getScanRecord().getManufacturerSpecificData(manufacturer.keyAt(0)));
+        String manufacturerSpecificData = MokoUtils.bytesToHexString(result.getScanRecord().getManufacturerSpecificData(manufacturer.keyAt(0)));
         if (!manufacturerSpecificData.startsWith("0215")) {
             return null;
         }
         // 0215fda50693a4e24fb1afcfc6eb0764782500000000c5
         // 0215e2c56db5dffb48d2b060d0f5a71096e000000000b0
-        // LogModule.i("ManufacturerSpecificData:" + Utils.bytesToHexString(result.getScanRecord().getManufacturerSpecificData(manufacturer.keyAt(0))));
+        // LogModule.i("ManufacturerSpecificData:" + MokoUtils.bytesToHexString(result.getScanRecord().getManufacturerSpecificData(manufacturer.keyAt(0))));
         Map<ParcelUuid, byte[]> map = result.getScanRecord().getServiceData();
         if (map == null || map.isEmpty()) {
             return null;
@@ -51,7 +52,7 @@ public class BeaconInfoParseableImpl implements DeviceInfoParseable<BeaconInfo> 
             }
             // 5e000000005080
             // 64000000005081
-            serviceData = Utils.bytesToHexString(result.getScanRecord().getServiceData(uuid));
+            serviceData = MokoUtils.bytesToHexString(result.getScanRecord().getServiceData(uuid));
             if (TextUtils.isEmpty(serviceData)) {
                 return null;
             }
@@ -76,16 +77,16 @@ public class BeaconInfoParseableImpl implements DeviceInfoParseable<BeaconInfo> 
         int battery = Integer.parseInt(serviceData.substring(0, 2), 16);
 
         // 连接状态在版本号最高位，0不可连接，1可连接，判断后将版本号归位
-        String versionStr = Utils.hexString2binaryString(serviceData.substring(12, 14));
+        String versionStr = MokoUtils.hexString2binaryString(serviceData.substring(12, 14));
         // LogModule.i("version binary: " + versionStr);
         String connState = versionStr.substring(0, 1);
         boolean isConnected = Integer.parseInt(connState) == 1;
         String versionBinary = isConnected ? "0" + versionStr.substring(1, versionStr.length()) : versionStr;
-        int version = Integer.parseInt(Utils.binaryString2hexString(versionBinary), 16);
+        int version = Integer.parseInt(MokoUtils.binaryString2hexString(versionBinary), 16);
         // distance
         int acc = Integer.parseInt(serviceData.substring(10, 12), 16);
         String mac = deviceInfo.mac;
-        double distance = Utils.getDistance(deviceInfo.rssi, acc);
+        double distance = MokoUtils.getDistance(deviceInfo.rssi, acc);
         String distanceDesc = "unknown";
         if (distance <= 0.1) {
             distanceDesc = "immediate";
@@ -95,9 +96,9 @@ public class BeaconInfoParseableImpl implements DeviceInfoParseable<BeaconInfo> 
             distanceDesc = "far";
         }
         // txPower;
-        byte[] scanRecord = Utils.hex2bytes(deviceInfo.scanRecord);
+        byte[] scanRecord = MokoUtils.hex2bytes(deviceInfo.scanRecord);
         // log
-        String log = Utils.bytesToHexString(scanRecord);
+        String log = MokoUtils.bytesToHexString(scanRecord);
         int txPower = 0 - (int) scanRecord[32] & 0xff;
 
         // services
@@ -105,7 +106,7 @@ public class BeaconInfoParseableImpl implements DeviceInfoParseable<BeaconInfo> 
         if (serviceDataUuid != null && serviceDataUuid.startsWith("0000ff01")) {
             byte[] threeAxisBytes = new byte[6];
             System.arraycopy(scanRecord, 44, threeAxisBytes, 0, 6);
-            threeAxis = Utils.bytesToHexString(threeAxisBytes).toUpperCase();
+            threeAxis = MokoUtils.bytesToHexString(threeAxisBytes).toUpperCase();
         }
         // ========================================================
         String distanceStr = new DecimalFormat("#0.00").format(distance);
