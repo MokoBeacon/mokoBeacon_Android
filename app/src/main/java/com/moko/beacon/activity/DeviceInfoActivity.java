@@ -8,6 +8,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
@@ -26,6 +28,7 @@ import com.moko.beacon.utils.ToastUtils;
 import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
 import com.moko.support.entity.OrderType;
+import com.moko.support.log.LogModule;
 import com.moko.support.task.OrderTask;
 import com.moko.support.utils.Utils;
 
@@ -35,6 +38,11 @@ import java.util.Arrays;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import no.nordicsemi.android.dfu.DfuBaseService;
+import no.nordicsemi.android.dfu.DfuProgressListener;
+import no.nordicsemi.android.dfu.DfuProgressListenerAdapter;
+import no.nordicsemi.android.dfu.DfuServiceInitiator;
+import no.nordicsemi.android.dfu.DfuServiceListenerHelper;
 
 /**
  * @Date 2017/12/13 0013
@@ -326,7 +334,7 @@ public class DeviceInfoActivity extends BaseActivity {
             R.id.rl_ibeacon_major, R.id.rl_ibeacon_minor, R.id.rl_ibeacon_measure_power,
             R.id.rl_ibeacon_transmission, R.id.rl_ibeacon_broadcasting_interval, R.id.rl_ibeacon_serialID,
             R.id.rl_ibeacon_mac, R.id.rl_ibeacon_device_name, R.id.rl_ibeacon_device_conn_mode,
-            R.id.rl_ibeacon_change_password, R.id.rl_ibeacon_device_info, R.id.rl_ibeacon_three_axis})
+            R.id.rl_ibeacon_change_password, R.id.rl_ibeacon_device_info, R.id.rl_ibeacon_three_axis, R.id.rl_ibeacon_dfu})
     public void onClick(View view) {
         Intent intent;
         switch (view.getId()) {
@@ -503,6 +511,25 @@ public class DeviceInfoActivity extends BaseActivity {
                 break;
             case R.id.rl_ibeacon_battery:
                 ToastUtils.showToast(this, getString(R.string.device_info_cannot_modify));
+                break;
+            case R.id.rl_ibeacon_dfu:
+                if (!MokoSupport.getInstance().isBluetoothOpen()) {
+                    ToastUtils.showToast(this, "bluetooth is closed,please open");
+                    return;
+                }
+                if (!MokoSupport.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
+                    ToastUtils.showToast(this, getString(R.string.alert_click_reconnect));
+                    return;
+                }
+                intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.setType(DfuBaseService.MIME_TYPE_ZIP);
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                if (intent.resolveActivity(getPackageManager()) != null) {
+                    // file browser has been found on the device
+                    startActivityForResult(intent, BeaconConstants.REQUEST_CODE_SELECT_FILE);
+                } else {
+                    ToastUtils.showToast(this, "install file manager app");
+                }
                 break;
         }
     }
@@ -687,9 +714,68 @@ public class DeviceInfoActivity extends BaseActivity {
                         }
                         return;
                     }
+                case BeaconConstants.REQUEST_CODE_SELECT_FILE:
+                    String filePath = null;
+                    Uri fileStreamUri = null;
+                    // and read new one
+                    final Uri uri = data.getData();
+            /*
+             * The URI returned from application may be in 'file' or 'content' schema.
+			 * 'File' schema allows us to create a File object and read details from if directly.
+			 *
+			 * Data from 'Content' schema must be read by Content Provider. To do that we are using a Loader.
+			 */
+                    if (uri.getScheme().equals("file")) {
+                        // the direct path to the file has been returned
+                        final String path = uri.getPath();
+                        filePath = path;
+                    } else if (uri.getScheme().equals("content")) {
+                        // an Uri has been returned
+                        fileStreamUri = uri;
+                        filePath = getDataColumn(this, uri, null, null);
+
+                    }
+                    final DfuServiceInitiator starter = new DfuServiceInitiator(mBeaconParam.iBeaconMAC)
+                            .setDeviceName(mBeaconParam.iBeaconName)
+                            .setKeepBond(false);
+                    starter.setZip(fileStreamUri, filePath);
+                    starter.start(this, DfuBaseService.class);
+                    return;
             }
             getEmptyInfo();
         }
+
+    }
+
+    /**
+     * Get the value of the data column for this Uri. This is useful for
+     * MediaStore Uris, and other file-based ContentProviders.
+     *
+     * @param context       The context.
+     * @param uri           The Uri to query.
+     * @param selection     (Optional) Filter used in the query.
+     * @param selectionArgs (Optional) Selection arguments used in the query.
+     * @return The value of the _data column, which is typically a file path.
+     */
+    public static String getDataColumn(Context context, Uri uri, String selection,
+                                       String[] selectionArgs) {
+
+        Cursor cursor = null;
+        final String column = "_data";
+        final String[] projection = {column};
+
+        try {
+            cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs,
+                    null);
+            if (cursor != null && cursor.moveToFirst()) {
+                final int column_index = cursor.getColumnIndexOrThrow(column);
+                return cursor.getString(column_index);
+            }
+        } finally {
+            if (cursor != null)
+                cursor.close();
+        }
+        return null;
     }
 
     private void getEmptyInfo() {
@@ -744,4 +830,65 @@ public class DeviceInfoActivity extends BaseActivity {
             }, 1000);
         }
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        DfuServiceListenerHelper.registerProgressListener(this, mDfuProgressListener);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        DfuServiceListenerHelper.unregisterProgressListener(this, mDfuProgressListener);
+    }
+
+    private final DfuProgressListener mDfuProgressListener = new DfuProgressListenerAdapter() {
+        @Override
+        public void onDeviceConnecting(String deviceAddress) {
+            LogModule.w("onDeviceConnecting...");
+        }
+
+
+        @Override
+        public void onDeviceDisconnecting(String deviceAddress) {
+            LogModule.w("onDeviceDisconnecting...");
+        }
+
+        @Override
+        public void onDfuProcessStarting(String deviceAddress) {
+            LogModule.w("onDfuProcessStarting...");
+        }
+
+
+        @Override
+        public void onEnablingDfuMode(String deviceAddress) {
+            LogModule.w("onEnablingDfuMode...");
+        }
+
+        @Override
+        public void onFirmwareValidating(String deviceAddress) {
+            LogModule.w("onFirmwareValidating...");
+        }
+
+        @Override
+        public void onDfuCompleted(String deviceAddress) {
+            LogModule.w("onDfuCompleted...");
+        }
+
+        @Override
+        public void onDfuAborted(String deviceAddress) {
+            LogModule.w("onDfuAborted...");
+        }
+
+        @Override
+        public void onProgressChanged(String deviceAddress, int percent, float speed, float avgSpeed, int currentPart, int partsTotal) {
+            LogModule.w("onProgressChanged..." + percent);
+        }
+
+        @Override
+        public void onError(String deviceAddress, int error, int errorType, String message) {
+            LogModule.w("onError..." + message);
+        }
+    };
 }
