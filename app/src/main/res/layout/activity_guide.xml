@@ -21,4 +21,18 @@
         android:text="@string/app_name"
         android:textColor="@color/black_333333"
         android:textSize="18sp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1.0" />
+
+    <TextView
+        android:id="@+id/tv_moko_url"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="60dp"
+        android:gravity="center"
+        android:text="@string/about_moko_name"
+        android:textColor="@color/black_333333" />
 </LinearLayout>

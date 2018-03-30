@@ -38,6 +38,7 @@ public class MokoLeScanHandler extends ScanCallback {
             deviceInfo.mac = device.getAddress();
             String scanRecordStr = Utils.bytesToHexString(scanRecord);
             deviceInfo.scanRecord = scanRecordStr;
+            deviceInfo.scanResult = result;
             callback.onScanDevice(deviceInfo);
         }
     }

@@ -1,11 +1,18 @@
 package com.moko.beacon.utils;
 
+import android.os.ParcelUuid;
+import android.text.TextUtils;
+import android.util.SparseArray;
+
 import com.moko.beacon.entity.BeaconInfo;
 import com.moko.support.entity.DeviceInfo;
 import com.moko.support.service.DeviceInfoParseable;
 import com.moko.support.utils.Utils;
 
 import java.text.DecimalFormat;
+import java.util.Map;
+
+import no.nordicsemi.android.support.v18.scanner.ScanResult;
 
 /**
  * @Date 2018/1/10
@@ -17,34 +24,40 @@ public class BeaconInfoParseableImpl implements DeviceInfoParseable<BeaconInfo> 
 
     @Override
     public BeaconInfo parseDeviceInfo(DeviceInfo deviceInfo) {
-        byte[] scanRecord = Utils.hex2bytes(deviceInfo.scanRecord);
-        int startByte = 2;
-        boolean patternFound = false;
-        // iBeacon filter 0215
-        while (startByte <= 5) {
-            if (((int) scanRecord[startByte + 2] & 0xff) == 0x02
-                    && ((int) scanRecord[startByte + 3] & 0xff) == 0x15) {
-                // yes!  This is an iBeacon
-                patternFound = true;
-                break;
+        ScanResult result = deviceInfo.scanResult;
+        SparseArray<byte[]> manufacturer = result.getScanRecord().getManufacturerSpecificData();
+        if (manufacturer == null || manufacturer.size() == 0) {
+            return null;
+        }
+        String manufacturerSpecificData = Utils.bytesToHexString(result.getScanRecord().getManufacturerSpecificData(manufacturer.keyAt(0)));
+        if (!manufacturerSpecificData.startsWith("0215")) {
+            return null;
+        }
+        // 0215fda50693a4e24fb1afcfc6eb0764782500000000c5
+        // 0215e2c56db5dffb48d2b060d0f5a71096e000000000b0
+        // LogModule.i("ManufacturerSpecificData:" + Utils.bytesToHexString(result.getScanRecord().getManufacturerSpecificData(manufacturer.keyAt(0))));
+        Map<ParcelUuid, byte[]> map = result.getScanRecord().getServiceData();
+        if (map == null || map.isEmpty()) {
+            return null;
+        }
+        String serviceDataUuid = null;
+        String serviceData = null;
+        for (ParcelUuid uuid : map.keySet()) {
+            // 0000ff00-0000-1000-8000-00805f9b34fb
+            // 0000ff01-0000-1000-8000-00805f9b34fb
+            serviceDataUuid = uuid.getUuid().toString();
+            if (!serviceDataUuid.startsWith("0000ff00") && !serviceDataUuid.startsWith("0000ff01")) {
+                return null;
             }
-            startByte++;
+            // 5e000000005080
+            // 64000000005081
+            serviceData = Utils.bytesToHexString(result.getScanRecord().getServiceData(uuid));
+            if (TextUtils.isEmpty(serviceData)) {
+                return null;
+            }
         }
-        if (!patternFound) {
-            // This is not an iBeacon
-            return null;
-        }
-        // moko filter 00ff 01ff
-        if (!((((int) scanRecord[startByte + 30] & 0xff) == 0x01 && ((int) scanRecord[startByte + 31] & 0xff) == 0xff)
-                || (((int) scanRecord[startByte + 30] & 0xff) == 0x00 && ((int) scanRecord[startByte + 31] & 0xff) == 0xff))) {
-            return null;
-        }
-        // log
-        String log = Utils.bytesToHexString(scanRecord);
         // uuid
-        byte[] proximityUuidBytes = new byte[16];
-        System.arraycopy(scanRecord, startByte + 4, proximityUuidBytes, 0, 16);
-        String hexString = Utils.bytesToHexString(proximityUuidBytes);
+        String hexString = manufacturerSpecificData.substring(4, 36);
         StringBuilder sb = new StringBuilder();
         sb.append(hexString.substring(0, 8));
         sb.append("-");
@@ -57,27 +70,20 @@ public class BeaconInfoParseableImpl implements DeviceInfoParseable<BeaconInfo> 
         sb.append(hexString.substring(20, 32));
         String uuid = sb.toString();
 
-        int major = (scanRecord[startByte + 20] & 0xff) * 0x100 + (scanRecord[startByte + 21] & 0xff);
-        int minor = (scanRecord[startByte + 22] & 0xff) * 0x100 + (scanRecord[startByte + 23] & 0xff);
-        int txPower = 0 - (int) scanRecord[startByte + 27] & 0xff;
-        int battery = (int) scanRecord[startByte + 32] & 0xff;
+        byte[] manufacturerSpecificDataByte = result.getScanRecord().getManufacturerSpecificData(manufacturer.keyAt(0));
+        int major = (manufacturerSpecificDataByte[18] & 0xff) * 0x100 + (manufacturerSpecificDataByte[19] & 0xff);
+        int minor = (manufacturerSpecificDataByte[20] & 0xff) * 0x100 + (manufacturerSpecificDataByte[21] & 0xff);
+        int battery = Integer.parseInt(serviceData.substring(0, 2), 16);
 
         // 连接状态在版本号最高位，0不可连接，1可连接，判断后将版本号归位
-        String versionStr = Utils.hexString2binaryString(Utils.byte2HexString(scanRecord[startByte + 38]));
-//            LogModule.i("version binary: " + versionStr);
+        String versionStr = Utils.hexString2binaryString(serviceData.substring(12, 14));
+        // LogModule.i("version binary: " + versionStr);
         String connState = versionStr.substring(0, 1);
         boolean isConnected = Integer.parseInt(connState) == 1;
         String versionBinary = isConnected ? "0" + versionStr.substring(1, versionStr.length()) : versionStr;
         int version = Integer.parseInt(Utils.binaryString2hexString(versionBinary), 16);
-        // services
-        int acc = (int) scanRecord[startByte + 37] & 0xff;
-        String threeAxis = null;
-        if (((int) scanRecord[startByte + 30] & 0xff) == 0x01
-                && ((int) scanRecord[startByte + 31] & 0xff) == 0xff) {
-            byte[] threeAxisBytes = new byte[6];
-            System.arraycopy(scanRecord, startByte + 39, threeAxisBytes, 0, 6);
-            threeAxis = Utils.bytesToHexString(threeAxisBytes).toUpperCase();
-        }
+        // distance
+        int acc = Integer.parseInt(serviceData.substring(10, 12), 16);
         String mac = deviceInfo.mac;
         double distance = Utils.getDistance(deviceInfo.rssi, acc);
         String distanceDesc = "unknown";
@@ -87,6 +93,19 @@ public class BeaconInfoParseableImpl implements DeviceInfoParseable<BeaconInfo> 
             distanceDesc = "near";
         } else if (distance > 1.0) {
             distanceDesc = "far";
+        }
+        // txPower;
+        byte[] scanRecord = Utils.hex2bytes(deviceInfo.scanRecord);
+        // log
+        String log = Utils.bytesToHexString(scanRecord);
+        int txPower = 0 - (int) scanRecord[32] & 0xff;
+
+        // services
+        String threeAxis = null;
+        if (serviceDataUuid != null && serviceDataUuid.startsWith("0000ff01")) {
+            byte[] threeAxisBytes = new byte[6];
+            System.arraycopy(scanRecord, 44, threeAxisBytes, 0, 6);
+            threeAxis = Utils.bytesToHexString(threeAxisBytes).toUpperCase();
         }
         // ========================================================
         String distanceStr = new DecimalFormat("#0.00").format(distance);
