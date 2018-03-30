@@ -20,13 +20,12 @@ import android.widget.TextView;
 import com.moko.beacon.BeaconConstants;
 import com.moko.beacon.R;
 import com.moko.beacon.entity.BeaconDeviceInfo;
-import com.moko.beacon.service.BeaconService;
+import com.moko.beacon.service.MokoService;
 import com.moko.beacon.utils.ToastUtils;
 import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
 import com.moko.support.entity.OrderType;
 import com.moko.support.task.OrderTask;
-import com.moko.support.utils.MokoUtils;
 import com.moko.support.utils.MokoUtils;
 
 import java.util.ArrayList;
@@ -63,7 +62,7 @@ public class SystemInfoActivity extends BaseActivity {
     TextView tvIbeaconSystemMark;
     @Bind(R.id.tv_ibeacon_ieee_info)
     TextView tvIbeaconIeeeInfo;
-    private BeaconService mBeaconService;
+    private MokoService mMokoService;
     private BeaconDeviceInfo mBeaconDeviceInfo;
 
     @Override
@@ -71,7 +70,7 @@ public class SystemInfoActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_system_info);
         ButterKnife.bind(this);
-        bindService(new Intent(this, BeaconService.class), mServiceConnection, BIND_AUTO_CREATE);
+        bindService(new Intent(this, MokoService.class), mServiceConnection, BIND_AUTO_CREATE);
         mBeaconDeviceInfo = (BeaconDeviceInfo) getIntent().getSerializableExtra(BeaconConstants.EXTRA_KEY_DEVICE_INFO);
         if (mBeaconDeviceInfo == null) {
             finish();
@@ -79,52 +78,52 @@ public class SystemInfoActivity extends BaseActivity {
         }
         ArrayList<OrderTask> orderTasks = new ArrayList<>();
         if (TextUtils.isEmpty(mBeaconDeviceInfo.firmname)) {
-            orderTasks.add(mBeaconService.getFirmname());
+            orderTasks.add(mMokoService.getFirmname());
         } else {
             tvIbeaconFirmname.setText(mBeaconDeviceInfo.firmname);
         }
         if (TextUtils.isEmpty(mBeaconDeviceInfo.deviceName)) {
-            orderTasks.add(mBeaconService.getDevicename());
+            orderTasks.add(mMokoService.getDevicename());
         } else {
             tvIbeaconDeviceName.setText(mBeaconDeviceInfo.deviceName);
         }
         if (TextUtils.isEmpty(mBeaconDeviceInfo.iBeaconDate)) {
-            orderTasks.add(mBeaconService.getiBeaconDate());
+            orderTasks.add(mMokoService.getiBeaconDate());
         } else {
             tvIbeaconDate.setText(mBeaconDeviceInfo.iBeaconDate);
         }
         if (TextUtils.isEmpty(mBeaconDeviceInfo.iBeaconMac)) {
-            orderTasks.add(mBeaconService.getIBeaconMac());
+            orderTasks.add(mMokoService.getIBeaconMac());
         } else {
             tvIbeaconMac.setText(mBeaconDeviceInfo.iBeaconMac);
         }
         if (TextUtils.isEmpty(mBeaconDeviceInfo.chipModel)) {
-            orderTasks.add(mBeaconService.getChipModel());
+            orderTasks.add(mMokoService.getChipModel());
         } else {
             tvIbeaconChipMode.setText(mBeaconDeviceInfo.chipModel);
         }
         if (TextUtils.isEmpty(mBeaconDeviceInfo.hardwareVersion)) {
-            orderTasks.add(mBeaconService.getChipModel());
+            orderTasks.add(mMokoService.getChipModel());
         } else {
             tvIbeaconHardwareVersion.setText(mBeaconDeviceInfo.hardwareVersion);
         }
         if (TextUtils.isEmpty(mBeaconDeviceInfo.firmwareVersion)) {
-            orderTasks.add(mBeaconService.getChipModel());
+            orderTasks.add(mMokoService.getChipModel());
         } else {
             tvIbeaconFirmwareVersion.setText(mBeaconDeviceInfo.firmwareVersion);
         }
         if (TextUtils.isEmpty(mBeaconDeviceInfo.runtime)) {
-            orderTasks.add(mBeaconService.getChipModel());
+            orderTasks.add(mMokoService.getChipModel());
         } else {
             tvIbeaconRuntime.setText(mBeaconDeviceInfo.runtime);
         }
         if (TextUtils.isEmpty(mBeaconDeviceInfo.systemMark)) {
-            orderTasks.add(mBeaconService.getChipModel());
+            orderTasks.add(mMokoService.getChipModel());
         } else {
             tvIbeaconSystemMark.setText(mBeaconDeviceInfo.systemMark);
         }
         if (TextUtils.isEmpty(mBeaconDeviceInfo.IEEEInfo)) {
-            orderTasks.add(mBeaconService.getChipModel());
+            orderTasks.add(mMokoService.getChipModel());
         } else {
             tvIbeaconIeeeInfo.setText(mBeaconDeviceInfo.IEEEInfo);
         }
@@ -135,7 +134,7 @@ public class SystemInfoActivity extends BaseActivity {
             }
             showLoadingProgressDialog();
             for (OrderTask ordertask : orderTasks) {
-                mBeaconService.sendOrder(ordertask);
+                mMokoService.sendOrder(ordertask);
             }
         }
     }
@@ -158,7 +157,7 @@ public class SystemInfoActivity extends BaseActivity {
                     finish();
                 }
                 if (MokoConstants.ACTION_RESPONSE_FINISH.equals(action)) {
-                    mBeaconService.mHandler.postDelayed(new Runnable() {
+                    mMokoService.mHandler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
                             dismissLoadingProgressDialog();
@@ -247,7 +246,7 @@ public class SystemInfoActivity extends BaseActivity {
 
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            mBeaconService = ((BeaconService.LocalBinder) service).getService();
+            mMokoService = ((MokoService.LocalBinder) service).getService();
             // 注册广播接收器
             IntentFilter filter = new IntentFilter();
             filter.addAction(MokoConstants.ACTION_CONNECT_DISCONNECTED);

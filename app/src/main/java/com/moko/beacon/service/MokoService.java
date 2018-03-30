@@ -45,14 +45,14 @@ import com.moko.support.task.TransmissionTask;
  * @Date 2017/12/7 0007
  * @Author wenzheng.liu
  * @Description
- * @ClassPath com.moko.beacon.service.BeaconService
+ * @ClassPath com.moko.beacon.service.MokoService
  */
-public class BeaconService extends Service implements MokoConnStateCallback, MokoOrderTaskCallback {
+public class MokoService extends Service implements MokoConnStateCallback, MokoOrderTaskCallback {
     private IBinder mBinder = new LocalBinder();
 
     public class LocalBinder extends Binder {
-        public BeaconService getService() {
-            return BeaconService.this;
+        public MokoService getService() {
+            return MokoService.this;
         }
     }
 
@@ -354,14 +354,14 @@ public class BeaconService extends Service implements MokoConnStateCallback, Mok
 
     public ServiceHandler mHandler;
 
-    public class ServiceHandler extends BaseMessageHandler<BeaconService> {
+    public class ServiceHandler extends BaseMessageHandler<MokoService> {
 
-        public ServiceHandler(BeaconService service) {
+        public ServiceHandler(MokoService service) {
             super(service);
         }
 
         @Override
-        protected void handleMessage(BeaconService service, Message msg) {
+        protected void handleMessage(MokoService service, Message msg) {
         }
     }
 }

@@ -15,7 +15,7 @@ import android.widget.EditText;
 
 import com.moko.beacon.BeaconConstants;
 import com.moko.beacon.R;
-import com.moko.beacon.service.BeaconService;
+import com.moko.beacon.service.MokoService;
 import com.moko.beacon.utils.ToastUtils;
 import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
@@ -38,14 +38,14 @@ public class SetPasswordActivity extends BaseActivity {
     EditText etPassword;
     @Bind(R.id.et_password_confirm)
     EditText etPasswordConfirm;
-    private BeaconService mBeaconService;
+    private MokoService mMokoService;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_password);
         ButterKnife.bind(this);
-        bindService(new Intent(this, BeaconService.class), mServiceConnection, BIND_AUTO_CREATE);
+        bindService(new Intent(this, MokoService.class), mServiceConnection, BIND_AUTO_CREATE);
     }
 
 
@@ -98,7 +98,7 @@ public class SetPasswordActivity extends BaseActivity {
 
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            mBeaconService = ((BeaconService.LocalBinder) service).getService();
+            mMokoService = ((MokoService.LocalBinder) service).getService();
             // 注册广播接收器
             IntentFilter filter = new IntentFilter();
             filter.addAction(MokoConstants.ACTION_CONNECT_SUCCESS);
@@ -140,7 +140,7 @@ public class SetPasswordActivity extends BaseActivity {
                     ToastUtils.showToast(SetPasswordActivity.this, getString(R.string.main_password_length));
                     return;
                 }
-                mBeaconService.sendOrder(mBeaconService.setChangePassword(passwordConfirm));
+                mMokoService.sendOrder(mMokoService.setChangePassword(passwordConfirm));
                 break;
 
         }

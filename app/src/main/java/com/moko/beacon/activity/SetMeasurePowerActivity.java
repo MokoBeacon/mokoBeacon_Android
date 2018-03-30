@@ -15,7 +15,7 @@ import android.widget.EditText;
 
 import com.moko.beacon.BeaconConstants;
 import com.moko.beacon.R;
-import com.moko.beacon.service.BeaconService;
+import com.moko.beacon.service.MokoService;
 import com.moko.beacon.utils.ToastUtils;
 import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
@@ -34,14 +34,14 @@ import butterknife.OnClick;
 public class SetMeasurePowerActivity extends BaseActivity {
     @Bind(R.id.et_measure_power)
     EditText etMeasurePower;
-    private BeaconService mBeaconService;
+    private MokoService mMokoService;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_measure_power);
         ButterKnife.bind(this);
-        bindService(new Intent(this, BeaconService.class), mServiceConnection, BIND_AUTO_CREATE);
+        bindService(new Intent(this, MokoService.class), mServiceConnection, BIND_AUTO_CREATE);
         int measure_power = getIntent().getIntExtra(BeaconConstants.EXTRA_KEY_DEVICE_MEASURE_POWER, 0);
         etMeasurePower.setText(measure_power + "");
         etMeasurePower.setSelection(String.valueOf(measure_power).length());
@@ -96,7 +96,7 @@ public class SetMeasurePowerActivity extends BaseActivity {
 
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            mBeaconService = ((BeaconService.LocalBinder) service).getService();
+            mMokoService = ((MokoService.LocalBinder) service).getService();
             // 注册广播接收器
             IntentFilter filter = new IntentFilter();
             filter.addAction(MokoConstants.ACTION_CONNECT_SUCCESS);
@@ -133,7 +133,7 @@ public class SetMeasurePowerActivity extends BaseActivity {
                     ToastUtils.showToast(this, getString(R.string.alert_measure_power_range));
                     return;
                 }
-                mBeaconService.sendOrder(mBeaconService.setMeasurePower(Integer.valueOf(etMeasurePower.getText().toString())));
+                mMokoService.sendOrder(mMokoService.setMeasurePower(Integer.valueOf(etMeasurePower.getText().toString())));
                 break;
 
         }

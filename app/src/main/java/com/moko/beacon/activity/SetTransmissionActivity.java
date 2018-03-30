@@ -17,7 +17,7 @@ import android.widget.TextView;
 
 import com.moko.beacon.BeaconConstants;
 import com.moko.beacon.R;
-import com.moko.beacon.service.BeaconService;
+import com.moko.beacon.service.MokoService;
 import com.moko.beacon.utils.ToastUtils;
 import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
@@ -54,7 +54,7 @@ public class SetTransmissionActivity extends BaseActivity {
     LinearLayout llTransmissionGrade7;
     @Bind(R.id.ll_transmission_grade_8)
     LinearLayout llTransmissionGrade8;
-    private BeaconService mBeaconService;
+    private MokoService mMokoService;
     private int transmissionGrade;
     private ArrayList<ViewGroup> mViews;
 
@@ -63,7 +63,7 @@ public class SetTransmissionActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_transmission);
         ButterKnife.bind(this);
-        bindService(new Intent(this, BeaconService.class), mServiceConnection, BIND_AUTO_CREATE);
+        bindService(new Intent(this, MokoService.class), mServiceConnection, BIND_AUTO_CREATE);
         int transmission = getIntent().getIntExtra(BeaconConstants.EXTRA_KEY_DEVICE_TRANSMISSION, 0);
         mViews = new ArrayList<>();
         mViews.add(llTransmissionGrade0);
@@ -127,7 +127,7 @@ public class SetTransmissionActivity extends BaseActivity {
 
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            mBeaconService = ((BeaconService.LocalBinder) service).getService();
+            mMokoService = ((MokoService.LocalBinder) service).getService();
             // 注册广播接收器
             IntentFilter filter = new IntentFilter();
             filter.addAction(MokoConstants.ACTION_CONNECT_SUCCESS);
@@ -157,7 +157,7 @@ public class SetTransmissionActivity extends BaseActivity {
                     ToastUtils.showToast(this, "bluetooth is closed,please open");
                     return;
                 }
-                mBeaconService.sendOrder(mBeaconService.setTransmission(transmissionGrade));
+                mMokoService.sendOrder(mMokoService.setTransmission(transmissionGrade));
                 break;
             case R.id.ll_transmission_grade_0:
             case R.id.ll_transmission_grade_1:

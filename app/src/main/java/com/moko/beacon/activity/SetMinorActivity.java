@@ -18,7 +18,7 @@ import android.widget.TextView;
 
 import com.moko.beacon.BeaconConstants;
 import com.moko.beacon.R;
-import com.moko.beacon.service.BeaconService;
+import com.moko.beacon.service.MokoService;
 import com.moko.beacon.utils.ToastUtils;
 import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
@@ -41,14 +41,14 @@ public class SetMinorActivity extends BaseActivity {
     TextView tvDecimalism;
     @Bind(R.id.tv_hexadecimal)
     TextView tvHexadecimal;
-    private BeaconService mBeaconService;
+    private MokoService mMokoService;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_minor);
         ButterKnife.bind(this);
-        bindService(new Intent(this, BeaconService.class), mServiceConnection, BIND_AUTO_CREATE);
+        bindService(new Intent(this, MokoService.class), mServiceConnection, BIND_AUTO_CREATE);
         int minor = getIntent().getIntExtra(BeaconConstants.EXTRA_KEY_DEVICE_MINOR, 0);
         etMinor.addTextChangedListener(new TextWatcher() {
             @Override
@@ -125,7 +125,7 @@ public class SetMinorActivity extends BaseActivity {
 
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            mBeaconService = ((BeaconService.LocalBinder) service).getService();
+            mMokoService = ((MokoService.LocalBinder) service).getService();
             // 注册广播接收器
             IntentFilter filter = new IntentFilter();
             filter.addAction(MokoConstants.ACTION_CONNECT_SUCCESS);
@@ -161,7 +161,7 @@ public class SetMinorActivity extends BaseActivity {
                     ToastUtils.showToast(this, getString(R.string.alert_minor_range));
                     return;
                 }
-                mBeaconService.sendOrder(mBeaconService.setMinor(Integer.valueOf(etMinor.getText().toString())));
+                mMokoService.sendOrder(mMokoService.setMinor(Integer.valueOf(etMinor.getText().toString())));
                 break;
 
         }

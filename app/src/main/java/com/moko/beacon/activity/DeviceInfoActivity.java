@@ -23,14 +23,13 @@ import android.widget.TextView;
 import com.moko.beacon.BeaconConstants;
 import com.moko.beacon.R;
 import com.moko.beacon.entity.BeaconParam;
-import com.moko.beacon.service.BeaconService;
+import com.moko.beacon.service.MokoService;
 import com.moko.beacon.utils.ToastUtils;
 import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
 import com.moko.support.entity.OrderType;
 import com.moko.support.log.LogModule;
 import com.moko.support.task.OrderTask;
-import com.moko.support.utils.MokoUtils;
 import com.moko.support.utils.MokoUtils;
 
 import java.util.ArrayList;
@@ -78,7 +77,7 @@ public class DeviceInfoActivity extends BaseActivity {
     TextView tvIbeaconDeviceConnMode;
     @Bind(R.id.rl_ibeacon_three_axis)
     RelativeLayout rlIbeaconThreeAxis;
-    private BeaconService mBeaconService;
+    private MokoService mMokoService;
     private BeaconParam mBeaconParam;
 
     @Override
@@ -86,7 +85,7 @@ public class DeviceInfoActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_device_info);
         ButterKnife.bind(this);
-        bindService(new Intent(this, BeaconService.class), mServiceConnection, BIND_AUTO_CREATE);
+        bindService(new Intent(this, MokoService.class), mServiceConnection, BIND_AUTO_CREATE);
         mBeaconParam = (BeaconParam) getIntent().getSerializableExtra(BeaconConstants.EXTRA_KEY_DEVICE_PARAM);
         if (mBeaconParam == null) {
             finish();
@@ -132,10 +131,10 @@ public class DeviceInfoActivity extends BaseActivity {
                 if (MokoConstants.ACTION_CONNECT_SUCCESS.equals(action)) {
                     tvConnState.setText(getString(R.string.device_info_conn_status_connected));
                     // 读取全部可读数据
-                    mBeaconService.mHandler.postDelayed(new Runnable() {
+                    mMokoService.mHandler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            mBeaconService.getReadableData(mBeaconParam.password);
+                            mMokoService.getReadableData(mBeaconParam.password);
                         }
                     }, 1000);
                 }
@@ -148,7 +147,7 @@ public class DeviceInfoActivity extends BaseActivity {
                 if (MokoConstants.ACTION_RESPONSE_TIMEOUT.equals(action)) {
                 }
                 if (MokoConstants.ACTION_RESPONSE_FINISH.equals(action)) {
-                    mBeaconService.mHandler.postDelayed(new Runnable() {
+                    mMokoService.mHandler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
                             dismissLoadingProgressDialog();
@@ -292,7 +291,7 @@ public class DeviceInfoActivity extends BaseActivity {
 
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            mBeaconService = ((BeaconService.LocalBinder) service).getService();
+            mMokoService = ((MokoService.LocalBinder) service).getService();
             // 注册广播接收器
             IntentFilter filter = new IntentFilter();
             filter.addAction(MokoConstants.ACTION_CONNECT_SUCCESS);
@@ -348,7 +347,7 @@ public class DeviceInfoActivity extends BaseActivity {
                     return;
                 }
                 if (!MokoSupport.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
-                    mBeaconService.connDevice(mBeaconParam.iBeaconMAC);
+                    mMokoService.connDevice(mBeaconParam.iBeaconMAC);
                     showLoadingProgressDialog(getString(R.string.dialog_connecting));
                 }
                 break;
@@ -783,37 +782,37 @@ public class DeviceInfoActivity extends BaseActivity {
         final ArrayList<OrderTask> orderTasks = new ArrayList<>();
 
         if (TextUtils.isEmpty(mBeaconParam.battery)) {
-            orderTasks.add(mBeaconService.getBattery());
+            orderTasks.add(mMokoService.getBattery());
         }
         if (TextUtils.isEmpty(mBeaconParam.uuid)) {
-            orderTasks.add(mBeaconService.getIBeaconUuid());
+            orderTasks.add(mMokoService.getIBeaconUuid());
         }
         if (TextUtils.isEmpty(mBeaconParam.major)) {
-            orderTasks.add(mBeaconService.getMajor());
+            orderTasks.add(mMokoService.getMajor());
         }
         if (TextUtils.isEmpty(mBeaconParam.minor)) {
-            orderTasks.add(mBeaconService.getMinor());
+            orderTasks.add(mMokoService.getMinor());
         }
         if (TextUtils.isEmpty(mBeaconParam.measurePower)) {
-            orderTasks.add(mBeaconService.getMeasurePower());
+            orderTasks.add(mMokoService.getMeasurePower());
         }
         if (TextUtils.isEmpty(mBeaconParam.transmission)) {
-            orderTasks.add(mBeaconService.getTransmission());
+            orderTasks.add(mMokoService.getTransmission());
         }
         if (TextUtils.isEmpty(mBeaconParam.broadcastingInterval)) {
-            orderTasks.add(mBeaconService.getBroadcastingInterval());
+            orderTasks.add(mMokoService.getBroadcastingInterval());
         }
         if (TextUtils.isEmpty(mBeaconParam.serialID)) {
-            orderTasks.add(mBeaconService.getSerialID());
+            orderTasks.add(mMokoService.getSerialID());
         }
         if (TextUtils.isEmpty(mBeaconParam.iBeaconName)) {
-            orderTasks.add(mBeaconService.getIBeaconName());
+            orderTasks.add(mMokoService.getIBeaconName());
         }
         if (TextUtils.isEmpty(mBeaconParam.iBeaconMAC)) {
-            orderTasks.add(mBeaconService.getIBeaconMac());
+            orderTasks.add(mMokoService.getIBeaconMac());
         }
         if (TextUtils.isEmpty(mBeaconParam.connectionMode)) {
-            orderTasks.add(mBeaconService.getConnectionMode());
+            orderTasks.add(mMokoService.getConnectionMode());
         }
         if (!orderTasks.isEmpty()) {
             if (!MokoSupport.getInstance().isBluetoothOpen()) {
@@ -821,11 +820,11 @@ public class DeviceInfoActivity extends BaseActivity {
                 return;
             }
             showSyncProgressDialog("Syncing...");
-            mBeaconService.mHandler.postDelayed(new Runnable() {
+            mMokoService.mHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     for (OrderTask ordertask : orderTasks) {
-                        mBeaconService.sendOrder(mBeaconService.setOvertime(), ordertask);
+                        mMokoService.sendOrder(mMokoService.setOvertime(), ordertask);
                     }
                 }
             }, 1000);

@@ -1,7 +1,8 @@
 <resources>
     <string name="app_name">MokoBeacon</string>
     <string name="device_list_title">设备列表</string>
-    <string name="device_list_filter_hin">名字</string>
+    <string name="device_list_title_num">设备列表(%d)</string>
+    <string name="device_list_filter_hin">名字或MAC</string>
     <string name="about_moko_url">www.mokosmart.com</string>
     <string name="about_moko_name">深圳市华创恒达科技有限公司</string>
     <string name="device_info_conn_status_disconnect">Disconnect</string>

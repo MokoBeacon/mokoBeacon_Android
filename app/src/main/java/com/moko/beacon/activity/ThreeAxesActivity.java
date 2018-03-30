@@ -18,13 +18,12 @@ import android.widget.TextView;
 
 import com.moko.beacon.BeaconConstants;
 import com.moko.beacon.R;
-import com.moko.beacon.service.BeaconService;
+import com.moko.beacon.service.MokoService;
 import com.moko.beacon.utils.ToastUtils;
 import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
 import com.moko.support.entity.OrderType;
 import com.moko.support.log.LogModule;
-import com.moko.support.utils.MokoUtils;
 import com.moko.support.utils.MokoUtils;
 
 import java.text.SimpleDateFormat;
@@ -48,7 +47,7 @@ public class ThreeAxesActivity extends BaseActivity {
     TextView tvStop;
     @Bind(R.id.scroll_view)
     ScrollView scrollView;
-    private BeaconService mBeaconService;
+    private MokoService mMokoService;
     private StringBuilder builder;
     private SimpleDateFormat simpleDateFormat;
     private boolean isNotifyOn;
@@ -59,7 +58,7 @@ public class ThreeAxesActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_three_axis);
         ButterKnife.bind(this);
-        bindService(new Intent(this, BeaconService.class), mServiceConnection, BIND_AUTO_CREATE);
+        bindService(new Intent(this, MokoService.class), mServiceConnection, BIND_AUTO_CREATE);
         simpleDateFormat = new SimpleDateFormat(BeaconConstants.PATTERN_HH_MM_SS);
         builder = new StringBuilder();
     }
@@ -142,7 +141,7 @@ public class ThreeAxesActivity extends BaseActivity {
 
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            mBeaconService = ((BeaconService.LocalBinder) service).getService();
+            mMokoService = ((MokoService.LocalBinder) service).getService();
             // 注册广播接收器
             IntentFilter filter = new IntentFilter();
             filter.addAction(MokoConstants.ACTION_CONNECT_SUCCESS);
@@ -158,7 +157,7 @@ public class ThreeAxesActivity extends BaseActivity {
                 return;
             }
             showLoadingProgressDialog("");
-            mBeaconService.sendOrder(mBeaconService.setThreeAxes(true));
+            mMokoService.sendOrder(mMokoService.setThreeAxes(true));
             isNotifyOn = true;
         }
 
@@ -180,11 +179,11 @@ public class ThreeAxesActivity extends BaseActivity {
                 }
                 if (isNotifyOn) {
                     showLoadingProgressDialog("");
-                    mBeaconService.sendOrder(mBeaconService.setThreeAxes(false));
+                    mMokoService.sendOrder(mMokoService.setThreeAxes(false));
                     isNotifyOn = false;
                 } else {
                     showLoadingProgressDialog("");
-                    mBeaconService.sendOrder(mBeaconService.setThreeAxes(true));
+                    mMokoService.sendOrder(mMokoService.setThreeAxes(true));
                     isNotifyOn = true;
                 }
                 break;
@@ -209,7 +208,7 @@ public class ThreeAxesActivity extends BaseActivity {
         }
         if (isNotifyOn) {
             showLoadingProgressDialog("");
-            mBeaconService.sendOrder(mBeaconService.setThreeAxes(false));
+            mMokoService.sendOrder(mMokoService.setThreeAxes(false));
             isNotifyOn = false;
             isBack = true;
         } else {

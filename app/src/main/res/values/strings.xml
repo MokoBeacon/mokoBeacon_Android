@@ -1,7 +1,8 @@
 <resources>
     <string name="app_name">MokoBeacon</string>
     <string name="device_list_title">Devices</string>
-    <string name="device_list_filter_hin">name</string>
+    <string name="device_list_title_num">Devices(%d)</string>
+    <string name="device_list_filter_hin">Device name or mac address</string>
     <string name="about_moko_url">www.mokosmart.com</string>
     <string name="about_moko_name">Moko Technology LTD.</string>
     <string name="device_info_conn_status_disconnect">Disconnect</string>

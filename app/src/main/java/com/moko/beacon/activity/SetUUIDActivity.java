@@ -20,7 +20,7 @@ import android.widget.TextView;
 
 import com.moko.beacon.BeaconConstants;
 import com.moko.beacon.R;
-import com.moko.beacon.service.BeaconService;
+import com.moko.beacon.service.MokoService;
 import com.moko.beacon.utils.ToastUtils;
 import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
@@ -68,7 +68,7 @@ public class SetUUIDActivity extends BaseActivity {
     ImageView ivUuidSelected;
     @Bind(R.id.rl_uuid)
     RelativeLayout rlUuid;
-    private BeaconService mBeaconService;
+    private MokoService mMokoService;
     private HashMap<Integer, View> mUUIDViews;
     private Pattern pattern;
 
@@ -78,7 +78,7 @@ public class SetUUIDActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_uuid);
         ButterKnife.bind(this);
-        bindService(new Intent(this, BeaconService.class), mServiceConnection, BIND_AUTO_CREATE);
+        bindService(new Intent(this, MokoService.class), mServiceConnection, BIND_AUTO_CREATE);
         String uuid = getIntent().getStringExtra(BeaconConstants.EXTRA_KEY_DEVICE_UUID);
         tvUuid.setText(uuid);
         pattern = Pattern.compile(UUID_PATTERN);
@@ -181,7 +181,7 @@ public class SetUUIDActivity extends BaseActivity {
 
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            mBeaconService = ((BeaconService.LocalBinder) service).getService();
+            mMokoService = ((MokoService.LocalBinder) service).getService();
             // 注册广播接收器
             IntentFilter filter = new IntentFilter();
             filter.addAction(MokoConstants.ACTION_CONNECT_SUCCESS);
@@ -216,7 +216,7 @@ public class SetUUIDActivity extends BaseActivity {
                 }
                 if (isUUID(uuid)) {
                     // 设置UUID
-                    mBeaconService.sendOrder(mBeaconService.setIBeaconUuid(uuid));
+                    mMokoService.sendOrder(mMokoService.setIBeaconUuid(uuid));
                 } else {
                     ToastUtils.showToast(this, "uuid is nonstandard");
                 }

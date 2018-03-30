@@ -3,7 +3,7 @@ package com.moko.beacon;
 import android.app.Application;
 import android.content.Intent;
 
-import com.moko.beacon.service.BeaconService;
+import com.moko.beacon.service.MokoService;
 import com.moko.support.MokoSupport;
 
 /**
@@ -18,6 +18,6 @@ public class BaseApplication extends Application {
         super.onCreate();
         MokoSupport.getInstance().init(getApplicationContext());
         // 启动蓝牙服务
-        startService(new Intent(this, BeaconService.class));
+        startService(new Intent(this, MokoService.class));
     }
 }

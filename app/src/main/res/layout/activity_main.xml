@@ -18,6 +18,7 @@
             android:src="@drawable/refresh" />
 
         <TextView
+            android:id="@+id/tv_devices_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"

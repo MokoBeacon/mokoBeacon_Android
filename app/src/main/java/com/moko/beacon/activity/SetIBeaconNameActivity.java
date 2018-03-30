@@ -17,7 +17,7 @@ import android.widget.TextView;
 
 import com.moko.beacon.BeaconConstants;
 import com.moko.beacon.R;
-import com.moko.beacon.service.BeaconService;
+import com.moko.beacon.service.MokoService;
 import com.moko.beacon.utils.ToastUtils;
 import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
@@ -38,7 +38,7 @@ public class SetIBeaconNameActivity extends BaseActivity {
     EditText etIBeaconName;
     @Bind(R.id.tv_tips)
     TextView tvTips;
-    private BeaconService mBeaconService;
+    private MokoService mMokoService;
     private boolean isSupportThreeAxis;
 
     @Override
@@ -46,7 +46,7 @@ public class SetIBeaconNameActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_device_name);
         ButterKnife.bind(this);
-        bindService(new Intent(this, BeaconService.class), mServiceConnection, BIND_AUTO_CREATE);
+        bindService(new Intent(this, MokoService.class), mServiceConnection, BIND_AUTO_CREATE);
         String ibeaconName = getIntent().getStringExtra(BeaconConstants.EXTRA_KEY_DEVICE_IBEACON_NAME);
         String ibeaconThreeAxis = getIntent().getStringExtra(BeaconConstants.EXTRA_KEY_DEVICE_IBEACON_THREE_AXIS);
         isSupportThreeAxis = !TextUtils.isEmpty(ibeaconThreeAxis);
@@ -107,7 +107,7 @@ public class SetIBeaconNameActivity extends BaseActivity {
 
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            mBeaconService = ((BeaconService.LocalBinder) service).getService();
+            mMokoService = ((MokoService.LocalBinder) service).getService();
             // 注册广播接收器
             IntentFilter filter = new IntentFilter();
             filter.addAction(MokoConstants.ACTION_CONNECT_SUCCESS);
@@ -143,7 +143,7 @@ public class SetIBeaconNameActivity extends BaseActivity {
                     ToastUtils.showToast(this, isSupportThreeAxis ? getString(R.string.tips_ibeacon_name_three_axis) : getString(R.string.tips_ibeacon_name));
                     return;
                 }
-                mBeaconService.sendOrder(mBeaconService.setIBeaconName(etIBeaconName.getText().toString()));
+                mMokoService.sendOrder(mMokoService.setIBeaconName(etIBeaconName.getText().toString()));
                 break;
 
         }

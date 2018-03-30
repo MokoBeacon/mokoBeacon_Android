@@ -24,6 +24,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 
 import com.moko.beacon.BeaconConstants;
 import com.moko.beacon.R;
@@ -32,7 +33,7 @@ import com.moko.beacon.dialog.PasswordDialog;
 import com.moko.beacon.entity.BeaconDeviceInfo;
 import com.moko.beacon.entity.BeaconInfo;
 import com.moko.beacon.entity.BeaconParam;
-import com.moko.beacon.service.BeaconService;
+import com.moko.beacon.service.MokoService;
 import com.moko.beacon.utils.BeaconInfoParseableImpl;
 import com.moko.beacon.utils.ToastUtils;
 import com.moko.support.MokoConstants;
@@ -41,7 +42,6 @@ import com.moko.support.callback.MokoScanDeviceCallback;
 import com.moko.support.entity.DeviceInfo;
 import com.moko.support.entity.OrderType;
 import com.moko.support.log.LogModule;
-import com.moko.support.utils.MokoUtils;
 import com.moko.support.utils.MokoUtils;
 
 import java.util.ArrayList;
@@ -82,6 +82,8 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
     ListView lvDeviceList;
     @Bind(R.id.iv_refresh)
     ImageView ivRefresh;
+    @Bind(R.id.tv_devices_title)
+    TextView tvDevicesTitle;
 
 
     private Animation animation = null;
@@ -89,7 +91,7 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
     private ArrayList<BeaconInfo> mBeaconInfos;
     private int mSortType;
     private String mFilterText;
-    private BeaconService mBeaconService;
+    private MokoService mMokoService;
     private HashMap<String, BeaconInfo> beaconMap;
     private BeaconInfoParseableImpl beaconInfoParseable;
 
@@ -122,14 +124,14 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
                 mFilterText = s.toString();
             }
         });
-        bindService(new Intent(this, BeaconService.class), mServiceConnection, BIND_AUTO_CREATE);
+        bindService(new Intent(this, MokoService.class), mServiceConnection, BIND_AUTO_CREATE);
     }
 
     private ServiceConnection mServiceConnection = new ServiceConnection() {
 
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            mBeaconService = ((BeaconService.LocalBinder) service).getService();
+            mMokoService = ((MokoService.LocalBinder) service).getService();
             // 注册广播接收器
             IntentFilter filter = new IntentFilter();
             filter.addAction(MokoConstants.ACTION_CONNECT_SUCCESS);
@@ -137,12 +139,11 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
             filter.addAction(MokoConstants.ACTION_RESPONSE_SUCCESS);
             filter.addAction(MokoConstants.ACTION_RESPONSE_TIMEOUT);
             filter.addAction(MokoConstants.ACTION_RESPONSE_FINISH);
+            filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
             filter.setPriority(100);
             registerReceiver(mReceiver, filter);
-            if (!MokoSupport.getInstance().isBluetoothOpen()) {
-                // 蓝牙未打开，开启蓝牙
-                Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                startActivityForResult(enableBtIntent, MokoConstants.REQUEST_CODE_ENABLE_BT);
+            if (animation == null) {
+                startScan();
             }
         }
 
@@ -163,17 +164,20 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
                     mBeaconParam.beaconInfo = beaconInfo;
                     mBeaconParam.threeAxis = mThreeAxis;
                     // 读取全部可读数据
-                    mBeaconService.mHandler.postDelayed(new Runnable() {
+                    mMokoService.mHandler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
                             mBeaconParam.password = mPassword;
-                            mBeaconService.getReadableData(mPassword);
+                            mMokoService.getReadableData(mPassword);
                         }
                     }, 1000);
                 }
                 if (MokoConstants.ACTION_CONNECT_DISCONNECTED.equals(action)) {
                     dismissLoadingProgressDialog();
                     ToastUtils.showToast(MainActivity.this, "connect failed");
+                    if (animation == null) {
+                        startScan();
+                    }
                 }
                 if (MokoConstants.ACTION_RESPONSE_TIMEOUT.equals(action)) {
                     OrderType orderType = (OrderType) intent.getSerializableExtra(MokoConstants.EXTRA_KEY_RESPONSE_ORDER_TYPE);
@@ -182,6 +186,9 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
                             // 修改密码超时
                             dismissLoadingProgressDialog();
                             ToastUtils.showToast(MainActivity.this, "password error");
+                            if (animation == null) {
+                                startScan();
+                            }
                             break;
                     }
                 }
@@ -295,7 +302,7 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
                             break;
                         case changePassword:
                             if ("00".equals(MokoUtils.bytesToHexString(value))) {
-                                mBeaconService.mHandler.postDelayed(new Runnable() {
+                                mMokoService.mHandler.postDelayed(new Runnable() {
                                     @Override
                                     public void run() {
                                         dismissLoadingProgressDialog();
@@ -308,8 +315,23 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
                             } else {
                                 dismissLoadingProgressDialog();
                                 ToastUtils.showToast(MainActivity.this, "password error");
+                                if (animation == null) {
+                                    startScan();
+                                }
                             }
                             break;
+                    }
+                }
+                if (BluetoothAdapter.ACTION_STATE_CHANGED.equals(action)) {
+                    int blueState = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, 0);
+                    switch (blueState) {
+                        case BluetoothAdapter.STATE_TURNING_OFF:
+                            if (animation != null) {
+                                mMokoService.mHandler.removeMessages(0);
+                                mMokoService.stopScanDevice();
+                            }
+                            break;
+
                     }
                 }
             }
@@ -322,6 +344,9 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case MokoConstants.REQUEST_CODE_ENABLE_BT:
+                    if (animation == null) {
+                        startScan();
+                    }
                     break;
 
             }
@@ -332,11 +357,8 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
                     MainActivity.this.finish();
                     break;
                 case BeaconConstants.REQUEST_CODE_DEVICE_INFO:
-                    if (!MokoSupport.getInstance().isBluetoothOpen()) {
-                        // 蓝牙未打开，开启蓝牙
-                        Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                        startActivityForResult(enableBtIntent, MokoConstants.REQUEST_CODE_ENABLE_BT);
-                        return;
+                    if (animation == null) {
+                        startScan();
                     }
                     break;
             }
@@ -375,34 +397,44 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
                 startActivity(new Intent(this, AboutActivity.class));
                 break;
             case R.id.iv_refresh:
+                if (!MokoSupport.getInstance().isBluetoothOpen()) {
+                    // 蓝牙未打开，开启蓝牙
+                    Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                    startActivityForResult(enableBtIntent, MokoConstants.REQUEST_CODE_ENABLE_BT);
+                    return;
+                }
                 if (animation == null) {
-                    if (!MokoSupport.getInstance().isBluetoothOpen()) {
-                        // 蓝牙未打开，开启蓝牙
-                        Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                        startActivityForResult(enableBtIntent, MokoConstants.REQUEST_CODE_ENABLE_BT);
-                        return;
-                    }
-                    beaconMap.clear();
-                    animation = AnimationUtils.loadAnimation(this, R.anim.rotate_refresh);
-                    view.startAnimation(animation);
-                    beaconInfoParseable = new BeaconInfoParseableImpl();
-                    mBeaconService.startScanDevice(this);
-                    mBeaconService.mHandler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            mBeaconService.stopScanDevice();
-                        }
-                    }, 1000 * 60);
+                    startScan();
                 } else {
-                    mBeaconService.mHandler.removeMessages(0);
-                    mBeaconService.stopScanDevice();
+                    mMokoService.mHandler.removeMessages(0);
+                    mMokoService.stopScanDevice();
                 }
                 break;
         }
     }
 
+    private void startScan() {
+        if (!MokoSupport.getInstance().isBluetoothOpen()) {
+            // 蓝牙未打开，开启蓝牙
+            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableBtIntent, MokoConstants.REQUEST_CODE_ENABLE_BT);
+            return;
+        }
+        animation = AnimationUtils.loadAnimation(this, R.anim.rotate_refresh);
+        ivRefresh.startAnimation(animation);
+        beaconInfoParseable = new BeaconInfoParseableImpl();
+        mMokoService.startScanDevice(this);
+        mMokoService.mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mMokoService.stopScanDevice();
+            }
+        }, 1000 * 60);
+    }
+
     @Override
     public void onStartScan() {
+        beaconMap.clear();
     }
 
     @Override
@@ -419,6 +451,7 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
     public void onStopScan() {
         findViewById(R.id.iv_refresh).clearAnimation();
         animation = null;
+        updateDevices();
     }
 
     private void updateDevices() {
@@ -428,7 +461,8 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
             Iterator<BeaconInfo> iterator = beaconXInfosFilter.iterator();
             while (iterator.hasNext()) {
                 BeaconInfo beaconInfo = iterator.next();
-                if (!TextUtils.isEmpty(beaconInfo.name) && (beaconInfo.name.toLowerCase().contains(mFilterText.toLowerCase()))) {
+                if (!TextUtils.isEmpty(mFilterText) && (!TextUtils.isEmpty(beaconInfo.name) && (!TextUtils.isEmpty(beaconInfo.mac))
+                        && (beaconInfo.name.toLowerCase().contains(mFilterText.toLowerCase()) || beaconInfo.mac.toLowerCase().replaceAll(":", "").contains(mFilterText.toLowerCase())))) {
                     continue;
                 } else {
                     iterator.remove();
@@ -438,7 +472,6 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
         } else {
             mBeaconInfos.addAll(beaconMap.values());
         }
-        LogModule.i("扫描到的设备数：" + mBeaconInfos.size());
         // 排序
         switch (mSortType) {
             case SORT_TYPE_RSSI:
@@ -488,6 +521,7 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
                 break;
         }
         mAdapter.notifyDataSetChanged();
+        tvDevicesTitle.setText(getString(R.string.device_list_title_num, mBeaconInfos.size()));
     }
 
     private BeaconParam mBeaconParam;
@@ -497,12 +531,18 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         if (!MokoSupport.getInstance().isBluetoothOpen()) {
+            // 蓝牙未打开，开启蓝牙
+            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableBtIntent, MokoConstants.REQUEST_CODE_ENABLE_BT);
             return;
         }
         final BeaconInfo beaconInfo = (BeaconInfo) parent.getItemAtPosition(position);
-        LogModule.i(beaconInfo.toString());
-        mBeaconService.stopScanDevice();
-        if (!isFinishing()) {
+        if (beaconInfo != null && !isFinishing()) {
+            LogModule.i(beaconInfo.toString());
+            if (animation != null) {
+                mMokoService.mHandler.removeMessages(0);
+                mMokoService.stopScanDevice();
+            }
             final PasswordDialog dialog = new PasswordDialog(this);
             dialog.setOnPasswordClicked(new PasswordDialog.PasswordClickListener() {
                 @Override
@@ -516,12 +556,15 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
                     LogModule.i(password);
                     mPassword = password;
                     mThreeAxis = beaconInfo.threeAxis;
-                    mBeaconService.connDevice(beaconInfo.mac);
+                    mMokoService.connDevice(beaconInfo.mac);
                     showLoadingProgressDialog();
                 }
 
                 @Override
                 public void onDismiss() {
+                    if (animation == null) {
+                        startScan();
+                    }
                 }
             });
             dialog.show();

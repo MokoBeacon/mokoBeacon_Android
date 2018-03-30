@@ -17,7 +17,7 @@ import android.widget.TextView;
 
 import com.moko.beacon.BeaconConstants;
 import com.moko.beacon.R;
-import com.moko.beacon.service.BeaconService;
+import com.moko.beacon.service.MokoService;
 import com.moko.beacon.utils.ToastUtils;
 import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
@@ -59,7 +59,7 @@ public class SetBroadcastIntervalActivity extends BaseActivity {
     TextView tvBroadcastInterval10;
     @Bind(R.id.et_broadcast_interval)
     EditText etBroadcastInterval;
-    private BeaconService mBeaconService;
+    private MokoService mMokoService;
     private ArrayList<View> mViews;
 
     @Override
@@ -67,7 +67,7 @@ public class SetBroadcastIntervalActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_broadcast_interval);
         ButterKnife.bind(this);
-        bindService(new Intent(this, BeaconService.class), mServiceConnection, BIND_AUTO_CREATE);
+        bindService(new Intent(this, MokoService.class), mServiceConnection, BIND_AUTO_CREATE);
         int broadcastInterval = getIntent().getIntExtra(BeaconConstants.EXTRA_KEY_DEVICE_BROADCASTINTERVAL, 0) - 1;
         mViews = new ArrayList<>();
         mViews.add(tvBroadcastInterval1);
@@ -137,7 +137,7 @@ public class SetBroadcastIntervalActivity extends BaseActivity {
 
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            mBeaconService = ((BeaconService.LocalBinder) service).getService();
+            mMokoService = ((MokoService.LocalBinder) service).getService();
             // 注册广播接收器
             IntentFilter filter = new IntentFilter();
             filter.addAction(MokoConstants.ACTION_CONNECT_SUCCESS);
@@ -178,7 +178,7 @@ public class SetBroadcastIntervalActivity extends BaseActivity {
                     ToastUtils.showToast(this, getString(R.string.alert_broadcast_interval_range));
                     return;
                 }
-                mBeaconService.sendOrder(mBeaconService.setBroadcastingInterval(broadcastIntervalValue));
+                mMokoService.sendOrder(mMokoService.setBroadcastingInterval(broadcastIntervalValue));
                 break;
             case R.id.tv_broadcast_interval_1:
             case R.id.tv_broadcast_interval_2:

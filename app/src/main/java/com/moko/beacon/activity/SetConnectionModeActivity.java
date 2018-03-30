@@ -17,7 +17,7 @@ import android.widget.RelativeLayout;
 
 import com.moko.beacon.BeaconConstants;
 import com.moko.beacon.R;
-import com.moko.beacon.service.BeaconService;
+import com.moko.beacon.service.MokoService;
 import com.moko.beacon.utils.ToastUtils;
 import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
@@ -45,7 +45,7 @@ public class SetConnectionModeActivity extends BaseActivity {
     ImageView ivConnNo;
     @Bind(R.id.rl_conn_no)
     RelativeLayout rlConnNo;
-    private BeaconService mBeaconService;
+    private MokoService mMokoService;
     private HashMap<ViewGroup, View> viewHashMap;
     private String connectMode;
 
@@ -54,7 +54,7 @@ public class SetConnectionModeActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_connection_mode);
         ButterKnife.bind(this);
-        bindService(new Intent(this, BeaconService.class), mServiceConnection, BIND_AUTO_CREATE);
+        bindService(new Intent(this, MokoService.class), mServiceConnection, BIND_AUTO_CREATE);
         String connection_mode = getIntent().getStringExtra(BeaconConstants.EXTRA_KEY_DEVICE_CONNECTION_MODE);
         viewHashMap = new HashMap<>();
         viewHashMap.put(rlConnYes, ivConnYes);
@@ -116,7 +116,7 @@ public class SetConnectionModeActivity extends BaseActivity {
 
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            mBeaconService = ((BeaconService.LocalBinder) service).getService();
+            mMokoService = ((MokoService.LocalBinder) service).getService();
             // 注册广播接收器
             IntentFilter filter = new IntentFilter();
             filter.addAction(MokoConstants.ACTION_CONNECT_SUCCESS);
@@ -144,7 +144,7 @@ public class SetConnectionModeActivity extends BaseActivity {
                     ToastUtils.showToast(this, "bluetooth is closed,please open");
                     return;
                 }
-                mBeaconService.sendOrder(mBeaconService.setConnectionMode(connectMode));
+                mMokoService.sendOrder(mMokoService.setConnectionMode(connectMode));
                 break;
             case R.id.rl_conn_yes:
             case R.id.rl_conn_no:
