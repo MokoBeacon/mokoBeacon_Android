@@ -22,6 +22,7 @@
     <string name="alert_data_cannot_null">要修改的值不能为空</string>
     <string name="read_data_failed">数据读取错误</string>
     <string name="device_info_measure_power">校验距离</string>
+    <string name="device_info_measure_power_title">校验距离</string>
     <string name="device_info_transmission">广播功率</string>
     <string name="tips_transmission">提示：广播功率设置越高，信号覆盖范围越大耗电量也越大，修改参数后，重启生效</string>
     <string name="device_info_broadcast_interval">广播周期</string>

@@ -19,11 +19,14 @@ import android.view.View;
 import android.view.Window;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.moko.beacon.BeaconConstants;
 import com.moko.beacon.R;
 import com.moko.beacon.entity.BeaconParam;
+import com.moko.beacon.service.DfuService;
 import com.moko.beacon.service.MokoService;
+import com.moko.beacon.utils.FirmwareModule;
 import com.moko.beacon.utils.ToastUtils;
 import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
@@ -32,13 +35,13 @@ import com.moko.support.log.LogModule;
 import com.moko.support.task.OrderTask;
 import com.moko.support.utils.MokoUtils;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import no.nordicsemi.android.dfu.DfuBaseService;
 import no.nordicsemi.android.dfu.DfuProgressListener;
 import no.nordicsemi.android.dfu.DfuProgressListenerAdapter;
 import no.nordicsemi.android.dfu.DfuServiceInitiator;
@@ -521,14 +524,18 @@ public class DeviceInfoActivity extends BaseActivity {
                     ToastUtils.showToast(this, getString(R.string.alert_click_reconnect));
                     return;
                 }
-                intent = new Intent(Intent.ACTION_GET_CONTENT);
-                intent.setType(DfuBaseService.MIME_TYPE_ZIP);
-                intent.addCategory(Intent.CATEGORY_OPENABLE);
-                if (intent.resolveActivity(getPackageManager()) != null) {
-                    // file browser has been found on the device
-                    startActivityForResult(intent, BeaconConstants.REQUEST_CODE_SELECT_FILE);
+                String firmwareFilePath = FirmwareModule.getInstance(this).getFilePath(!TextUtils.isEmpty(mBeaconParam.threeAxis));
+                final File firmwareFile = new File(firmwareFilePath);
+                if (firmwareFile.exists()) {
+                    final DfuServiceInitiator starter = new DfuServiceInitiator(mBeaconParam.iBeaconMAC)
+                            .setDeviceName(mBeaconParam.iBeaconName)
+                            .setKeepBond(false)
+                            .setDisableNotification(true);
+                    starter.setZip(null, firmwareFilePath);
+                    starter.start(this, DfuService.class);
+                    showDFUProgressDialog("Waiting...");
                 } else {
-                    ToastUtils.showToast(this, "install file manager app");
+                    Toast.makeText(this, "file is not exists!", Toast.LENGTH_SHORT).show();
                 }
                 break;
         }
@@ -571,6 +578,26 @@ public class DeviceInfoActivity extends BaseActivity {
     private void dismissSyncProgressDialog() {
         if (!isFinishing() && mSyncingDialog != null && mSyncingDialog.isShowing()) {
             mSyncingDialog.dismiss();
+        }
+    }
+
+    private ProgressDialog mDFUDialog;
+
+    private void showDFUProgressDialog(String tips) {
+        mDFUDialog = new ProgressDialog(DeviceInfoActivity.this);
+        mDFUDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        mDFUDialog.setCanceledOnTouchOutside(false);
+        mDFUDialog.setCancelable(false);
+        mDFUDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        mDFUDialog.setMessage(tips);
+        if (!isFinishing() && mDFUDialog != null && !mDFUDialog.isShowing()) {
+            mDFUDialog.show();
+        }
+    }
+
+    private void dismissDFUProgressDialog() {
+        if (!isFinishing() && mDFUDialog != null && mDFUDialog.isShowing()) {
+            mDFUDialog.dismiss();
         }
     }
 
@@ -714,33 +741,6 @@ public class DeviceInfoActivity extends BaseActivity {
                         }
                         return;
                     }
-                case BeaconConstants.REQUEST_CODE_SELECT_FILE:
-                    String filePath = null;
-                    Uri fileStreamUri = null;
-                    // and read new one
-                    final Uri uri = data.getData();
-            /*
-             * The URI returned from application may be in 'file' or 'content' schema.
-			 * 'File' schema allows us to create a File object and read details from if directly.
-			 *
-			 * Data from 'Content' schema must be read by Content Provider. To do that we are using a Loader.
-			 */
-                    if (uri.getScheme().equals("file")) {
-                        // the direct path to the file has been returned
-                        final String path = uri.getPath();
-                        filePath = path;
-                    } else if (uri.getScheme().equals("content")) {
-                        // an Uri has been returned
-                        fileStreamUri = uri;
-                        filePath = getDataColumn(this, uri, null, null);
-
-                    }
-                    final DfuServiceInitiator starter = new DfuServiceInitiator(mBeaconParam.iBeaconMAC)
-                            .setDeviceName(mBeaconParam.iBeaconName)
-                            .setKeepBond(false);
-                    starter.setZip(fileStreamUri, filePath);
-                    starter.start(this, DfuBaseService.class);
-                    return;
             }
             getEmptyInfo();
         }
@@ -857,38 +857,41 @@ public class DeviceInfoActivity extends BaseActivity {
 
         @Override
         public void onDfuProcessStarting(String deviceAddress) {
-            LogModule.w("onDfuProcessStarting...");
+            mDFUDialog.setMessage("DfuProcessStarting...");
         }
 
 
         @Override
         public void onEnablingDfuMode(String deviceAddress) {
-            LogModule.w("onEnablingDfuMode...");
+            mDFUDialog.setMessage("EnablingDfuMode...");
         }
 
         @Override
         public void onFirmwareValidating(String deviceAddress) {
-            LogModule.w("onFirmwareValidating...");
+            mDFUDialog.setMessage("FirmwareValidating...");
         }
 
         @Override
         public void onDfuCompleted(String deviceAddress) {
-            LogModule.w("onDfuCompleted...");
+            Toast.makeText(DeviceInfoActivity.this, "DfuCompleted!", Toast.LENGTH_SHORT).show();
+            dismissDFUProgressDialog();
         }
 
         @Override
         public void onDfuAborted(String deviceAddress) {
-            LogModule.w("onDfuAborted...");
+            mDFUDialog.setMessage("DfuAborted...");
         }
 
         @Override
         public void onProgressChanged(String deviceAddress, int percent, float speed, float avgSpeed, int currentPart, int partsTotal) {
-            LogModule.w("onProgressChanged..." + percent);
+            mDFUDialog.setMessage("Progress:" + percent + "%");
         }
 
         @Override
         public void onError(String deviceAddress, int error, int errorType, String message) {
-            LogModule.w("onError..." + message);
+            Toast.makeText(DeviceInfoActivity.this, "Error:" + message, Toast.LENGTH_SHORT).show();
+            LogModule.i("Error:" + message);
+            dismissDFUProgressDialog();
         }
     };
 }

@@ -268,6 +268,7 @@ public class MokoSupport implements MokoResponseCallback {
         }
         final OrderTask orderTask = mQueue.peek();
         if (mBluetoothGatt == null) {
+            mQueue.clear();
             LogModule.i("executeTask : BluetoothGatt is null");
             return;
         }
@@ -277,6 +278,7 @@ public class MokoSupport implements MokoResponseCallback {
         }
         final MokoCharacteristic mokoCharacteristic = mCharacteristicMap.get(orderTask.orderType);
         if (mokoCharacteristic == null) {
+            mQueue.clear();
             LogModule.i("executeTask : mokoCharacteristic is null");
             return;
         }

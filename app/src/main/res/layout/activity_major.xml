@@ -17,7 +17,7 @@
             android:drawablePadding="6dp"
             android:gravity="center_vertical"
             android:paddingLeft="16dp"
-            android:text="@string/device_info_title"
+            android:paddingRight="16dp"
             android:textColor="@color/white_ffffff"
             android:textSize="15sp" />
 

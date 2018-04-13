@@ -102,6 +102,7 @@
             android:windowSoftInputMode="adjustPan" />
 
         <service android:name=".service.MokoService" />
+        <service android:name=".service.DfuService" />
 
     </application>
 

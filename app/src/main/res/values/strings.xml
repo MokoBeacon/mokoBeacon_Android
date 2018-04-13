@@ -21,7 +21,8 @@
     <string name="device_info_minor">MINOR</string>
     <string name="alert_data_cannot_null">To modify the name cannot be empty.</string>
     <string name="read_data_failed">Read data error</string>
-    <string name="device_info_measure_power">Measured Power(RSSI@0m)</string>
+    <string name="device_info_measure_power">Measured Power(RSSI@1m)</string>
+    <string name="device_info_measure_power_title">Measured Power</string>
     <string name="device_info_transmission">Transmission Power</string>
     <string name="tips_transmission">Tips:The higher power,the greater signal coverage,but power consumption is higher.</string>
     <string name="device_info_broadcast_interval">Broadcasting Interval</string>
@@ -73,7 +74,7 @@
     <string name="password_input_confirm">New Password</string>
     <string name="password_error">param error</string>
     <string name="device_info_system">Device Information</string>
-    <string name="alert_click_reconnect">Device is disconnected, pls click "Disconnect" on the top to reconnect.</string>
+    <string name="alert_click_reconnect">Device is disconnected, pls click \"Disconnect\" on the top to reconnect.</string>
     <string name="dialog_connecting">Connecting...</string>
     <string name="system_firmname">Manufacture</string>
     <string name="system_device_name">Product Model</string>
