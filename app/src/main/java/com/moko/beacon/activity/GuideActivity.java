@@ -9,7 +9,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 
 import com.moko.beacon.R;
-import com.moko.beacon.utils.FirmwareModule;
 import com.moko.beacon.utils.ToastUtils;
 
 /**
@@ -61,7 +60,6 @@ public class GuideActivity extends BaseActivity {
     }
 
     private void delayGotoMain() {
-        FirmwareModule.getInstance(this).copyAssets2SD();
         new Thread() {
             public void run() {
                 try {

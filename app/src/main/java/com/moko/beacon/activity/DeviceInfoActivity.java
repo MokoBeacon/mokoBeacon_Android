@@ -2,6 +2,7 @@ package com.moko.beacon.activity;
 
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
+import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -26,7 +27,7 @@ import com.moko.beacon.R;
 import com.moko.beacon.entity.BeaconParam;
 import com.moko.beacon.service.DfuService;
 import com.moko.beacon.service.MokoService;
-import com.moko.beacon.utils.FirmwareModule;
+import com.moko.beacon.utils.FileUtils;
 import com.moko.beacon.utils.ToastUtils;
 import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
@@ -54,6 +55,9 @@ import no.nordicsemi.android.dfu.DfuServiceListenerHelper;
  * @ClassPath com.moko.beacon.activity.DeviceInfoActivity
  */
 public class DeviceInfoActivity extends BaseActivity {
+
+    public static final int REQUEST_CODE_SELECT_FIRMWARE = 0x10;
+
     @Bind(R.id.tv_conn_state)
     TextView tvConnState;
     @Bind(R.id.tv_ibeacon_battery)
@@ -524,18 +528,13 @@ public class DeviceInfoActivity extends BaseActivity {
                     ToastUtils.showToast(this, getString(R.string.alert_click_reconnect));
                     return;
                 }
-                String firmwareFilePath = FirmwareModule.getInstance(this).getFilePath(!TextUtils.isEmpty(mBeaconParam.threeAxis));
-                final File firmwareFile = new File(firmwareFilePath);
-                if (firmwareFile.exists()) {
-                    final DfuServiceInitiator starter = new DfuServiceInitiator(mBeaconParam.iBeaconMAC)
-                            .setDeviceName(mBeaconParam.iBeaconName)
-                            .setKeepBond(false)
-                            .setDisableNotification(true);
-                    starter.setZip(null, firmwareFilePath);
-                    starter.start(this, DfuService.class);
-                    showDFUProgressDialog("Waiting...");
-                } else {
-                    Toast.makeText(this, "file is not exists!", Toast.LENGTH_SHORT).show();
+                intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.setType("*/*");//设置类型，我这里是任意类型，任意后缀的可以这样写。
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                try {
+                    startActivityForResult(Intent.createChooser(intent, "select file first!"), REQUEST_CODE_SELECT_FIRMWARE);
+                } catch (ActivityNotFoundException ex) {
+                    ToastUtils.showToast(this, "install file manager app");
                 }
                 break;
         }
@@ -604,85 +603,6 @@ public class DeviceInfoActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-//        if (resultCode == RESULT_OK) {
-//            switch (requestCode) {
-//                case BeaconConstants.REQUEST_CODE_SET_UUID:
-//                    if (data != null && data.getExtras() != null) {
-//                        String uuid = data.getExtras().getString(BeaconConstants.EXTRA_KEY_DEVICE_UUID);
-//                        tvIbeaconUuid.setText(uuid);
-//                        mBeaconParam.uuid = uuid;
-//                    }
-//                    break;
-//                case BeaconConstants.REQUEST_CODE_SET_MAJOR:
-//                    if (data != null && data.getExtras() != null) {
-//                        int major = data.getExtras().getInt(BeaconConstants.EXTRA_KEY_DEVICE_MAJOR, 0);
-//                        tvIbeaconMajor.setText(major + "");
-//                        mBeaconParam.major = major;
-//                    }
-//                    break;
-//                case BeaconConstants.REQUEST_CODE_SET_MINOR:
-//                    if (data != null && data.getExtras() != null) {
-//                        int minor = data.getExtras().getInt(BeaconConstants.EXTRA_KEY_DEVICE_MINOR, 0);
-//                        tvIbeaconMinor.setText(minor + "");
-//                        mBeaconParam.minor = minor;
-//                    }
-//                    break;
-//                case BeaconConstants.REQUEST_CODE_SET_MEASURE_POWER:
-//                    if (data != null && data.getExtras() != null) {
-//                        int measurePower = data.getExtras().getInt(BeaconConstants.EXTRA_KEY_DEVICE_MEASURE_POWER, 0);
-//                        tvIbeaconMeasurePower.setText(String.format("-%ddBm", measurePower));
-//                        mBeaconParam.measurePower = measurePower;
-//                    }
-//                    break;
-//                case BeaconConstants.REQUEST_CODE_SET_TRANSMISSION:
-//                    if (data != null && data.getExtras() != null) {
-//                        int transmission = data.getExtras().getInt(BeaconConstants.EXTRA_KEY_DEVICE_TRANSMISSION, 0);
-//                        tvIbeaconMeasurePower.setText(String.valueOf(transmission));
-//                        mBeaconParam.transmission = transmission;
-//                    }
-//                    break;
-//                case BeaconConstants.REQUEST_CODE_SET_BROADCASTINTERVAL:
-//                    if (data != null && data.getExtras() != null) {
-//                        int broadcastInterval = data.getExtras().getInt(BeaconConstants.EXTRA_KEY_DEVICE_BROADCASTINTERVAL, 0);
-//                        tvIbeaconBroadcastingInterval.setText(String.valueOf(broadcastInterval));
-//                        mBeaconParam.broadcastingInterval = broadcastInterval;
-//                    }
-//                    break;
-//                case BeaconConstants.REQUEST_CODE_SET_DEVICE_ID:
-//                    if (data != null && data.getExtras() != null) {
-//                        String deviceId = data.getExtras().getString(BeaconConstants.EXTRA_KEY_DEVICE_DEVICE_ID);
-//                        tvIbeaconSerialID.setText(String.valueOf(deviceId));
-//                        mBeaconParam.serialID = deviceId;
-//                    }
-//                    break;
-//                case BeaconConstants.REQUEST_CODE_SET_IBEACON_NAME:
-//                    if (data != null && data.getExtras() != null) {
-//                        String deviceName = data.getExtras().getString(BeaconConstants.EXTRA_KEY_DEVICE_IBEACON_NAME);
-//                        tvIbeaconDeviceName.setText(String.valueOf(deviceName));
-//                        mBeaconParam.iBeaconName = deviceName;
-//                    }
-//                    break;
-//                case BeaconConstants.REQUEST_CODE_SET_CONNECTION_MODE:
-//                    if (data != null && data.getExtras() != null) {
-//                        String connectionMode = data.getExtras().getString(BeaconConstants.EXTRA_KEY_DEVICE_CONNECTION_MODE);
-//                        tvIbeaconDeviceConnMode.setText("00".equals(connectionMode) ? "YES" : "NO");
-//                        mBeaconParam.connectionMode = connectionMode;
-//                    }
-//                    break;
-//                case BeaconConstants.REQUEST_CODE_SET_PASSWORD:
-//                    if (data != null && data.getExtras() != null) {
-//                        String password = data.getExtras().getString(BeaconConstants.EXTRA_KEY_DEVICE_PASSWORD);
-//                        mBeaconParam.password = password;
-//                    }
-//                    break;
-//                case BeaconConstants.REQUEST_CODE_SET_SYSTEM_INFO:
-//                    if (data != null && data.getExtras() != null) {
-//                        BeaconDeviceInfo beaconDeviceInfo = (BeaconDeviceInfo) data.getExtras().getSerializable(BeaconConstants.EXTRA_KEY_DEVICE_INFO);
-//                        mBeaconParam.beaconInfo = beaconDeviceInfo;
-//                    }
-//                    break;
-//            }
-//        }
         if (resultCode == BeaconConstants.RESULT_CONN_DISCONNECTED) {
             tvConnState.setText(getString(R.string.device_info_conn_status_disconnect));
         } else {
@@ -738,9 +658,31 @@ public class DeviceInfoActivity extends BaseActivity {
                             String password = data.getExtras().getString(BeaconConstants.EXTRA_KEY_DEVICE_PASSWORD);
                             mBeaconParam.password = password;
                             back();
+
                         }
                         return;
                     }
+                case REQUEST_CODE_SELECT_FIRMWARE:
+                    if (resultCode == RESULT_OK) {
+
+                        //得到uri，后面就是将uri转化成file的过程。
+                        Uri uri = data.getData();
+                        String firmwareFilePath = FileUtils.getPath(this, uri);
+                        //
+                        final File firmwareFile = new File(firmwareFilePath);
+                        if (firmwareFile.exists()) {
+                            final DfuServiceInitiator starter = new DfuServiceInitiator(mBeaconParam.iBeaconMAC)
+                                    .setDeviceName(mBeaconParam.iBeaconName)
+                                    .setKeepBond(false)
+                                    .setDisableNotification(true);
+                            starter.setZip(null, firmwareFilePath);
+                            starter.start(this, DfuService.class);
+                            showDFUProgressDialog("Waiting...");
+                        } else {
+                            Toast.makeText(this, "file is not exists!", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    break;
             }
             getEmptyInfo();
         }

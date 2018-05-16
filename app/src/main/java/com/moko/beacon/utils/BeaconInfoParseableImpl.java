@@ -6,6 +6,7 @@ import android.util.SparseArray;
 
 import com.moko.beacon.entity.BeaconInfo;
 import com.moko.support.entity.DeviceInfo;
+import com.moko.support.log.LogModule;
 import com.moko.support.service.DeviceInfoParseable;
 import com.moko.support.utils.MokoUtils;
 import com.moko.support.utils.MokoUtils;
@@ -31,7 +32,7 @@ public class BeaconInfoParseableImpl implements DeviceInfoParseable<BeaconInfo> 
             return null;
         }
         String manufacturerSpecificData = MokoUtils.bytesToHexString(result.getScanRecord().getManufacturerSpecificData(manufacturer.keyAt(0)));
-        if (!manufacturerSpecificData.startsWith("0215")) {
+        if (TextUtils.isEmpty(manufacturerSpecificData) || !manufacturerSpecificData.startsWith("0215")) {
             return null;
         }
         // 0215fda50693a4e24fb1afcfc6eb0764782500000000c5
