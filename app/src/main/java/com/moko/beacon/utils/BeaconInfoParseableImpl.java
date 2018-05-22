@@ -70,7 +70,7 @@ public class BeaconInfoParseableImpl implements DeviceInfoParseable<BeaconInfo> 
         sb.append(hexString.substring(16, 20));
         sb.append("-");
         sb.append(hexString.substring(20, 32));
-        String uuid = sb.toString();
+        String uuid = sb.toString().toUpperCase();
 
         byte[] manufacturerSpecificDataByte = result.getScanRecord().getManufacturerSpecificData(manufacturer.keyAt(0));
         int major = (manufacturerSpecificDataByte[18] & 0xff) * 0x100 + (manufacturerSpecificDataByte[19] & 0xff);
@@ -88,13 +88,13 @@ public class BeaconInfoParseableImpl implements DeviceInfoParseable<BeaconInfo> 
         int acc = Integer.parseInt(serviceData.substring(10, 12), 16);
         String mac = deviceInfo.mac;
         double distance = MokoUtils.getDistance(deviceInfo.rssi, acc);
-        String distanceDesc = "unknown";
+        String distanceDesc = "Unknown";
         if (distance <= 0.1) {
-            distanceDesc = "immediate";
+            distanceDesc = "Immediate";
         } else if (distance > 0.1 && distance <= 1.0) {
-            distanceDesc = "near";
+            distanceDesc = "Near";
         } else if (distance > 1.0) {
-            distanceDesc = "far";
+            distanceDesc = "Far";
         }
         // txPower;
         byte[] scanRecord = MokoUtils.hex2bytes(deviceInfo.scanRecord);

@@ -82,9 +82,8 @@
     <string name="system_chip_mode">芯片型号</string>
     <string name="system_hardware_version">硬件版本</string>
     <string name="system_firmware_version">固件版本</string>
+    <string name="system_soft_version">软件版本</string>
     <string name="system_ibeacon_runtime">运行时间</string>
-    <string name="system_mark">系统标示</string>
-    <string name="system_ieee_info">IEEE标准信息</string>
     <string name="about_title">关于我们</string>
     <string name="version_info">版本号：%s</string>
     <string name="uuid_airlocate">AirLocate</string>
@@ -96,7 +95,6 @@
     <string name="tips_minor">注:数值范围0-65535,修改参数后,重连生效</string>
     <string name="tips_measure_power">注:数值范围-119-0，这个数值用于校准iBeacon和手机的距离，数值必须为负，通常是-55和-59。不是专业人士，不建议去修改这个值。</string>
     <string name="alert_minor_range">合理范围为0-65535</string>
-    <string name="main_scan">扫描中...</string>
     <string name="tips_connection_mode">注：YES代表手机可以与iBeacon连接，NO代表不能与iBeacon连接。正常情况下不能去修改这个值，修改参数后，重连后生效。</string>
     <string name="device_info_three_axis">加速度计采样数据</string>
 </resources>

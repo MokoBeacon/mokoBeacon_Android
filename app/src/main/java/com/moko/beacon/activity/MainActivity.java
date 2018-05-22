@@ -265,6 +265,9 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
                         case firmname:
                             mBeaconParam.beaconInfo.firmname = MokoUtils.hex2String(MokoUtils.bytesToHexString(value));
                             break;
+                        case softVersion:
+                            mBeaconParam.beaconInfo.softVersion = MokoUtils.hex2String(MokoUtils.bytesToHexString(value));
+                            break;
                         case devicename:
                             mBeaconParam.beaconInfo.deviceName = MokoUtils.hex2String(MokoUtils.bytesToHexString(value));
                             break;
@@ -294,11 +297,6 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
                                 byte[] chipModelBytes = Arrays.copyOfRange(value, 4, value.length);
                                 mBeaconParam.beaconInfo.chipModel = MokoUtils.hex2String(MokoUtils.bytesToHexString(chipModelBytes));
                             }
-                            break;
-                        case systemMark:
-                            mBeaconParam.beaconInfo.systemMark = MokoUtils.bytesToHexString(value);
-                        case IEEEInfo:
-                            mBeaconParam.beaconInfo.IEEEInfo = MokoUtils.bytesToHexString(value);
                             break;
                         case changePassword:
                             if ("00".equals(MokoUtils.bytesToHexString(value))) {

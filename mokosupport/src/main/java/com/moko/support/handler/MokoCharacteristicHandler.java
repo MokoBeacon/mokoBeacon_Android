@@ -70,6 +70,11 @@ public class MokoCharacteristicHandler {
                     if (TextUtils.isEmpty(characteristicUuid)) {
                         continue;
                     }
+                    // 软件版本
+                    if (characteristicUuid.equals(OrderType.softVersion.getUuid())) {
+                        mokoCharacteristicMap.put(OrderType.softVersion, new MokoCharacteristic(characteristic, OrderType.softVersion));
+                        continue;
+                    }
                     // 厂商名称
                     if (characteristicUuid.equals(OrderType.firmname.getUuid())) {
                         mokoCharacteristicMap.put(OrderType.firmname, new MokoCharacteristic(characteristic, OrderType.firmname));
@@ -93,16 +98,6 @@ public class MokoCharacteristicHandler {
                     // 固件版本号
                     if (characteristicUuid.equals(OrderType.firmwareVersion.getUuid())) {
                         mokoCharacteristicMap.put(OrderType.firmwareVersion, new MokoCharacteristic(characteristic, OrderType.firmwareVersion));
-                        continue;
-                    }
-                    // 系统标示
-                    if (characteristicUuid.equals(OrderType.systemMark.getUuid())) {
-                        mokoCharacteristicMap.put(OrderType.systemMark, new MokoCharacteristic(characteristic, OrderType.systemMark));
-                        continue;
-                    }
-                    // IEEE标准信息
-                    if (characteristicUuid.equals(OrderType.IEEEInfo.getUuid())) {
-                        mokoCharacteristicMap.put(OrderType.IEEEInfo, new MokoCharacteristic(characteristic, OrderType.IEEEInfo));
                         continue;
                     }
                 }

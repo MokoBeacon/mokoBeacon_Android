@@ -33,6 +33,6 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="60dp"
         android:gravity="center"
-        android:text="@string/about_moko_name"
+        android:text="Moko Technology LTD."
         android:textColor="@color/black_333333" />
 </LinearLayout>

@@ -453,6 +453,7 @@ public class MokoSupport implements MokoResponseCallback {
             switch (orderTask.orderType) {
                 case battery:
                 case firmname:
+                case softVersion:
                 case devicename:
                 case iBeaconDate:
                 case hardwareVersion:
@@ -468,8 +469,6 @@ public class MokoSupport implements MokoResponseCallback {
                 case connectionMode:
                 case softReboot:
                 case iBeaconMac:
-                case systemMark:
-                case IEEEInfo:
                     formatCommonOrder(orderTask, value);
                     break;
             }

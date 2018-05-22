@@ -42,6 +42,8 @@ import butterknife.OnClick;
  * @ClassPath com.moko.beacon.activity.SystemInfoActivity
  */
 public class SystemInfoActivity extends BaseActivity {
+    @Bind(R.id.tv_ibeacon_soft_version)
+    TextView tvIbeaconSoftVersion;
     @Bind(R.id.tv_ibeacon_firmname)
     TextView tvIbeaconFirmname;
     @Bind(R.id.tv_ibeacon_device_name)
@@ -58,10 +60,6 @@ public class SystemInfoActivity extends BaseActivity {
     TextView tvIbeaconFirmwareVersion;
     @Bind(R.id.tv_ibeacon_runtime)
     TextView tvIbeaconRuntime;
-    @Bind(R.id.tv_ibeacon_system_mark)
-    TextView tvIbeaconSystemMark;
-    @Bind(R.id.tv_ibeacon_ieee_info)
-    TextView tvIbeaconIeeeInfo;
     private MokoService mMokoService;
     private BeaconDeviceInfo mBeaconDeviceInfo;
 
@@ -77,6 +75,11 @@ public class SystemInfoActivity extends BaseActivity {
             return;
         }
         ArrayList<OrderTask> orderTasks = new ArrayList<>();
+        if (TextUtils.isEmpty(mBeaconDeviceInfo.softVersion)) {
+            orderTasks.add(mMokoService.getSoftVersion());
+        } else {
+            tvIbeaconSoftVersion.setText(mBeaconDeviceInfo.softVersion);
+        }
         if (TextUtils.isEmpty(mBeaconDeviceInfo.firmname)) {
             orderTasks.add(mMokoService.getFirmname());
         } else {
@@ -116,16 +119,6 @@ public class SystemInfoActivity extends BaseActivity {
             orderTasks.add(mMokoService.getChipModel());
         } else {
             tvIbeaconRuntime.setText(mBeaconDeviceInfo.runtime);
-        }
-        if (TextUtils.isEmpty(mBeaconDeviceInfo.systemMark)) {
-            orderTasks.add(mMokoService.getChipModel());
-        } else {
-            tvIbeaconSystemMark.setText(mBeaconDeviceInfo.systemMark);
-        }
-        if (TextUtils.isEmpty(mBeaconDeviceInfo.IEEEInfo)) {
-            orderTasks.add(mMokoService.getChipModel());
-        } else {
-            tvIbeaconIeeeInfo.setText(mBeaconDeviceInfo.IEEEInfo);
         }
         if (!orderTasks.isEmpty()) {
             if (!MokoSupport.getInstance().isBluetoothOpen()) {
@@ -193,6 +186,10 @@ public class SystemInfoActivity extends BaseActivity {
                             mBeaconDeviceInfo.firmname = MokoUtils.hex2String(MokoUtils.bytesToHexString(value));
                             tvIbeaconFirmname.setText(mBeaconDeviceInfo.firmname);
                             break;
+                        case softVersion:
+                            mBeaconDeviceInfo.softVersion = MokoUtils.hex2String(MokoUtils.bytesToHexString(value));
+                            tvIbeaconSoftVersion.setText(mBeaconDeviceInfo.softVersion);
+                            break;
                         case devicename:
                             mBeaconDeviceInfo.deviceName = MokoUtils.hex2String(MokoUtils.bytesToHexString(value));
                             tvIbeaconDeviceName.setText(mBeaconDeviceInfo.deviceName);
@@ -228,13 +225,6 @@ public class SystemInfoActivity extends BaseActivity {
                                 mBeaconDeviceInfo.chipModel = MokoUtils.hex2String(MokoUtils.bytesToHexString(chipModelBytes));
                                 tvIbeaconChipMode.setText(mBeaconDeviceInfo.chipModel);
                             }
-                            break;
-                        case systemMark:
-                            mBeaconDeviceInfo.systemMark = MokoUtils.bytesToHexString(value);
-                            tvIbeaconSystemMark.setText(mBeaconDeviceInfo.systemMark);
-                        case IEEEInfo:
-                            mBeaconDeviceInfo.IEEEInfo = MokoUtils.bytesToHexString(value);
-                            tvIbeaconIeeeInfo.setText(mBeaconDeviceInfo.IEEEInfo);
                             break;
                     }
                 }

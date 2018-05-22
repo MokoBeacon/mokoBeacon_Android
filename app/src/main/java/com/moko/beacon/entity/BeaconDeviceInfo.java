@@ -9,6 +9,8 @@ import java.io.Serializable;
  * @ClassPath com.moko.beacon.entity.BeaconDeviceInfo
  */
 public class BeaconDeviceInfo implements Serializable{
+    // 软件版本
+    public String softVersion;
     // 制造商
     public String firmname;
     // 产品型号
@@ -25,15 +27,12 @@ public class BeaconDeviceInfo implements Serializable{
     public String firmwareVersion;
     // 运行时间
     public String runtime;
-    // 系统标示
-    public String systemMark;
-    // IEEE标准信息
-    public String IEEEInfo;
 
     @Override
     public String toString() {
         return "BeaconDeviceInfo{" +
-                "firmname='" + firmname + '\'' +
+                "softVersion='" + softVersion + '\'' +
+                ", firmname='" + firmname + '\'' +
                 ", deviceName='" + deviceName + '\'' +
                 ", iBeaconDate='" + iBeaconDate + '\'' +
                 ", iBeaconMac='" + iBeaconMac + '\'' +
@@ -41,8 +40,6 @@ public class BeaconDeviceInfo implements Serializable{
                 ", hardwareVersion='" + hardwareVersion + '\'' +
                 ", firmwareVersion='" + firmwareVersion + '\'' +
                 ", runtime='" + runtime + '\'' +
-                ", systemMark='" + systemMark + '\'' +
-                ", IEEEInfo='" + IEEEInfo + '\'' +
                 '}';
     }
 }

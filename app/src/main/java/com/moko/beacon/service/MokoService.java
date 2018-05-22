@@ -27,7 +27,6 @@ import com.moko.support.task.IBeaconDateTask;
 import com.moko.support.task.IBeaconMacTask;
 import com.moko.support.task.IBeaconNameTask;
 import com.moko.support.task.IBeaconUuidTask;
-import com.moko.support.task.IEEEInfoTask;
 import com.moko.support.task.MajorTask;
 import com.moko.support.task.MeasurePowerTask;
 import com.moko.support.task.MinorTask;
@@ -37,7 +36,7 @@ import com.moko.support.task.OvertimeTask;
 import com.moko.support.task.RunntimeTask;
 import com.moko.support.task.SerialIDTask;
 import com.moko.support.task.SoftRebootModeTask;
-import com.moko.support.task.SystemMarkTask;
+import com.moko.support.task.SoftVersionTask;
 import com.moko.support.task.ThreeAxesTask;
 import com.moko.support.task.TransmissionTask;
 
@@ -128,8 +127,8 @@ public class MokoService extends Service implements MokoConnStateCallback, MokoO
      * @Description 获取可读信息
      */
     public void getReadableData(String password) {
-        MokoSupport.getInstance().sendOrder(getBattery(), getFirmname(), getDevicename(), getiBeaconDate(),
-                getHardwareVersion(), getFirmwareVersion(), getSystemMark(), getIEEEInfo(), getIBeaconUuid(),
+        MokoSupport.getInstance().sendOrder(getBattery(), getSoftVersion(), getFirmname(), getDevicename(),
+                getiBeaconDate(), getHardwareVersion(), getFirmwareVersion(), getIBeaconUuid(),
                 getMajor(), getMinor(), getMeasurePower(), getTransmission(), getBroadcastingInterval(),
                 getSerialID(), getIBeaconName(), getConnectionMode(), getIBeaconMac(),
                 setNotify(),
@@ -146,6 +145,11 @@ public class MokoService extends Service implements MokoConnStateCallback, MokoO
     public OrderTask getBattery() {
         BatteryTask batteryTask = new BatteryTask(this, OrderTask.RESPONSE_TYPE_READ);
         return batteryTask;
+    }
+
+    public OrderTask getSoftVersion() {
+        SoftVersionTask softVersionTask = new SoftVersionTask(this, OrderTask.RESPONSE_TYPE_READ);
+        return softVersionTask;
     }
 
     public OrderTask getFirmname() {
@@ -171,16 +175,6 @@ public class MokoService extends Service implements MokoConnStateCallback, MokoO
     public OrderTask getFirmwareVersion() {
         FirmwareVersionTask firmwareVersionTask = new FirmwareVersionTask(this, OrderTask.RESPONSE_TYPE_READ);
         return firmwareVersionTask;
-    }
-
-    public OrderTask getSystemMark() {
-        SystemMarkTask systemMarkTask = new SystemMarkTask(this, OrderTask.RESPONSE_TYPE_READ);
-        return systemMarkTask;
-    }
-
-    public OrderTask getIEEEInfo() {
-        IEEEInfoTask ieeeInfoTask = new IEEEInfoTask(this, OrderTask.RESPONSE_TYPE_READ);
-        return ieeeInfoTask;
     }
 
     public OrderTask setNotify() {

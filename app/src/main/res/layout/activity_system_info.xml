@@ -240,6 +240,33 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center"
+                    android:text="@string/system_soft_version"
+                    android:textColor="@color/black_333333"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/tv_ibeacon_soft_version"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentRight="true"
+                    android:gravity="center"
+                    android:text=""
+                    android:textColor="@color/black_333333"
+                    android:textSize="15sp" />
+
+                <View
+                    style="@style/divider_line"
+                    android:layout_alignParentBottom="true" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="49dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
                     android:text="@string/system_ibeacon_runtime"
                     android:textColor="@color/black_333333"
                     android:textSize="15sp" />
@@ -250,60 +277,6 @@
                     android:layout_height="match_parent"
                     android:layout_alignParentRight="true"
                     android:gravity="center"
-                    android:text=""
-                    android:textColor="@color/black_333333"
-                    android:textSize="15sp" />
-
-                <View
-                    style="@style/divider_line"
-                    android:layout_alignParentBottom="true" />
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="49dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:text="@string/system_mark"
-                    android:textColor="@color/black_333333"
-                    android:textSize="15sp" />
-
-                <TextView
-                    android:id="@+id/tv_ibeacon_system_mark"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentRight="true"
-                    android:gravity="center"
-                    android:text=""
-                    android:textColor="@color/black_333333"
-                    android:textSize="15sp" />
-
-                <View
-                    style="@style/divider_line"
-                    android:layout_alignParentBottom="true" />
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="49dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:text="@string/system_ieee_info"
-                    android:textColor="@color/black_333333"
-                    android:textSize="15sp" />
-
-                <TextView
-                    android:id="@+id/tv_ibeacon_ieee_info"
-                    android:layout_width="200dp"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentRight="true"
-                    android:gravity="right|center_vertical"
                     android:text=""
                     android:textColor="@color/black_333333"
                     android:textSize="15sp" />

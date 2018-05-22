@@ -11,6 +11,8 @@ import java.io.Serializable;
 public enum OrderType implements Serializable {
     // 电池信息
     battery("battery", "00002a19-0000-1000-8000-00805f9b34fb"),
+    // 软件版本
+    softVersion("softVersion", "00002a28-0000-1000-8000-00805f9b34fb"),
     // 厂商名字
     firmname("firmname", "00002a29-0000-1000-8000-00805f9b34fb"),
     // 公司设备名
@@ -21,10 +23,6 @@ public enum OrderType implements Serializable {
     hardwareVersion("hardwareVersion", "00002a27-0000-1000-8000-00805f9b34fb"),
     // 固件版本
     firmwareVersion("firmwareVersion", "00002a26-0000-1000-8000-00805f9b34fb"),
-    // 系统标示
-    systemMark("systemMark", "00002a23-0000-1000-8000-00805f9b34fb"),
-    // IEEE标准信息
-    IEEEInfo("IEEEInfo", "00002a2a-0000-1000-8000-00805f9b34fb"),
     // 带写和通知的特征
     writeAndNotify("writeAndNotify", "0000ffe0-0000-1000-8000-00805f9b34fb"),
     // UUID

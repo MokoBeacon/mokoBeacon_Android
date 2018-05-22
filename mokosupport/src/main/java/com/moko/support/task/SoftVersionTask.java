@@ -8,14 +8,14 @@ import com.moko.support.entity.OrderType;
  * @Date 2017/12/14 0014
  * @Author wenzheng.liu
  * @Description
- * @ClassPath com.moko.support.task.SystemMarkTask
+ * @ClassPath com.moko.support.task.SoftVersionTask
  */
-public class SystemMarkTask extends OrderTask {
+public class SoftVersionTask extends OrderTask {
 
     public byte[] data;
 
-    public SystemMarkTask(MokoOrderTaskCallback callback, int sendDataType) {
-        super(OrderType.systemMark, callback, sendDataType);
+    public SoftVersionTask(MokoOrderTaskCallback callback, int sendDataType) {
+        super(OrderType.softVersion, callback, sendDataType);
     }
 
     @Override
