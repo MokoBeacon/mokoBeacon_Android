@@ -30,7 +30,7 @@
     <string name="alert_measure_power_range">合理范围为-119~0</string>
     <string name="tips_broadcast_interval">提示:数值输入范围1-100，广播间隔越小，iBeacon广播速度越快，更容易被扫描和连接，耗电量也越大，修改参数后，重连生效。</string>
     <string name="transmission_grade_0">最高档</string>
-    <string name="transmission_grade_0_power">功率：-4dBm</string>
+    <string name="transmission_grade_0_power">功率：4dBm</string>
     <string name="transmission_grade_0_range">半径：约90米</string>
     <string name="transmission_grade_1">1档</string>
     <string name="transmission_grade_1_power">功率：0dBm</string>
@@ -97,4 +97,5 @@
     <string name="alert_minor_range">合理范围为0-65535</string>
     <string name="tips_connection_mode">注：YES代表手机可以与iBeacon连接，NO代表不能与iBeacon连接。正常情况下不能去修改这个值，修改参数后，重连后生效。</string>
     <string name="device_info_three_axis">加速度计采样数据</string>
+    <string name="permissions_open_location_tips">若要使用搜索功能，请在权限管理里打开定位权限!</string>
 </resources>

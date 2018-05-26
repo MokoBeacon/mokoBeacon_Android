@@ -14,6 +14,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
@@ -43,6 +44,7 @@ import java.util.Arrays;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import no.nordicsemi.android.dfu.DfuLogListener;
 import no.nordicsemi.android.dfu.DfuProgressListener;
 import no.nordicsemi.android.dfu.DfuProgressListenerAdapter;
 import no.nordicsemi.android.dfu.DfuServiceInitiator;
@@ -133,9 +135,26 @@ public class DeviceInfoActivity extends BaseActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent != null) {
-                abortBroadcast();
                 String action = intent.getAction();
+                if (BluetoothAdapter.ACTION_STATE_CHANGED.equals(action)) {
+                    int blueState = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, 0);
+                    switch (blueState) {
+                        case BluetoothAdapter.STATE_TURNING_OFF:
+                        case BluetoothAdapter.STATE_OFF:
+                            tvConnState.setText(getString(R.string.device_info_conn_status_disconnect));
+                            ToastUtils.showToast(DeviceInfoActivity.this, "Connect Failed");
+                            dismissLoadingProgressDialog();
+                            dismissSyncProgressDialog();
+                            dismissDFUProgressDialog();
+                            final LocalBroadcastManager manager = LocalBroadcastManager.getInstance(DeviceInfoActivity.this);
+                            final Intent abortAction = new Intent(DfuService.BROADCAST_ACTION);
+                            abortAction.putExtra(DfuService.EXTRA_ACTION, DfuService.ACTION_ABORT);
+                            manager.sendBroadcast(abortAction);
+                            break;
+                    }
+                }
                 if (MokoConstants.ACTION_CONNECT_SUCCESS.equals(action)) {
+                    abortBroadcast();
                     tvConnState.setText(getString(R.string.device_info_conn_status_connected));
                     // 读取全部可读数据
                     mMokoService.mHandler.postDelayed(new Runnable() {
@@ -146,14 +165,17 @@ public class DeviceInfoActivity extends BaseActivity {
                     }, 1000);
                 }
                 if (MokoConstants.ACTION_CONNECT_DISCONNECTED.equals(action)) {
+                    abortBroadcast();
                     tvConnState.setText(getString(R.string.device_info_conn_status_disconnect));
                     ToastUtils.showToast(DeviceInfoActivity.this, "Connect Failed");
                     dismissLoadingProgressDialog();
                     dismissSyncProgressDialog();
                 }
                 if (MokoConstants.ACTION_RESPONSE_TIMEOUT.equals(action)) {
+                    abortBroadcast();
                 }
                 if (MokoConstants.ACTION_RESPONSE_FINISH.equals(action)) {
+                    abortBroadcast();
                     mMokoService.mHandler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
@@ -164,6 +186,7 @@ public class DeviceInfoActivity extends BaseActivity {
 
                 }
                 if (MokoConstants.ACTION_RESPONSE_SUCCESS.equals(action)) {
+                    abortBroadcast();
                     OrderType orderType = (OrderType) intent.getSerializableExtra(MokoConstants.EXTRA_KEY_RESPONSE_ORDER_TYPE);
                     byte[] value = intent.getByteArrayExtra(MokoConstants.EXTRA_KEY_RESPONSE_VALUE);
                     switch (orderType) {
@@ -304,6 +327,7 @@ public class DeviceInfoActivity extends BaseActivity {
             filter.addAction(MokoConstants.ACTION_RESPONSE_SUCCESS);
             filter.addAction(MokoConstants.ACTION_RESPONSE_TIMEOUT);
             filter.addAction(MokoConstants.ACTION_RESPONSE_FINISH);
+            filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
             filter.setPriority(200);
             registerReceiver(mReceiver, filter);
             if (!MokoSupport.getInstance().isBluetoothOpen()) {
@@ -593,6 +617,7 @@ public class DeviceInfoActivity extends BaseActivity {
     }
 
     private void dismissDFUProgressDialog() {
+        mDeviceConnectCount = 0;
         if (!isFinishing() && mDFUDialog != null && mDFUDialog.isShowing()) {
             mDFUDialog.dismiss();
         }
@@ -662,7 +687,10 @@ public class DeviceInfoActivity extends BaseActivity {
                     }
                 case REQUEST_CODE_SELECT_FIRMWARE:
                     if (resultCode == RESULT_OK) {
-
+                        if (!MokoSupport.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
+                            ToastUtils.showToast(this, getString(R.string.alert_click_reconnect));
+                            return;
+                        }
                         //得到uri，后面就是将uri转化成file的过程。
                         Uri uri = data.getData();
                         String firmwareFilePath = FileUtils.getPath(this, uri);
@@ -775,20 +803,32 @@ public class DeviceInfoActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
         DfuServiceListenerHelper.registerProgressListener(this, mDfuProgressListener);
+        DfuServiceListenerHelper.registerLogListener(this, mDfuLogListener);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         DfuServiceListenerHelper.unregisterProgressListener(this, mDfuProgressListener);
+        DfuServiceListenerHelper.unregisterLogListener(this, mDfuLogListener);
     }
+
+    private int mDeviceConnectCount;
 
     private final DfuProgressListener mDfuProgressListener = new DfuProgressListenerAdapter() {
         @Override
         public void onDeviceConnecting(String deviceAddress) {
             LogModule.w("onDeviceConnecting...");
+            mDeviceConnectCount++;
+            if (mDeviceConnectCount > 3) {
+                Toast.makeText(DeviceInfoActivity.this, "Error:DFU Failed", Toast.LENGTH_SHORT).show();
+                dismissDFUProgressDialog();
+                final LocalBroadcastManager manager = LocalBroadcastManager.getInstance(DeviceInfoActivity.this);
+                final Intent abortAction = new Intent(DfuService.BROADCAST_ACTION);
+                abortAction.putExtra(DfuService.EXTRA_ACTION, DfuService.ACTION_ABORT);
+                manager.sendBroadcast(abortAction);
+            }
         }
-
 
         @Override
         public void onDeviceDisconnecting(String deviceAddress) {
@@ -832,6 +872,32 @@ public class DeviceInfoActivity extends BaseActivity {
             Toast.makeText(DeviceInfoActivity.this, "Error:" + message, Toast.LENGTH_SHORT).show();
             LogModule.i("Error:" + message);
             dismissDFUProgressDialog();
+        }
+    };
+
+    private final DfuLogListener mDfuLogListener = new DfuLogListener() {
+        @Override
+        public void onLogEvent(String deviceAddress, int level, String message) {
+            switch (level) {
+                case DfuService.LOG_LEVEL_APPLICATION:
+                    LogModule.w(level + ":" + message);
+                    break;
+                case DfuService.LOG_LEVEL_VERBOSE:
+                    LogModule.w(level + ":" + message);
+                    break;
+                case DfuService.LOG_LEVEL_DEBUG:
+                    LogModule.w(level + ":" + message);
+                    break;
+                case DfuService.LOG_LEVEL_INFO:
+                    LogModule.w(level + ":" + message);
+                    break;
+                case DfuService.LOG_LEVEL_WARNING:
+                    LogModule.w(level + ":" + message);
+                    break;
+                case DfuService.LOG_LEVEL_ERROR:
+                    LogModule.w(level + ":" + message);
+                    break;
+            }
         }
     };
 }

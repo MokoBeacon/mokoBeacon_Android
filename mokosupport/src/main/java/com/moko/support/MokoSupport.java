@@ -56,6 +56,7 @@ public class MokoSupport implements MokoResponseCallback {
     private HashMap<OrderType, MokoCharacteristic> mCharacteristicMap;
     private BlockingQueue<OrderTask> mQueue;
     private MokoScanDeviceCallback mMokoScanDeviceCallback;
+    private MokoConnStateCallback mMokoConnStateCallback;
 
     private static volatile MokoSupport INSTANCE;
 
@@ -110,6 +111,9 @@ public class MokoSupport implements MokoResponseCallback {
                     mokoConnStateCallback.onConnectSuccess();
                     break;
                 case HANDLER_MESSAGE_WHAT_DISCONNECT:
+                    if (mQueue != null && !mQueue.isEmpty()) {
+                        mQueue.clear();
+                    }
                     if (mBluetoothGatt != null) {
                         if (refreshDeviceCache()) {
                             LogModule.i("清理GATT层蓝牙缓存");
@@ -125,10 +129,6 @@ public class MokoSupport implements MokoResponseCallback {
         public void setMokoConnStateCallback(MokoConnStateCallback mokoConnStateCallback) {
             this.mokoConnStateCallback = mokoConnStateCallback;
         }
-    }
-
-    public void setConnStateCallback(final MokoConnStateCallback mokoConnStateCallback) {
-        mHandler.setMokoConnStateCallback(mokoConnStateCallback);
     }
 
     /**
@@ -189,7 +189,8 @@ public class MokoSupport implements MokoResponseCallback {
         }
         final MokoConnStateHandler gattCallback = MokoConnStateHandler.getInstance();
         gattCallback.setBeaconResponseCallback(this);
-        setConnStateCallback(mokoConnStateCallback);
+        mMokoConnStateCallback = mokoConnStateCallback;
+        mHandler.setMokoConnStateCallback(mokoConnStateCallback);
         gattCallback.setMessageHandler(mHandler);
         final BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
         if (device != null) {
@@ -279,6 +280,8 @@ public class MokoSupport implements MokoResponseCallback {
         final MokoCharacteristic mokoCharacteristic = mCharacteristicMap.get(orderTask.orderType);
         if (mokoCharacteristic == null) {
             mQueue.clear();
+            disConnectBle();
+            mMokoConnStateCallback.onDisConnected();
             LogModule.i("executeTask : mokoCharacteristic is null");
             return;
         }
