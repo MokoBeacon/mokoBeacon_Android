@@ -1,5 +1,6 @@
 package com.moko.support;
 
+import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
@@ -9,7 +10,9 @@ import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothProfile;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Message;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 
 import com.moko.support.callback.MokoConnStateCallback;
@@ -25,7 +28,6 @@ import com.moko.support.handler.MokoLeScanHandler;
 import com.moko.support.log.LogModule;
 import com.moko.support.task.OrderTask;
 import com.moko.support.utils.BleConnectionCompat;
-import com.moko.support.utils.MokoUtils;
 import com.moko.support.utils.MokoUtils;
 
 import java.lang.reflect.Method;
@@ -152,7 +154,9 @@ public class MokoSupport implements MokoResponseCallback {
     }
 
     public void startScanDevice(MokoScanDeviceCallback mokoScanDeviceCallback) {
-        LogModule.i("开始扫描Beacon");
+        if (ContextCompat.checkSelfPermission(mContext, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            LogModule.i("开始扫描Beacon");
+        }
         final BluetoothLeScannerCompat scanner = BluetoothLeScannerCompat.getScanner();
         ScanSettings settings = new ScanSettings.Builder()
                 .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
@@ -165,7 +169,9 @@ public class MokoSupport implements MokoResponseCallback {
 
     public void stopScanDevice() {
         if (mMokoLeScanHandler != null && mMokoScanDeviceCallback != null) {
-            LogModule.i("结束扫描Beacon");
+            if (ContextCompat.checkSelfPermission(mContext, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                LogModule.i("结束扫描Beacon");
+            }
             final BluetoothLeScannerCompat scanner = BluetoothLeScannerCompat.getScanner();
             scanner.stopScan(mMokoLeScanHandler);
             mMokoScanDeviceCallback.onStopScan();

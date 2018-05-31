@@ -1,10 +1,13 @@
 package com.moko.beacon.service;
 
+import android.Manifest;
 import android.app.Service;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Binder;
 import android.os.IBinder;
 import android.os.Message;
+import android.support.v4.content.ContextCompat;
 
 import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
@@ -68,7 +71,9 @@ public class MokoService extends Service implements MokoConnStateCallback, MokoO
     @Override
     public void onCreate() {
         super.onCreate();
-        LogModule.i("启动后台服务");
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            LogModule.i("启动后台服务");
+        }
         mHandler = new ServiceHandler(this);
 
     }

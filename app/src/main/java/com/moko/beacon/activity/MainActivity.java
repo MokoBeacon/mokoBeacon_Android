@@ -1,7 +1,5 @@
 package com.moko.beacon.activity;
 
-import android.Manifest;
-import android.app.AppOpsManager;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
@@ -10,15 +8,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.os.Process;
-import android.provider.Settings;
 import android.support.annotation.IdRes;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -77,8 +69,6 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
     public static final int SORT_TYPE_MAJOR = 1;
     public static final int SORT_TYPE_MINOR = 2;
 
-    private static final int PERMISSION_REQUEST_CODE = 1;
-
     @Bind(R.id.et_device_filter)
     EditText etDeviceFilter;
     @Bind(R.id.rb_sort_rssi)
@@ -111,16 +101,7 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            // 适配小米机型
-            AppOpsManager appOpsManager = (AppOpsManager) getSystemService(Context.APP_OPS_SERVICE);
-            int checkOp = appOpsManager.checkOp(AppOpsManager.OPSTR_COARSE_LOCATION, Process.myUid(), getPackageName());
-            if (checkOp != AppOpsManager.MODE_ALLOWED) {
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSION_REQUEST_CODE);
-                return;
-            }
-        }
+
         mAdapter = new BeaconListAdapter(this);
         mBeaconInfos = new ArrayList<>();
         beaconMap = new HashMap<>();
@@ -146,24 +127,6 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
             }
         });
         bindService(new Intent(this, MokoService.class), mServiceConnection, BIND_AUTO_CREATE);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode) {
-            case PERMISSION_REQUEST_CODE:
-                if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_COARSE_LOCATION)) {
-                    ToastUtils.showToast(this, getString(R.string.permissions_open_location_tips));
-                    Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                    // 根据包名打开对应的设置界面
-                    intent.setData(Uri.parse("package:" + getPackageName()));
-                    startActivity(intent);
-                    finish();
-                    return;
-                }
-                break;
-        }
     }
 
     private ServiceConnection mServiceConnection = new ServiceConnection() {
@@ -460,6 +423,9 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
         animation = AnimationUtils.loadAnimation(this, R.anim.rotate_refresh);
         ivRefresh.startAnimation(animation);
         beaconInfoParseable = new BeaconInfoParseableImpl();
+        if (!isLocationPermissionOpen()) {
+            return;
+        }
         mMokoService.startScanDevice(this);
         mMokoService.mHandler.postDelayed(new Runnable() {
             @Override

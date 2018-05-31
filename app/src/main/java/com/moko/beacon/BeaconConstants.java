@@ -42,6 +42,12 @@ public class BeaconConstants {
     public static final int REQUEST_CODE_SET_PASSWORD = 111;
     public static final int REQUEST_CODE_SET_SYSTEM_INFO = 112;
     public static final int REQUEST_CODE_SET_THREE_AXIS = 113;
+
+
+    public static final int REQUEST_CODE_PERMISSION = 120;
+    public static final int REQUEST_CODE_PERMISSION_2 = 121;
+    public static final int REQUEST_CODE_LOCATION_SETTINGS = 122;
+    public static final int PERMISSION_REQUEST_CODE = 1;
     // result_code
     public static final int RESULT_CONN_DISCONNECTED = 2;
 }
