@@ -9,9 +9,6 @@ import android.widget.EditText;
 import com.moko.beacon.R;
 import com.moko.beacon.utils.ToastUtils;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
 import butterknife.Bind;
 import butterknife.OnClick;
 

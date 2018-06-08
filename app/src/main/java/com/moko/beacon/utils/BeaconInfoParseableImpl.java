@@ -6,9 +6,7 @@ import android.util.SparseArray;
 
 import com.moko.beacon.entity.BeaconInfo;
 import com.moko.support.entity.DeviceInfo;
-import com.moko.support.log.LogModule;
 import com.moko.support.service.DeviceInfoParseable;
-import com.moko.support.utils.MokoUtils;
 import com.moko.support.utils.MokoUtils;
 
 import java.text.DecimalFormat;
