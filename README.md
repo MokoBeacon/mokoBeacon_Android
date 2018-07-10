@@ -27,7 +27,7 @@ include ':app', ':mokosupport'
 
 Initialize sdk at project initialization
 
-```java
+```
 MokoSupport.getInstance().init(getApplicationContext());
 ```
 
@@ -41,19 +41,19 @@ SDK provides three main functions:
 
 * **Start scanning**
 
-```java
+```
 MokoSupport.getInstance().startScanDevice(callback);
 ```
 
 * **End scanning**
 
-```java
+```
 MokoSupport.getInstance().stopScanDevice();
 ```
 
 * **Implement the scanning callback interface**
 
-```java
+```
 /**
  * @ClassPath com.moko.support.callback.MokoScanDeviceCallback
  */
@@ -67,7 +67,7 @@ public interface MokoScanDeviceCallback {
 ```
 * **Analysis `DeviceInfo` ; inferred `BeaconInfo`**
 
-```java
+```
 BeaconInfo beaconInfo = new BeaconInfoParseableImpl().parseDeviceInfo(device);
 ```
 
@@ -79,13 +79,13 @@ Please refer to "Demo Project" to use `BeaconInfoParseableImpl` class. You can g
 
 * **Connect to the device**
 
-```java
+```
 MokoSupport.getInstance().connDevice(context, address, mokoConnStateCallback);
 ```
 
 When connecting to the device, context, MAC address and callback interface of connection status should be transferred in.
 
-```java
+```
 public interface MokoConnStateCallback {
 
     /**
@@ -119,7 +119,7 @@ At present, all the tasks sent from the SDK can be divided into 4 types:
 Encapsulated tasks are as follows:
 
 |Task Class|Task Type|Function
-|----|----|----|----
+|----|----|----
 |`BatteryTask`|READ|Get battery capacity
 |`FirmnameTask`|READ|Get manufacturer
 |`DevicenameTask`|READ|Get product model
@@ -163,7 +163,7 @@ The task callback (`MokoOrderTaskCallback`) and task type need to be passed when
 
 Examples of creating tasks are as follows:
 
-```java
+```
     // Get Battery Capacity
     public OrderTask getBattery() {
         BatteryTask batteryTask = new BatteryTask(this, OrderTask.RESPONSE_TYPE_READ);
@@ -180,7 +180,7 @@ Examples of creating tasks are as follows:
 
 * **Send tasks**
 
-```java
+```
 MokoSupport.getInstance().sendOrder(OrderTask... orderTasks);
 ```
 
@@ -188,7 +188,7 @@ The task can be one or more.
 
 * **Task callback**
 
-```java
+```
 /**
  * @ClassPath com.moko.support.callback.OrderCallback
  */
@@ -218,7 +218,7 @@ public interface MokoOrderTaskCallback {
 
 If the task belongs to `NOTIFY` and ` WRITE_NO_RESPONSE` task has been sent, the task is in listening state. When there is data returned from the device, the data will be sent in the form of broadcast, and the action of receiving broadcast is `MokoConstants.ACTION_RESPONSE_NOTIFY`.
 
-```java
+```
 String action = intent.getAction();
 ...
 if (MokoConstants.ACTION_RESPONSE_NOTIFY.equals(action)) {
