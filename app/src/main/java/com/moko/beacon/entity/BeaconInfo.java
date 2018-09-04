@@ -23,6 +23,8 @@ public class BeaconInfo implements Serializable{
     public int version;
     public String scanRecord;
     public String threeAxis;
+    public String temp;
+    public String humidity;
 
 
     @Override
@@ -42,6 +44,8 @@ public class BeaconInfo implements Serializable{
                 ", version=" + version +
                 ", scanRecord='" + scanRecord + '\'' +
                 ", threeAxis='" + threeAxis + '\'' +
+                ", temp='" + temp + '\'' +
+                ", humidity='" + humidity + '\'' +
                 '}';
     }
 }
