@@ -98,7 +98,7 @@ public class BeaconInfoParseableImpl implements DeviceInfoParseable<BeaconInfo> 
         byte[] scanRecord = MokoUtils.hex2bytes(deviceInfo.scanRecord);
         // log
         String log = MokoUtils.bytesToHexString(scanRecord);
-        int txPower = 0 - (int) scanRecord[32] & 0xff;
+        int txPower = scanRecord[32];
 
         // services
         String threeAxis = null;

@@ -40,7 +40,7 @@ public class BeaconListAdapter extends BeaconBaseAdapter<BeaconInfo> {
         holder.tvDeviceMinor.setText(String.format("Minor:%s", device.minor));
         holder.tvDeviceDistance.setText(String.format("%sm", device.distance));
         holder.tvDeviceDistaneDesc.setText(device.distanceDesc);
-        holder.tvDeviceTx.setText(device.txPower == 0 ? "Tx:0dBm" : String.format("Tx:-%sdBm", device.txPower));
+        holder.tvDeviceTx.setText(String.format("Tx:%sdBm", device.txPower));
         holder.tvDeviceMac.setText(String.format("MAC:%s", device.mac));
         holder.tvDeviceUuid.setText(String.format("UUID:%s", device.uuid));
         if (device.batteryPower >= 0 && device.batteryPower <= 25) {
