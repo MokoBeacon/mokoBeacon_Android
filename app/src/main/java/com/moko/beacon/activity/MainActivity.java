@@ -576,7 +576,12 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
 
                 @Override
                 public void run() {
-                    dialog.showKeyboard();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            dialog.showKeyboard();
+                        }
+                    });
                 }
             }, 200);
         }
