@@ -86,6 +86,8 @@ public class DeviceInfoActivity extends BaseActivity {
     TextView tvIbeaconDeviceConnMode;
     @Bind(R.id.rl_ibeacon_three_axis)
     RelativeLayout rlIbeaconThreeAxis;
+    @Bind(R.id.view_cover)
+    View viewCover;
     private MokoService mMokoService;
     private BeaconParam mBeaconParam;
 
@@ -102,9 +104,11 @@ public class DeviceInfoActivity extends BaseActivity {
         }
         rlIbeaconThreeAxis.setVisibility(!TextUtils.isEmpty(mBeaconParam.threeAxis) ? View.VISIBLE : View.GONE);
         if (MokoSupport.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
-            tvConnState.setText(getString(R.string.device_info_conn_status_connected));
-        } else {
             tvConnState.setText(getString(R.string.device_info_conn_status_disconnect));
+            viewCover.setVisibility(View.GONE);
+        } else {
+            tvConnState.setText(getString(R.string.device_info_conn_status_connect));
+            viewCover.setVisibility(View.VISIBLE);
         }
         changeValue();
     }
@@ -141,7 +145,8 @@ public class DeviceInfoActivity extends BaseActivity {
                     switch (blueState) {
                         case BluetoothAdapter.STATE_TURNING_OFF:
                         case BluetoothAdapter.STATE_OFF:
-                            tvConnState.setText(getString(R.string.device_info_conn_status_disconnect));
+                            tvConnState.setText(getString(R.string.device_info_conn_status_connect));
+                            viewCover.setVisibility(View.VISIBLE);
                             ToastUtils.showToast(DeviceInfoActivity.this, "Connect Failed");
                             dismissLoadingProgressDialog();
                             dismissSyncProgressDialog();
@@ -155,7 +160,8 @@ public class DeviceInfoActivity extends BaseActivity {
                 }
                 if (MokoConstants.ACTION_CONNECT_SUCCESS.equals(action)) {
                     abortBroadcast();
-                    tvConnState.setText(getString(R.string.device_info_conn_status_connected));
+                    tvConnState.setText(getString(R.string.device_info_conn_status_disconnect));
+                    viewCover.setVisibility(View.GONE);
                     // 读取全部可读数据
                     mMokoService.mHandler.postDelayed(new Runnable() {
                         @Override
@@ -166,7 +172,8 @@ public class DeviceInfoActivity extends BaseActivity {
                 }
                 if (MokoConstants.ACTION_CONNECT_DISCONNECTED.equals(action)) {
                     abortBroadcast();
-                    tvConnState.setText(getString(R.string.device_info_conn_status_disconnect));
+                    tvConnState.setText(getString(R.string.device_info_conn_status_connect));
+                    viewCover.setVisibility(View.VISIBLE);
                     ToastUtils.showToast(DeviceInfoActivity.this, "Connect Failed");
                     dismissLoadingProgressDialog();
                     dismissSyncProgressDialog();
@@ -228,7 +235,11 @@ public class DeviceInfoActivity extends BaseActivity {
                             tvIbeaconMeasurePower.setText(String.format("-%sdBm", mBeaconParam.measurePower));
                             break;
                         case transmission:
-                            mBeaconParam.transmission = Integer.parseInt(MokoUtils.bytesToHexString(value), 16) + "";
+                            int transmission = Integer.parseInt(MokoUtils.bytesToHexString(value), 16);
+                            if (transmission == 8) {
+                                transmission = 7;
+                            }
+                            mBeaconParam.transmission = transmission + "";
                             tvIbeaconTransmission.setText(mBeaconParam.transmission);
                             break;
                         case broadcastingInterval:
@@ -363,10 +374,14 @@ public class DeviceInfoActivity extends BaseActivity {
             R.id.rl_ibeacon_major, R.id.rl_ibeacon_minor, R.id.rl_ibeacon_measure_power,
             R.id.rl_ibeacon_transmission, R.id.rl_ibeacon_broadcasting_interval, R.id.rl_ibeacon_serialID,
             R.id.rl_ibeacon_mac, R.id.rl_ibeacon_device_name, R.id.rl_ibeacon_device_conn_mode,
-            R.id.rl_ibeacon_change_password, R.id.rl_ibeacon_device_info, R.id.rl_ibeacon_three_axis, R.id.rl_ibeacon_dfu})
+            R.id.rl_ibeacon_change_password, R.id.rl_ibeacon_device_info, R.id.rl_ibeacon_three_axis,
+            R.id.rl_ibeacon_dfu, R.id.view_cover})
     public void onClick(View view) {
         Intent intent;
         switch (view.getId()) {
+            case R.id.view_cover:
+                ToastUtils.showToast(this, R.string.disconnect_alert);
+                break;
             case R.id.tv_back:
                 back();
                 break;
@@ -378,6 +393,9 @@ public class DeviceInfoActivity extends BaseActivity {
                 if (!MokoSupport.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
                     mMokoService.connDevice(mBeaconParam.iBeaconMAC);
                     showLoadingProgressDialog(getString(R.string.dialog_connecting));
+                } else {
+                    MokoSupport.getInstance().disConnectBle();
+                    viewCover.setVisibility(View.VISIBLE);
                 }
                 break;
             case R.id.rl_ibeacon_uuid:
@@ -627,7 +645,8 @@ public class DeviceInfoActivity extends BaseActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == BeaconConstants.RESULT_CONN_DISCONNECTED) {
-            tvConnState.setText(getString(R.string.device_info_conn_status_disconnect));
+            tvConnState.setText(getString(R.string.device_info_conn_status_connect));
+            viewCover.setVisibility(View.VISIBLE);
         } else {
             switch (requestCode) {
                 case BeaconConstants.REQUEST_CODE_SET_UUID:

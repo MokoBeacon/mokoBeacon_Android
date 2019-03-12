@@ -95,6 +95,7 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
     private MokoService mMokoService;
     private HashMap<String, BeaconInfo> beaconMap;
     private BeaconInfoParseableImpl beaconInfoParseable;
+    public String mSavedPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -230,7 +231,11 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
                             mBeaconParam.measurePower = Integer.parseInt(MokoUtils.bytesToHexString(value), 16) + "";
                             break;
                         case transmission:
-                            mBeaconParam.transmission = Integer.parseInt(MokoUtils.bytesToHexString(value), 16) + "";
+                            int transmission = Integer.parseInt(MokoUtils.bytesToHexString(value), 16);
+                            if (transmission == 8) {
+                                transmission = 7;
+                            }
+                            mBeaconParam.transmission = transmission + "";
                             break;
                         case broadcastingInterval:
                             mBeaconParam.broadcastingInterval = Integer.parseInt(MokoUtils.bytesToHexString(value), 16) + "";
@@ -307,6 +312,7 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
                                     public void run() {
                                         dismissLoadingProgressDialog();
                                         LogModule.i(mBeaconParam.toString());
+                                        mSavedPassword = mPassword;
                                         Intent deviceInfoIntent = new Intent(MainActivity.this, DeviceInfoActivity.class);
                                         deviceInfoIntent.putExtra(BeaconConstants.EXTRA_KEY_DEVICE_PARAM, mBeaconParam);
                                         startActivityForResult(deviceInfoIntent, BeaconConstants.REQUEST_CODE_DEVICE_INFO);
@@ -547,6 +553,7 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
                 mMokoService.stopScanDevice();
             }
             final PasswordDialog dialog = new PasswordDialog(this);
+            dialog.setSavedPassword(mSavedPassword);
             dialog.setOnPasswordClicked(new PasswordDialog.PasswordClickListener() {
                 @Override
                 public void onEnsureClicked(String password) {

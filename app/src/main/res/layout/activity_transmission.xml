@@ -59,8 +59,8 @@
             android:layout_width="match_parent"
             android:layout_height="80dp"
             android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginTop="20dp">
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="16dp">
 
             <LinearLayout
                 android:id="@+id/ll_transmission_grade_0"
@@ -83,16 +83,8 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="18dp"
                     android:text="@string/transmission_grade_0_power"
-                    android:textColor="@color/grey_a6a6a6"
-                    android:textSize="11sp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="@string/transmission_grade_0_range"
                     android:textColor="@color/grey_a6a6a6"
                     android:textSize="11sp" />
             </LinearLayout>
@@ -122,16 +114,8 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="18dp"
                     android:text="@string/transmission_grade_1_power"
-                    android:textColor="@color/grey_a6a6a6"
-                    android:textSize="11sp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="@string/transmission_grade_1_range"
                     android:textColor="@color/grey_a6a6a6"
                     android:textSize="11sp" />
             </LinearLayout>
@@ -161,16 +145,8 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="18dp"
                     android:text="@string/transmission_grade_2_power"
-                    android:textColor="@color/grey_a6a6a6"
-                    android:textSize="11sp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="@string/transmission_grade_2_range"
                     android:textColor="@color/grey_a6a6a6"
                     android:textSize="11sp" />
             </LinearLayout>
@@ -181,8 +157,8 @@
             android:layout_width="match_parent"
             android:layout_height="80dp"
             android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginTop="7dp">
+            android:layout_marginTop="7dp"
+            android:layout_marginRight="16dp">
 
             <LinearLayout
                 android:id="@+id/ll_transmission_grade_3"
@@ -205,16 +181,8 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="18dp"
                     android:text="@string/transmission_grade_3_power"
-                    android:textColor="@color/grey_a6a6a6"
-                    android:textSize="11sp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="@string/transmission_grade_3_range"
                     android:textColor="@color/grey_a6a6a6"
                     android:textSize="11sp" />
             </LinearLayout>
@@ -244,16 +212,8 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="18dp"
                     android:text="@string/transmission_grade_4_power"
-                    android:textColor="@color/grey_a6a6a6"
-                    android:textSize="11sp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="@string/transmission_grade_4_range"
                     android:textColor="@color/grey_a6a6a6"
                     android:textSize="11sp" />
             </LinearLayout>
@@ -283,16 +243,8 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="18dp"
                     android:text="@string/transmission_grade_5_power"
-                    android:textColor="@color/grey_a6a6a6"
-                    android:textSize="11sp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="@string/transmission_grade_5_range"
                     android:textColor="@color/grey_a6a6a6"
                     android:textSize="11sp" />
             </LinearLayout>
@@ -303,8 +255,8 @@
             android:layout_width="match_parent"
             android:layout_height="80dp"
             android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginTop="7dp">
+            android:layout_marginTop="7dp"
+            android:layout_marginRight="16dp">
 
             <LinearLayout
                 android:id="@+id/ll_transmission_grade_6"
@@ -327,16 +279,8 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="18dp"
                     android:text="@string/transmission_grade_6_power"
-                    android:textColor="@color/grey_a6a6a6"
-                    android:textSize="11sp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="@string/transmission_grade_6_range"
                     android:textColor="@color/grey_a6a6a6"
                     android:textSize="11sp" />
             </LinearLayout>
@@ -366,16 +310,8 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="@string/transmission_grade_7_power"
-                    android:textColor="@color/grey_a6a6a6"
-                    android:textSize="11sp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="@string/transmission_grade_7_range"
+                    android:layout_marginTop="18dp"
+                    android:text="@string/transmission_grade_8_power"
                     android:textColor="@color/grey_a6a6a6"
                     android:textSize="11sp" />
             </LinearLayout>
@@ -392,7 +328,8 @@
                 android:background="@drawable/shape_radius_white_bg"
                 android:gravity="center_horizontal"
                 android:orientation="vertical"
-                android:tag="8">
+                android:tag="8"
+                android:visibility="invisible">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -426,6 +363,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="25dp"
             android:layout_marginTop="20dp"
+            android:layout_marginRight="25dp"
             android:text="@string/tips_transmission"
             android:textColor="@color/grey_737373"
             android:textSize="12sp" />

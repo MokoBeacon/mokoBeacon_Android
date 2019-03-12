@@ -2,12 +2,12 @@
     <string name="app_name">MokoBeacon</string>
     <string name="device_list_title">Devices</string>
     <string name="device_list_title_num">Devices(%d)</string>
-    <string name="device_list_filter_hin">Device name or mac address</string>
+    <string name="device_list_filter_hin">Filter by device name or MAC address</string>
     <string name="about_moko_url">www.mokosmart.com</string>
     <string name="about_moko_name">Moko Technology LTD.</string>
-    <string name="device_info_conn_status_disconnect">Disconnect</string>
-    <string name="device_info_conn_status_connected">Connected</string>
-    <string name="device_info_title">Config</string>
+    <string name="device_info_conn_status_disconnect">DISCONNECT</string>
+    <string name="device_info_conn_status_connect">CONNECT</string>
+    <string name="device_info_title">Parameters</string>
     <string name="main_password_title">Please enter password</string>
     <string name="cancel">Cancel</string>
     <string name="ensure">OK</string>
@@ -24,10 +24,10 @@
     <string name="device_info_measure_power">Measured Power(RSSI@1m)</string>
     <string name="device_info_measure_power_title">Measured Power</string>
     <string name="device_info_transmission">Transmission Power</string>
-    <string name="tips_transmission">Tips:The higher power,the greater signal coverage,but power consumption is higher.</string>
+    <string name="tips_transmission">Tips:The higher power,the greater signal coverage,but power consumption is higher.After modifying the parameters, click the upper right button to save.</string>
     <string name="device_info_broadcast_interval">Broadcasting Interval</string>
     <string name="alert_broadcast_interval_range">Reasonable range of 1~100</string>
-    <string name="alert_measure_power_range">Reasonable range of -119~0.</string>
+    <string name="alert_measure_power_range">Reasonable range of -120~0.</string>
     <string name="tips_broadcast_interval">Tip:iBeacon is easy to be scanned and connected if the broadcast time is short,but power consumption is also higher.Reasonable range of 1~100.</string>
     <string name="transmission_grade_0">Highest</string>
     <string name="transmission_grade_0_power">power:4dBm</string>
@@ -60,14 +60,14 @@
     <string name="broadcast_interval_unit">units:100ms</string>
     <string name="please_select_grade">Please Select</string>
     <string name="device_info_device_id">Device ID</string>
-    <string name="tips_device_id">Beacon broadcast equipment device ID.The largest five characters.</string>
+    <string name="tips_device_id">Tip：Input range：0-99999. After modifying the parameter, click the upper right button to save.</string>
     <string name="device_info_mac">MAC Address</string>
     <string name="device_info_ibeacon_name">iBeacon Name</string>
-    <string name="tips_ibeacon_name">Tip:The name of the radio beacon, can only be letters, Numbers, and underscores, up to 10 characters.</string>
-    <string name="tips_ibeacon_name_three_axis">Tip:The name of the radio beacon, can only be letters, Numbers, and underscores, up to 4 characters.</string>
+    <string name="tips_ibeacon_name">Tip：Up to 10 characters can be entered. After modifying the parameter, click the upper right button to save.</string>
+    <string name="tips_ibeacon_name_three_axis">Tip：Up to 4 characters can be entered. After modifying the parameter, click the upper right button to save.</string>
     <string name="device_info_connection_mode">Connectable</string>
     <string name="device_info_password">Modify Password</string>
-    <string name="tips_password">Tips: Enter only alphanumeric, length must for eight, after modifying parameters, reconnect to take effect.</string>
+    <string name="tips_password">Tip：Password must be 8 characters（Alphanumerics or Numbers）. After modifying the parameter, click the upper right button to save.</string>
     <string name="password_input_title">New Password</string>
     <string name="password_input">New Password</string>
     <string name="password_input_confirm_title">New Password</string>
@@ -92,8 +92,8 @@
     <string name="decimalism">Decimal</string>
     <string name="hexadecimal_title">"Hex(0x)</string>
     <string name="hexadecimal">Hex</string>
-    <string name="tips_minor">Tip:Input range 0-65535,reconnect iBeacon after modify.</string>
-    <string name="tips_measure_power">Tip:Usually -55 and -59.Non-professionals are not recommended to modify this value.Reasonable range of -119~0</string>
+    <string name="tips_minor">Tip：Input range：0-65535. After modifying the parameter, click the upper right button to save.</string>
+    <string name="tips_measure_power">Tip：Input range：-120-0. After modifying the parameter, click the upper right button to save.</string>
     <string name="alert_minor_range">Reasonable range of 0-65535.</string>
     <string name="tips_connection_mode">Tip:YES:iBeacon is connectable.NO:iBeacon isn\'t connectable</string>
     <string name="device_info_three_axis">3-Axis Accelerometer</string>
@@ -108,4 +108,5 @@
     <string name="permission_location_close_content">Please find it in cellphone setting- permission, and allow MokoBeacon use the Location and Storage permission</string>
     <string name="permission_location_need_title">Turn on Location permission</string>
     <string name="permission_location_need_content">After that, MokoBeacon could search and connect with the iBeacon</string>
+    <string name="disconnect_alert">The device is disconnected. Please click the “CONNECT” on the top to reconnect.</string>
 </resources>

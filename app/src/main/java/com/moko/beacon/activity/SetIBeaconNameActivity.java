@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.text.InputFilter;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
@@ -40,6 +41,8 @@ public class SetIBeaconNameActivity extends BaseActivity {
     TextView tvTips;
     private MokoService mMokoService;
     private boolean isSupportThreeAxis;
+    private final String FILTER_ASCII = "\\A\\p{ASCII}*\\z";
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -51,7 +54,17 @@ public class SetIBeaconNameActivity extends BaseActivity {
         String ibeaconThreeAxis = getIntent().getStringExtra(BeaconConstants.EXTRA_KEY_DEVICE_IBEACON_THREE_AXIS);
         isSupportThreeAxis = !TextUtils.isEmpty(ibeaconThreeAxis);
         ibeaconName = ibeaconName.trim();
-        InputFilter[] filters = {new InputFilter.LengthFilter(isSupportThreeAxis ? 4 : 10)};
+        InputFilter filter = new InputFilter() {
+            @Override
+            public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+                if (!(source + "").matches(FILTER_ASCII)) {
+                    return "";
+                }
+
+                return null;
+            }
+        };
+        InputFilter[] filters = {new InputFilter.LengthFilter(isSupportThreeAxis ? 4 : 10), filter};
         etIBeaconName.setFilters(filters);
         etIBeaconName.setText(ibeaconName);
         etIBeaconName.setSelection(String.valueOf(ibeaconName).length());
