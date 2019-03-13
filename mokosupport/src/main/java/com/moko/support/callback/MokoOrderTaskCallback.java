@@ -10,7 +10,7 @@ import com.moko.support.entity.OrderType;
  */
 public interface MokoOrderTaskCallback {
 
-    void onOrderResult(OrderType orderType, byte[] value);
+    void onOrderResult(OrderType orderType, byte[] value, int responseType);
 
     void onOrderTimeout(OrderType orderType);
 

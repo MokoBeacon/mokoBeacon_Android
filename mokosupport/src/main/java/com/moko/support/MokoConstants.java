@@ -11,6 +11,7 @@ public class MokoConstants {
     // extra_key
     public static final String EXTRA_KEY_RESPONSE_ORDER_TYPE = "EXTRA_KEY_RESPONSE_ORDER_TYPE";
     public static final String EXTRA_KEY_RESPONSE_VALUE = "EXTRA_KEY_RESPONSE_VALUE";
+    public static final String EXTRA_KEY_RESPONSE_TYPE = "EXTRA_KEY_RESPONSE_TYPE";
     // request_code
     public static final int REQUEST_CODE_ENABLE_BT = 1001;
 }

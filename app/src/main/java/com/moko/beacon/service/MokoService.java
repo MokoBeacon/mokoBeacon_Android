@@ -21,6 +21,7 @@ import com.moko.support.task.BatteryTask;
 import com.moko.support.task.BroadcastingIntervalTask;
 import com.moko.support.task.ChangePasswordTask;
 import com.moko.support.task.ChipModelTask;
+import com.moko.support.task.CloseTask;
 import com.moko.support.task.ConnectionModeTask;
 import com.moko.support.task.DevicenameTask;
 import com.moko.support.task.FirmnameTask;
@@ -314,6 +315,10 @@ public class MokoService extends Service implements MokoConnStateCallback, MokoO
         return connectionModeTask;
     }
 
+    public OrderTask closeDevice() {
+        return new CloseTask(this, OrderTask.RESPONSE_TYPE_WRITE_NO_RESPONSE);
+    }
+
     public OrderTask setSoftReboot() {
         SoftRebootModeTask softRebootModeTask = new SoftRebootModeTask(this, OrderTask.RESPONSE_TYPE_WRITE);
         return softRebootModeTask;
@@ -330,10 +335,11 @@ public class MokoService extends Service implements MokoConnStateCallback, MokoO
     }
 
     @Override
-    public void onOrderResult(OrderType orderType, byte[] value) {
+    public void onOrderResult(OrderType orderType, byte[] value,int responseType) {
         Intent intent = new Intent(MokoConstants.ACTION_RESPONSE_SUCCESS);
         intent.putExtra(MokoConstants.EXTRA_KEY_RESPONSE_ORDER_TYPE, orderType);
         intent.putExtra(MokoConstants.EXTRA_KEY_RESPONSE_VALUE, value);
+        intent.putExtra(MokoConstants.EXTRA_KEY_RESPONSE_TYPE, responseType);
         sendOrderedBroadcast(intent, null);
     }
 

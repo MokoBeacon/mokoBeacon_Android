@@ -109,4 +109,5 @@
     <string name="permission_location_need_title">请打开定位权限</string>
     <string name="permission_location_need_content">开启后MokoBeacon即可搜索和连接设备</string>
     <string name="disconnect_alert">设备连接断开。请点击右上角“CONNECT”按钮重新连接。</string>
+    <string name="device_info_power">关机</string>
 </resources>

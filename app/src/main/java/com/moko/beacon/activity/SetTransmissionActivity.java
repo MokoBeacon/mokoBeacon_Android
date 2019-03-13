@@ -177,13 +177,11 @@ public class SetTransmissionActivity extends BaseActivity {
             view.setBackground(ContextCompat.getDrawable(this, R.drawable.shape_radius_white_bg));
             ((TextView) view.getChildAt(0)).setTextColor(ContextCompat.getColor(this, R.color.blue_5691fc));
             ((TextView) view.getChildAt(1)).setTextColor(ContextCompat.getColor(this, R.color.grey_a6a6a6));
-            ((TextView) view.getChildAt(2)).setTextColor(ContextCompat.getColor(this, R.color.grey_a6a6a6));
         }
         ViewGroup selected = mViews.get(transmission);
         selected.setBackground(ContextCompat.getDrawable(this, R.drawable.shape_radius_blue_bg));
         ((TextView) selected.getChildAt(0)).setTextColor(ContextCompat.getColor(this, R.color.white_ffffff));
         ((TextView) selected.getChildAt(1)).setTextColor(ContextCompat.getColor(this, R.color.white_ffffff));
-        ((TextView) selected.getChildAt(2)).setTextColor(ContextCompat.getColor(this, R.color.white_ffffff));
         transmissionGrade = transmission;
     }
 }

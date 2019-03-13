@@ -109,4 +109,5 @@
     <string name="permission_location_need_title">Turn on Location permission</string>
     <string name="permission_location_need_content">After that, MokoBeacon could search and connect with the iBeacon</string>
     <string name="disconnect_alert">The device is disconnected. Please click the “CONNECT” on the top to reconnect.</string>
+    <string name="device_info_power">Power Off</string>
 </resources>
