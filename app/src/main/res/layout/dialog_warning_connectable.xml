@@ -14,18 +14,16 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:gravity="center"
-            android:text="@string/main_password_title"
+            android:text="Warning!"
             android:textSize="16sp" />
 
-        <EditText
-            android:id="@+id/et_password"
+        <TextView
+            android:id="@+id/tv_connect_alert"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="12dp"
-            android:focusable="true"
-            android:text=""
-            android:hint="8 characters"
-            android:singleLine="true"
+            android:gravity="center"
+            android:text="Are you sure to make device disconnectable?"
             android:textSize="16sp" />
 
         <View
@@ -38,7 +36,7 @@
             android:layout_height="40dp">
 
             <TextView
-                android:id="@+id/tv_password_cancel"
+                android:id="@+id/tv_cancel"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1.0"
@@ -53,7 +51,7 @@
                 android:background="@color/grey_ebebeb" />
 
             <TextView
-                android:id="@+id/tv_password_ensure"
+                android:id="@+id/tv_ensure"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1.0"

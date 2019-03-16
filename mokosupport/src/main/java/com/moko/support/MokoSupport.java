@@ -503,7 +503,7 @@ public class MokoSupport implements MokoResponseCallback {
     private void formatCommonOrder(OrderTask task, byte[] value) {
         task.orderStatus = OrderTask.ORDER_STATUS_SUCCESS;
         mQueue.poll();
-        task.mokoOrderTaskCallback.onOrderResult(task.orderType, value);
+        task.mokoOrderTaskCallback.onOrderResult(task.orderType, value, task.responseType);
         executeTask(task.mokoOrderTaskCallback);
     }
 

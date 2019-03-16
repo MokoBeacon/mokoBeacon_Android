@@ -38,7 +38,6 @@ public class BeaconListAdapter extends BeaconBaseAdapter<BeaconInfo> {
         holder.tvDeviceRssi.setText(String.format("Rssi:%s", device.rssi));
         holder.tvDeviceMajor.setText(String.format("Major:%s", device.major));
         holder.tvDeviceMinor.setText(String.format("Minor:%s", device.minor));
-        holder.tvDeviceDistance.setText(String.format("%sm", device.distance));
         holder.tvDeviceDistaneDesc.setText(device.distanceDesc);
         holder.tvDeviceTx.setText(String.format("Tx:%sdBm", device.txPower));
         holder.tvDeviceMac.setText(String.format("MAC:%s", device.mac));
@@ -82,8 +81,6 @@ public class BeaconListAdapter extends BeaconBaseAdapter<BeaconInfo> {
         TextView tvDeviceMajor;
         @Bind(R.id.tv_device_minor)
         TextView tvDeviceMinor;
-        @Bind(R.id.tv_device_distance)
-        TextView tvDeviceDistance;
         @Bind(R.id.tv_device_distane_desc)
         TextView tvDeviceDistaneDesc;
         @Bind(R.id.tv_device_conn_state)

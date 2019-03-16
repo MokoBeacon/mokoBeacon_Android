@@ -52,8 +52,6 @@ public class SetTransmissionActivity extends BaseActivity {
     LinearLayout llTransmissionGrade6;
     @Bind(R.id.ll_transmission_grade_7)
     LinearLayout llTransmissionGrade7;
-    @Bind(R.id.ll_transmission_grade_8)
-    LinearLayout llTransmissionGrade8;
     private MokoService mMokoService;
     private int transmissionGrade;
     private ArrayList<ViewGroup> mViews;
@@ -74,7 +72,6 @@ public class SetTransmissionActivity extends BaseActivity {
         mViews.add(llTransmissionGrade5);
         mViews.add(llTransmissionGrade6);
         mViews.add(llTransmissionGrade7);
-        mViews.add(llTransmissionGrade8);
         setViewSeleceted(transmission);
     }
 
@@ -112,9 +109,7 @@ public class SetTransmissionActivity extends BaseActivity {
                     switch (orderType) {
                         case transmission:
                             // 修改transmission成功
-                            Intent i = new Intent();
-                            i.putExtra(BeaconConstants.EXTRA_KEY_DEVICE_TRANSMISSION, transmissionGrade);
-                            SetTransmissionActivity.this.setResult(RESULT_OK, i);
+                            SetTransmissionActivity.this.setResult(RESULT_OK);
                             finish();
                             break;
                     }
@@ -146,7 +141,7 @@ public class SetTransmissionActivity extends BaseActivity {
 
     @OnClick({R.id.tv_back, R.id.iv_save, R.id.ll_transmission_grade_0, R.id.ll_transmission_grade_1, R.id.ll_transmission_grade_2
             , R.id.ll_transmission_grade_3, R.id.ll_transmission_grade_4, R.id.ll_transmission_grade_5
-            , R.id.ll_transmission_grade_6, R.id.ll_transmission_grade_7, R.id.ll_transmission_grade_8})
+            , R.id.ll_transmission_grade_6, R.id.ll_transmission_grade_7})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_back:
@@ -156,6 +151,9 @@ public class SetTransmissionActivity extends BaseActivity {
                 if (!MokoSupport.getInstance().isBluetoothOpen()) {
                     ToastUtils.showToast(this, "bluetooth is closed,please open");
                     return;
+                }
+                if (transmissionGrade == 7) {
+                    transmissionGrade = 8;
                 }
                 mMokoService.sendOrder(mMokoService.setTransmission(transmissionGrade));
                 break;
@@ -167,7 +165,6 @@ public class SetTransmissionActivity extends BaseActivity {
             case R.id.ll_transmission_grade_5:
             case R.id.ll_transmission_grade_6:
             case R.id.ll_transmission_grade_7:
-            case R.id.ll_transmission_grade_8:
                 int transmission = Integer.valueOf((String) view.getTag());
                 setViewSeleceted(transmission);
                 break;
@@ -180,13 +177,11 @@ public class SetTransmissionActivity extends BaseActivity {
             view.setBackground(ContextCompat.getDrawable(this, R.drawable.shape_radius_white_bg));
             ((TextView) view.getChildAt(0)).setTextColor(ContextCompat.getColor(this, R.color.blue_5691fc));
             ((TextView) view.getChildAt(1)).setTextColor(ContextCompat.getColor(this, R.color.grey_a6a6a6));
-            ((TextView) view.getChildAt(2)).setTextColor(ContextCompat.getColor(this, R.color.grey_a6a6a6));
         }
         ViewGroup selected = mViews.get(transmission);
         selected.setBackground(ContextCompat.getDrawable(this, R.drawable.shape_radius_blue_bg));
         ((TextView) selected.getChildAt(0)).setTextColor(ContextCompat.getColor(this, R.color.white_ffffff));
         ((TextView) selected.getChildAt(1)).setTextColor(ContextCompat.getColor(this, R.color.white_ffffff));
-        ((TextView) selected.getChildAt(2)).setTextColor(ContextCompat.getColor(this, R.color.white_ffffff));
         transmissionGrade = transmission;
     }
 }
