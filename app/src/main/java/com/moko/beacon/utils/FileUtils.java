@@ -80,6 +80,12 @@ public class FileUtils {
                 File file = new File(fileDir, path.substring("/QQBrowser".length(), path.length()));
                 return file.exists() ? file.toString() : null;
             }
+            //判断华为文件管理器
+            if (isHuaweiMediaDocument(uri)) {
+                String path = uri.getPath();
+                File file = new File(path.substring("/root".length(), path.length()));
+                return file.exists() ? file.toString() : null;
+            }
             return getDataColumn(context, uri, null, null);
         }
         // File
@@ -188,5 +194,16 @@ public class FileUtils {
      */
     public static boolean isQQMediaDocument(Uri uri) {
         return "com.tencent.mtt.fileprovider".equals(uri.getAuthority());
+    }
+
+    /**
+     * 使用第三方华为文件管理器打开
+     *
+     * @param uri
+     *
+     * @return
+     */
+    public static boolean isHuaweiMediaDocument(Uri uri) {
+        return "com.huawei.hidisk.fileprovider".equals(uri.getAuthority());
     }
 }
