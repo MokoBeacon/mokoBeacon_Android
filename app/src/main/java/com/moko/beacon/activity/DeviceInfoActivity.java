@@ -773,7 +773,10 @@ public class DeviceInfoActivity extends BaseActivity {
                         //得到uri，后面就是将uri转化成file的过程。
                         Uri uri = data.getData();
                         String firmwareFilePath = FileUtils.getPath(this, uri);
-                        //
+                        if (TextUtils.isEmpty(firmwareFilePath)) {
+                            ToastUtils.showToast(this, "file is not exists!");
+                            return;
+                        }
                         final File firmwareFile = new File(firmwareFilePath);
                         if (firmwareFile.exists()) {
                             final DfuServiceInitiator starter = new DfuServiceInitiator(mBeaconParam.iBeaconMAC)
@@ -784,7 +787,7 @@ public class DeviceInfoActivity extends BaseActivity {
                             starter.start(this, DfuService.class);
                             showDFUProgressDialog("Waiting...");
                         } else {
-                            Toast.makeText(this, "file is not exists!", Toast.LENGTH_SHORT).show();
+                            ToastUtils.showToast(this, "file is not exists!");
                         }
                     }
                     break;
