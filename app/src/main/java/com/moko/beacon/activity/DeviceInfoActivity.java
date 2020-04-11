@@ -11,6 +11,7 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
@@ -779,6 +780,9 @@ public class DeviceInfoActivity extends BaseActivity {
                         }
                         final File firmwareFile = new File(firmwareFilePath);
                         if (firmwareFile.exists()) {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                DfuServiceInitiator.createDfuNotificationChannel(this);
+                            }
                             final DfuServiceInitiator starter = new DfuServiceInitiator(mBeaconParam.iBeaconMAC)
                                     .setDeviceName(mBeaconParam.iBeaconName)
                                     .setKeepBond(false)
@@ -951,8 +955,9 @@ public class DeviceInfoActivity extends BaseActivity {
 
         @Override
         public void onError(String deviceAddress, int error, int errorType, String message) {
-            Toast.makeText(DeviceInfoActivity.this, "Error:" + message, Toast.LENGTH_SHORT).show();
-            LogModule.i("Error:" + message);
+            String errorMessage = String.format("error:%d,errorType:%d,message:%s)", error, errorType, message);
+            Toast.makeText(DeviceInfoActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
+            LogModule.i(message);
             dismissDFUProgressDialog();
         }
     };
