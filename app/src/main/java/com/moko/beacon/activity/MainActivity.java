@@ -3,13 +3,11 @@ package com.moko.beacon.activity;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.os.IBinder;
+import android.os.Message;
 import android.support.annotation.IdRes;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -33,16 +31,25 @@ import com.moko.beacon.dialog.PasswordDialog;
 import com.moko.beacon.entity.BeaconDeviceInfo;
 import com.moko.beacon.entity.BeaconInfo;
 import com.moko.beacon.entity.BeaconParam;
-import com.moko.beacon.service.MokoService;
 import com.moko.beacon.utils.BeaconInfoParseableImpl;
 import com.moko.beacon.utils.ToastUtils;
 import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
+import com.moko.support.OrderTaskAssembler;
 import com.moko.support.callback.MokoScanDeviceCallback;
 import com.moko.support.entity.DeviceInfo;
 import com.moko.support.entity.OrderType;
+import com.moko.support.event.ConnectStatusEvent;
+import com.moko.support.event.OrderTaskResponseEvent;
+import com.moko.support.handler.BaseMessageHandler;
 import com.moko.support.log.LogModule;
+import com.moko.support.task.OrderTask;
+import com.moko.support.task.OrderTaskResponse;
 import com.moko.support.utils.MokoUtils;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -50,6 +57,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -92,7 +100,6 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
     private ArrayList<BeaconInfo> mBeaconInfos;
     private int mSortType;
     private String mFilterText;
-    private MokoService mMokoService;
     private HashMap<String, BeaconInfo> beaconMap;
     private BeaconInfoParseableImpl beaconInfoParseable;
     public String mSavedPassword;
@@ -127,33 +134,225 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
                 mFilterText = s.toString();
             }
         });
-        bindService(new Intent(this, MokoService.class), mServiceConnection, BIND_AUTO_CREATE);
-    }
 
-    private ServiceConnection mServiceConnection = new ServiceConnection() {
-
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            mMokoService = ((MokoService.LocalBinder) service).getService();
-            // 注册广播接收器
-            IntentFilter filter = new IntentFilter();
-            filter.addAction(MokoConstants.ACTION_CONNECT_SUCCESS);
-            filter.addAction(MokoConstants.ACTION_CONNECT_DISCONNECTED);
-            filter.addAction(MokoConstants.ACTION_RESPONSE_SUCCESS);
-            filter.addAction(MokoConstants.ACTION_RESPONSE_TIMEOUT);
-            filter.addAction(MokoConstants.ACTION_RESPONSE_FINISH);
-            filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
-            filter.setPriority(100);
-            registerReceiver(mReceiver, filter);
+        mHandler = new CunstomHandler(this);
+        EventBus.getDefault().register(this);
+        // 注册广播接收器
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
+        registerReceiver(mReceiver, filter);
+        if (!MokoSupport.getInstance().isBluetoothOpen()) {
+            MokoSupport.getInstance().enableBluetooth();
+        } else {
             if (animation == null) {
                 startScan();
             }
         }
+    }
 
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onConnectStatusEvent(ConnectStatusEvent event) {
+        String action = event.getAction();
+        if (MokoConstants.ACTION_CONN_STATUS_DISCONNECTED.equals(action)) {
+            dismissLoadingProgressDialog();
+            ToastUtils.showToast(MainActivity.this, "connect failed");
+            if (animation == null) {
+                startScan();
+            }
         }
-    };
+        if (MokoConstants.ACTION_DISCOVER_SUCCESS.equals(action)) {
+            mBeaconParam = new BeaconParam();
+            BeaconDeviceInfo beaconInfo = new BeaconDeviceInfo();
+            mBeaconParam.beaconInfo = beaconInfo;
+            mBeaconParam.threeAxis = mThreeAxis;
+            // 读取全部可读数据
+            mHandler.postDelayed(() -> {
+                mBeaconParam.password = mPassword;
+                // open password notify and set passwrord
+                List<OrderTask> orderTasks = new ArrayList<>();
+                orderTasks.add(OrderTaskAssembler.getBattery());
+                orderTasks.add(OrderTaskAssembler.getSoftVersion());
+                orderTasks.add(OrderTaskAssembler.getDeviceModel());
+                orderTasks.add(OrderTaskAssembler.getManufacturer());
+                orderTasks.add(OrderTaskAssembler.getProductDate());
+                orderTasks.add(OrderTaskAssembler.getHardwareVersion());
+                orderTasks.add(OrderTaskAssembler.getFirmwareVersion());
+                orderTasks.add(OrderTaskAssembler.getSoftVersion());
+                orderTasks.add(OrderTaskAssembler.getDeviceUUID());
+                orderTasks.add(OrderTaskAssembler.getMajor());
+                orderTasks.add(OrderTaskAssembler.getMinor());
+                orderTasks.add(OrderTaskAssembler.getMeasurePower());
+                orderTasks.add(OrderTaskAssembler.getTransmission());
+                orderTasks.add(OrderTaskAssembler.getAdvInterval());
+                orderTasks.add(OrderTaskAssembler.getSerialID());
+                orderTasks.add(OrderTaskAssembler.getAdvName());
+                orderTasks.add(OrderTaskAssembler.getConnection());
+                orderTasks.add(OrderTaskAssembler.getDeviceMac());
+                orderTasks.add(OrderTaskAssembler.getRunntime());
+                orderTasks.add(OrderTaskAssembler.getChipModel());
+                orderTasks.add(OrderTaskAssembler.setOvertime());
+                orderTasks.add(OrderTaskAssembler.setPassword(mPassword));
+                MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
+            }, 500);
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onOrderTaskResponseEvent(OrderTaskResponseEvent event) {
+        final String action = event.getAction();
+        if (MokoConstants.ACTION_ORDER_TIMEOUT.equals(action)) {
+            OrderTaskResponse response = event.getResponse();
+            OrderType orderType = response.orderType;
+            int responseType = response.responseType;
+            byte[] value = response.responseValue;
+            switch (orderType) {
+                case PASSWORD:
+                    // 修改密码超时
+                    dismissLoadingProgressDialog();
+                    ToastUtils.showToast(MainActivity.this, "password error");
+                    if (animation == null) {
+                        startScan();
+                    }
+                    break;
+            }
+        }
+        if (MokoConstants.ACTION_ORDER_FINISH.equals(action)) {
+        }
+        if (MokoConstants.ACTION_ORDER_RESULT.equals(action)) {
+            OrderTaskResponse response = event.getResponse();
+            OrderType orderType = response.orderType;
+            int responseType = response.responseType;
+            byte[] value = response.responseValue;
+            switch (orderType) {
+                case BATTERY:
+                    mBeaconParam.battery = Integer.parseInt(MokoUtils.bytesToHexString(value), 16) + "";
+                    break;
+                case DEVICE_UUID:
+                    String hexString = MokoUtils.bytesToHexString(value).toUpperCase();
+                    if (hexString.length() > 31) {
+                        StringBuilder sb = new StringBuilder();
+                        sb.append(hexString.substring(0, 8));
+                        sb.append("-");
+                        sb.append(hexString.substring(8, 12));
+                        sb.append("-");
+                        sb.append(hexString.substring(12, 16));
+                        sb.append("-");
+                        sb.append(hexString.substring(16, 20));
+                        sb.append("-");
+                        sb.append(hexString.substring(20, 32));
+                        String uuid = sb.toString();
+                        mBeaconParam.uuid = uuid;
+                    }
+                    break;
+                case MAJOR:
+                    mBeaconParam.major = Integer.parseInt(MokoUtils.bytesToHexString(value), 16) + "";
+                    break;
+                case MINOR:
+                    mBeaconParam.minor = Integer.parseInt(MokoUtils.bytesToHexString(value), 16) + "";
+                    break;
+                case MEASURE_POWER:
+                    mBeaconParam.measurePower = Integer.parseInt(MokoUtils.bytesToHexString(value), 16) + "";
+                    break;
+                case TRANSMISSION:
+                    int transmission = Integer.parseInt(MokoUtils.bytesToHexString(value), 16);
+                    if (transmission == 8) {
+                        transmission = 7;
+                    }
+                    mBeaconParam.transmission = transmission + "";
+                    break;
+                case ADV_INTERVAL:
+                    mBeaconParam.broadcastingInterval = Integer.parseInt(MokoUtils.bytesToHexString(value), 16) + "";
+                    break;
+                case SERIAL_ID:
+                    mBeaconParam.serialID = MokoUtils.hex2String(MokoUtils.bytesToHexString(value));
+                    break;
+                case DEVICE_MAC:
+                    String hexMac = MokoUtils.bytesToHexString(value);
+                    if (hexMac.length() > 11) {
+                        StringBuilder sb = new StringBuilder();
+                        sb.append(hexMac.substring(0, 2));
+                        sb.append(":");
+                        sb.append(hexMac.substring(2, 4));
+                        sb.append(":");
+                        sb.append(hexMac.substring(4, 6));
+                        sb.append(":");
+                        sb.append(hexMac.substring(6, 8));
+                        sb.append(":");
+                        sb.append(hexMac.substring(8, 10));
+                        sb.append(":");
+                        sb.append(hexMac.substring(10, 12));
+                        String mac = sb.toString().toUpperCase();
+                        mBeaconParam.iBeaconMAC = mac;
+                        mBeaconParam.beaconInfo.iBeaconMac = mac;
+                    }
+                    break;
+                case ADV_NAME:
+                    mBeaconParam.iBeaconName = MokoUtils.hex2String(MokoUtils.bytesToHexString(value));
+                    break;
+                case CONNECTION:
+                    mBeaconParam.connectionMode = MokoUtils.bytesToHexString(value);
+                    break;
+                case MANUFACTURER:
+                    mBeaconParam.beaconInfo.firmname = MokoUtils.hex2String(MokoUtils.bytesToHexString(value));
+                    break;
+                case SOFT_VERSION:
+                    mBeaconParam.beaconInfo.softVersion = MokoUtils.hex2String(MokoUtils.bytesToHexString(value));
+                    break;
+                case DEVICE_MODEL:
+                    mBeaconParam.beaconInfo.deviceName = MokoUtils.hex2String(MokoUtils.bytesToHexString(value));
+                    break;
+                case PRODUCT_DATE:
+                    mBeaconParam.beaconInfo.iBeaconDate = MokoUtils.hex2String(MokoUtils.bytesToHexString(value));
+                    break;
+                case HARDWARE_VERSION:
+                    mBeaconParam.beaconInfo.hardwareVersion = MokoUtils.hex2String(MokoUtils.bytesToHexString(value));
+                    break;
+                case FIRMWARE_VERSION:
+                    mBeaconParam.beaconInfo.firmwareVersion = MokoUtils.hex2String(MokoUtils.bytesToHexString(value));
+                    break;
+                case PARAMS_CONFIG:
+                    if ("eb59".equals(MokoUtils.bytesToHexString(Arrays.copyOfRange(value, 0, 2)).toLowerCase())) {
+                        byte[] runtimeBytes = Arrays.copyOfRange(value, 4, value.length);
+                        int seconds = Integer.parseInt(MokoUtils.bytesToHexString(runtimeBytes), 16);
+                        int day = 0, hours = 0, minutes = 0;
+                        day = seconds / (60 * 60 * 24);
+                        seconds -= day * 60 * 60 * 24;
+                        hours = seconds / (60 * 60);
+                        seconds -= hours * 60 * 60;
+                        minutes = seconds / 60;
+                        seconds -= minutes * 60;
+                        mBeaconParam.beaconInfo.runtime = String.format("%dD%dh%dm%ds", day, hours, minutes, seconds);
+                    }
+                    if ("eb5b".equals(MokoUtils.bytesToHexString(Arrays.copyOfRange(value, 0, 2)).toLowerCase())) {
+                        byte[] chipModelBytes = Arrays.copyOfRange(value, 4, value.length);
+                        mBeaconParam.beaconInfo.chipModel = MokoUtils.hex2String(MokoUtils.bytesToHexString(chipModelBytes));
+                    }
+                    break;
+                case PASSWORD:
+                    if ("00".equals(MokoUtils.bytesToHexString(value))) {
+                        mHandler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                dismissLoadingProgressDialog();
+                                LogModule.i(mBeaconParam.toString());
+                                mSavedPassword = mPassword;
+                                Intent deviceInfoIntent = new Intent(MainActivity.this, DeviceInfoActivity.class);
+                                deviceInfoIntent.putExtra(BeaconConstants.EXTRA_KEY_DEVICE_PARAM, mBeaconParam);
+                                startActivityForResult(deviceInfoIntent, BeaconConstants.REQUEST_CODE_DEVICE_INFO);
+                            }
+                        }, 1000);
+                    } else {
+                        dismissLoadingProgressDialog();
+                        ToastUtils.showToast(MainActivity.this, "password error");
+                        if (animation == null) {
+                            startScan();
+                        }
+                    }
+                    break;
+            }
+        }
+    }
+
 
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
 
@@ -161,180 +360,14 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
         public void onReceive(Context context, Intent intent) {
             if (intent != null) {
                 String action = intent.getAction();
-                if (MokoConstants.ACTION_CONNECT_SUCCESS.equals(action)) {
-                    mBeaconParam = new BeaconParam();
-                    BeaconDeviceInfo beaconInfo = new BeaconDeviceInfo();
-                    mBeaconParam.beaconInfo = beaconInfo;
-                    mBeaconParam.threeAxis = mThreeAxis;
-                    // 读取全部可读数据
-                    mMokoService.mHandler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            mBeaconParam.password = mPassword;
-                            mMokoService.getReadableData(mPassword);
-                        }
-                    }, 1000);
-                }
-                if (MokoConstants.ACTION_CONNECT_DISCONNECTED.equals(action)) {
-                    dismissLoadingProgressDialog();
-                    ToastUtils.showToast(MainActivity.this, "connect failed");
-                    if (animation == null) {
-                        startScan();
-                    }
-                }
-                if (MokoConstants.ACTION_RESPONSE_TIMEOUT.equals(action)) {
-                    OrderType orderType = (OrderType) intent.getSerializableExtra(MokoConstants.EXTRA_KEY_RESPONSE_ORDER_TYPE);
-                    switch (orderType) {
-                        case changePassword:
-                            // 修改密码超时
-                            dismissLoadingProgressDialog();
-                            ToastUtils.showToast(MainActivity.this, "password error");
-                            if (animation == null) {
-                                startScan();
-                            }
-                            break;
-                    }
-                }
-                if (MokoConstants.ACTION_RESPONSE_FINISH.equals(action)) {
-                }
-                if (MokoConstants.ACTION_RESPONSE_SUCCESS.equals(action)) {
-                    OrderType orderType = (OrderType) intent.getSerializableExtra(MokoConstants.EXTRA_KEY_RESPONSE_ORDER_TYPE);
-                    byte[] value = intent.getByteArrayExtra(MokoConstants.EXTRA_KEY_RESPONSE_VALUE);
-                    switch (orderType) {
-                        case battery:
-                            mBeaconParam.battery = Integer.parseInt(MokoUtils.bytesToHexString(value), 16) + "";
-                            break;
-                        case iBeaconUuid:
-                            String hexString = MokoUtils.bytesToHexString(value).toUpperCase();
-                            if (hexString.length() > 31) {
-                                StringBuilder sb = new StringBuilder();
-                                sb.append(hexString.substring(0, 8));
-                                sb.append("-");
-                                sb.append(hexString.substring(8, 12));
-                                sb.append("-");
-                                sb.append(hexString.substring(12, 16));
-                                sb.append("-");
-                                sb.append(hexString.substring(16, 20));
-                                sb.append("-");
-                                sb.append(hexString.substring(20, 32));
-                                String uuid = sb.toString();
-                                mBeaconParam.uuid = uuid;
-                            }
-                            break;
-                        case major:
-                            mBeaconParam.major = Integer.parseInt(MokoUtils.bytesToHexString(value), 16) + "";
-                            break;
-                        case minor:
-                            mBeaconParam.minor = Integer.parseInt(MokoUtils.bytesToHexString(value), 16) + "";
-                            break;
-                        case measurePower:
-                            mBeaconParam.measurePower = Integer.parseInt(MokoUtils.bytesToHexString(value), 16) + "";
-                            break;
-                        case transmission:
-                            int transmission = Integer.parseInt(MokoUtils.bytesToHexString(value), 16);
-                            if (transmission == 8) {
-                                transmission = 7;
-                            }
-                            mBeaconParam.transmission = transmission + "";
-                            break;
-                        case broadcastingInterval:
-                            mBeaconParam.broadcastingInterval = Integer.parseInt(MokoUtils.bytesToHexString(value), 16) + "";
-                            break;
-                        case serialID:
-                            mBeaconParam.serialID = MokoUtils.hex2String(MokoUtils.bytesToHexString(value));
-                            break;
-                        case iBeaconMac:
-                            String hexMac = MokoUtils.bytesToHexString(value);
-                            if (hexMac.length() > 11) {
-                                StringBuilder sb = new StringBuilder();
-                                sb.append(hexMac.substring(0, 2));
-                                sb.append(":");
-                                sb.append(hexMac.substring(2, 4));
-                                sb.append(":");
-                                sb.append(hexMac.substring(4, 6));
-                                sb.append(":");
-                                sb.append(hexMac.substring(6, 8));
-                                sb.append(":");
-                                sb.append(hexMac.substring(8, 10));
-                                sb.append(":");
-                                sb.append(hexMac.substring(10, 12));
-                                String mac = sb.toString().toUpperCase();
-                                mBeaconParam.iBeaconMAC = mac;
-                                mBeaconParam.beaconInfo.iBeaconMac = mac;
-                            }
-                            break;
-                        case iBeaconName:
-                            mBeaconParam.iBeaconName = MokoUtils.hex2String(MokoUtils.bytesToHexString(value));
-                            break;
-                        case connectionMode:
-                            mBeaconParam.connectionMode = MokoUtils.bytesToHexString(value);
-                            break;
-                        case firmname:
-                            mBeaconParam.beaconInfo.firmname = MokoUtils.hex2String(MokoUtils.bytesToHexString(value));
-                            break;
-                        case softVersion:
-                            mBeaconParam.beaconInfo.softVersion = MokoUtils.hex2String(MokoUtils.bytesToHexString(value));
-                            break;
-                        case devicename:
-                            mBeaconParam.beaconInfo.deviceName = MokoUtils.hex2String(MokoUtils.bytesToHexString(value));
-                            break;
-                        case iBeaconDate:
-                            mBeaconParam.beaconInfo.iBeaconDate = MokoUtils.hex2String(MokoUtils.bytesToHexString(value));
-                            break;
-                        case hardwareVersion:
-                            mBeaconParam.beaconInfo.hardwareVersion = MokoUtils.hex2String(MokoUtils.bytesToHexString(value));
-                            break;
-                        case firmwareVersion:
-                            mBeaconParam.beaconInfo.firmwareVersion = MokoUtils.hex2String(MokoUtils.bytesToHexString(value));
-                            break;
-                        case writeAndNotify:
-                            if ("eb59".equals(MokoUtils.bytesToHexString(Arrays.copyOfRange(value, 0, 2)).toLowerCase())) {
-                                byte[] runtimeBytes = Arrays.copyOfRange(value, 4, value.length);
-                                int seconds = Integer.parseInt(MokoUtils.bytesToHexString(runtimeBytes), 16);
-                                int day = 0, hours = 0, minutes = 0;
-                                day = seconds / (60 * 60 * 24);
-                                seconds -= day * 60 * 60 * 24;
-                                hours = seconds / (60 * 60);
-                                seconds -= hours * 60 * 60;
-                                minutes = seconds / 60;
-                                seconds -= minutes * 60;
-                                mBeaconParam.beaconInfo.runtime = String.format("%dD%dh%dm%ds", day, hours, minutes, seconds);
-                            }
-                            if ("eb5b".equals(MokoUtils.bytesToHexString(Arrays.copyOfRange(value, 0, 2)).toLowerCase())) {
-                                byte[] chipModelBytes = Arrays.copyOfRange(value, 4, value.length);
-                                mBeaconParam.beaconInfo.chipModel = MokoUtils.hex2String(MokoUtils.bytesToHexString(chipModelBytes));
-                            }
-                            break;
-                        case changePassword:
-                            if ("00".equals(MokoUtils.bytesToHexString(value))) {
-                                mMokoService.mHandler.postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        dismissLoadingProgressDialog();
-                                        LogModule.i(mBeaconParam.toString());
-                                        mSavedPassword = mPassword;
-                                        Intent deviceInfoIntent = new Intent(MainActivity.this, DeviceInfoActivity.class);
-                                        deviceInfoIntent.putExtra(BeaconConstants.EXTRA_KEY_DEVICE_PARAM, mBeaconParam);
-                                        startActivityForResult(deviceInfoIntent, BeaconConstants.REQUEST_CODE_DEVICE_INFO);
-                                    }
-                                }, 1000);
-                            } else {
-                                dismissLoadingProgressDialog();
-                                ToastUtils.showToast(MainActivity.this, "password error");
-                                if (animation == null) {
-                                    startScan();
-                                }
-                            }
-                            break;
-                    }
-                }
                 if (BluetoothAdapter.ACTION_STATE_CHANGED.equals(action)) {
                     int blueState = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, 0);
                     switch (blueState) {
                         case BluetoothAdapter.STATE_TURNING_OFF:
                             if (animation != null) {
-                                mMokoService.mHandler.removeMessages(0);
-                                mMokoService.stopScanDevice();
+                                mHandler.removeMessages(0);
+                                MokoSupport.getInstance().stopScanDevice();
+                                onStopScan();
                             }
                             break;
 
@@ -375,7 +408,7 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(mReceiver);
-        unbindService(mServiceConnection);
+        EventBus.getDefault().unregister(this);
     }
 
     @Override
@@ -412,8 +445,8 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
                 if (animation == null) {
                     startScan();
                 } else {
-                    mMokoService.mHandler.removeMessages(0);
-                    mMokoService.stopScanDevice();
+                    mHandler.removeMessages(0);
+                    MokoSupport.getInstance().stopScanDevice();
                 }
                 break;
         }
@@ -432,11 +465,11 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
         if (!isLocationPermissionOpen()) {
             return;
         }
-        mMokoService.startScanDevice(this);
-        mMokoService.mHandler.postDelayed(new Runnable() {
+        MokoSupport.getInstance().startScanDevice(this);
+        mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                mMokoService.stopScanDevice();
+                MokoSupport.getInstance().stopScanDevice();
             }
         }, 1000 * 60);
     }
@@ -549,8 +582,8 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
         if (beaconInfo != null && !isFinishing()) {
             LogModule.i(beaconInfo.toString());
             if (animation != null) {
-                mMokoService.mHandler.removeMessages(0);
-                mMokoService.stopScanDevice();
+                mHandler.removeMessages(0);
+                MokoSupport.getInstance().stopScanDevice();
             }
             final PasswordDialog dialog = new PasswordDialog(this);
             dialog.setSavedPassword(mSavedPassword);
@@ -566,7 +599,7 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
                     LogModule.i(password);
                     mPassword = password;
                     mThreeAxis = beaconInfo.threeAxis;
-                    mMokoService.connDevice(beaconInfo.mac);
+                    MokoSupport.getInstance().connDevice(MainActivity.this, beaconInfo.mac);
                     showLoadingProgressDialog();
                 }
 
@@ -611,6 +644,19 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
     private void dismissLoadingProgressDialog() {
         if (!isFinishing() && mLoadingDialog != null && mLoadingDialog.isShowing()) {
             mLoadingDialog.dismiss();
+        }
+    }
+
+    public CunstomHandler mHandler;
+
+    public class CunstomHandler extends BaseMessageHandler<MainActivity> {
+
+        public CunstomHandler(MainActivity activity) {
+            super(activity);
+        }
+
+        @Override
+        protected void handleMessage(MainActivity activity, Message msg) {
         }
     }
 }

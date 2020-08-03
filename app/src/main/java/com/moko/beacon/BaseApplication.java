@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 
-import com.moko.beacon.service.MokoService;
 import com.moko.beacon.utils.IOUtils;
 import com.moko.support.MokoSupport;
 import com.moko.support.log.LogModule;
@@ -26,7 +25,6 @@ public class BaseApplication extends Application {
         super.onCreate();
         MokoSupport.getInstance().init(getApplicationContext());
         // 启动蓝牙服务
-        startService(new Intent(this, MokoService.class));
         Thread.setDefaultUncaughtExceptionHandler(new BTUncaughtExceptionHandler());
     }
 
@@ -56,7 +54,6 @@ public class BaseApplication extends Application {
             }
             errorReport.append(result.toString());
             IOUtils.setCrashLog(errorReport.toString());
-            LogModule.e("uncaughtException errorReport=" + errorReport);
             android.os.Process.killProcess(android.os.Process.myPid());
         }
     }

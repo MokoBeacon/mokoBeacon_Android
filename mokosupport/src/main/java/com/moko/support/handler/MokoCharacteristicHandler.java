@@ -58,8 +58,8 @@ public class MokoCharacteristicHandler {
                     if (TextUtils.isEmpty(characteristicUuid)) {
                         continue;
                     }
-                    if (characteristicUuid.equals(OrderType.battery.getUuid())) {
-                        mokoCharacteristicMap.put(OrderType.battery, new MokoCharacteristic(characteristic, OrderType.battery));
+                    if (characteristicUuid.equals(OrderType.BATTERY.getUuid())) {
+                        mokoCharacteristicMap.put(OrderType.BATTERY, new MokoCharacteristic(characteristic, OrderType.BATTERY));
                         continue;
                     }
                 }
@@ -71,33 +71,33 @@ public class MokoCharacteristicHandler {
                         continue;
                     }
                     // 软件版本
-                    if (characteristicUuid.equals(OrderType.softVersion.getUuid())) {
-                        mokoCharacteristicMap.put(OrderType.softVersion, new MokoCharacteristic(characteristic, OrderType.softVersion));
+                    if (characteristicUuid.equals(OrderType.SOFT_VERSION.getUuid())) {
+                        mokoCharacteristicMap.put(OrderType.SOFT_VERSION, new MokoCharacteristic(characteristic, OrderType.SOFT_VERSION));
                         continue;
                     }
                     // 厂商名称
-                    if (characteristicUuid.equals(OrderType.firmname.getUuid())) {
-                        mokoCharacteristicMap.put(OrderType.firmname, new MokoCharacteristic(characteristic, OrderType.firmname));
+                    if (characteristicUuid.equals(OrderType.MANUFACTURER.getUuid())) {
+                        mokoCharacteristicMap.put(OrderType.MANUFACTURER, new MokoCharacteristic(characteristic, OrderType.MANUFACTURER));
                         continue;
                     }
                     // 设备名称
-                    if (characteristicUuid.equals(OrderType.devicename.getUuid())) {
-                        mokoCharacteristicMap.put(OrderType.devicename, new MokoCharacteristic(characteristic, OrderType.devicename));
+                    if (characteristicUuid.equals(OrderType.DEVICE_MODEL.getUuid())) {
+                        mokoCharacteristicMap.put(OrderType.DEVICE_MODEL, new MokoCharacteristic(characteristic, OrderType.DEVICE_MODEL));
                         continue;
                     }
                     // 出厂日期
-                    if (characteristicUuid.equals(OrderType.iBeaconDate.getUuid())) {
-                        mokoCharacteristicMap.put(OrderType.iBeaconDate, new MokoCharacteristic(characteristic, OrderType.iBeaconDate));
+                    if (characteristicUuid.equals(OrderType.PRODUCT_DATE.getUuid())) {
+                        mokoCharacteristicMap.put(OrderType.PRODUCT_DATE, new MokoCharacteristic(characteristic, OrderType.PRODUCT_DATE));
                         continue;
                     }
                     // 硬件版本号
-                    if (characteristicUuid.equals(OrderType.hardwareVersion.getUuid())) {
-                        mokoCharacteristicMap.put(OrderType.hardwareVersion, new MokoCharacteristic(characteristic, OrderType.hardwareVersion));
+                    if (characteristicUuid.equals(OrderType.HARDWARE_VERSION.getUuid())) {
+                        mokoCharacteristicMap.put(OrderType.HARDWARE_VERSION, new MokoCharacteristic(characteristic, OrderType.HARDWARE_VERSION));
                         continue;
                     }
                     // 固件版本号
-                    if (characteristicUuid.equals(OrderType.firmwareVersion.getUuid())) {
-                        mokoCharacteristicMap.put(OrderType.firmwareVersion, new MokoCharacteristic(characteristic, OrderType.firmwareVersion));
+                    if (characteristicUuid.equals(OrderType.FIRMWARE_VERSION.getUuid())) {
+                        mokoCharacteristicMap.put(OrderType.FIRMWARE_VERSION, new MokoCharacteristic(characteristic, OrderType.FIRMWARE_VERSION));
                         continue;
                     }
                 }
@@ -109,75 +109,75 @@ public class MokoCharacteristicHandler {
                         continue;
                     }
                     // 写和通知
-                    if (characteristicUuid.equals(OrderType.writeAndNotify.getUuid())) {
+                    if (characteristicUuid.equals(OrderType.PARAMS_CONFIG.getUuid())) {
                         gatt.setCharacteristicNotification(characteristic, true);
-                        mokoCharacteristicMap.put(OrderType.writeAndNotify, new MokoCharacteristic(characteristic, OrderType.writeAndNotify));
+                        mokoCharacteristicMap.put(OrderType.PARAMS_CONFIG, new MokoCharacteristic(characteristic, OrderType.PARAMS_CONFIG));
                         continue;
                     }
                     // uuid
-                    if (characteristicUuid.equals(OrderType.iBeaconUuid.getUuid())) {
-                        mokoCharacteristicMap.put(OrderType.iBeaconUuid, new MokoCharacteristic(characteristic, OrderType.iBeaconUuid));
+                    if (characteristicUuid.equals(OrderType.DEVICE_UUID.getUuid())) {
+                        mokoCharacteristicMap.put(OrderType.DEVICE_UUID, new MokoCharacteristic(characteristic, OrderType.DEVICE_UUID));
                         continue;
                     }
                     // major
-                    if (characteristicUuid.equals(OrderType.major.getUuid())) {
-                        mokoCharacteristicMap.put(OrderType.major, new MokoCharacteristic(characteristic, OrderType.major));
+                    if (characteristicUuid.equals(OrderType.MAJOR.getUuid())) {
+                        mokoCharacteristicMap.put(OrderType.MAJOR, new MokoCharacteristic(characteristic, OrderType.MAJOR));
                         continue;
                     }
                     // minor
-                    if (characteristicUuid.equals(OrderType.minor.getUuid())) {
-                        mokoCharacteristicMap.put(OrderType.minor, new MokoCharacteristic(characteristic, OrderType.minor));
+                    if (characteristicUuid.equals(OrderType.MINOR.getUuid())) {
+                        mokoCharacteristicMap.put(OrderType.MINOR, new MokoCharacteristic(characteristic, OrderType.MINOR));
                         continue;
                     }
                     // measure_power
-                    if (characteristicUuid.equals(OrderType.measurePower.getUuid())) {
-                        mokoCharacteristicMap.put(OrderType.measurePower, new MokoCharacteristic(characteristic, OrderType.measurePower));
+                    if (characteristicUuid.equals(OrderType.MEASURE_POWER.getUuid())) {
+                        mokoCharacteristicMap.put(OrderType.MEASURE_POWER, new MokoCharacteristic(characteristic, OrderType.MEASURE_POWER));
                         continue;
                     }
                     // transmission
-                    if (characteristicUuid.equals(OrderType.transmission.getUuid())) {
-                        mokoCharacteristicMap.put(OrderType.transmission, new MokoCharacteristic(characteristic, OrderType.transmission));
+                    if (characteristicUuid.equals(OrderType.TRANSMISSION.getUuid())) {
+                        mokoCharacteristicMap.put(OrderType.TRANSMISSION, new MokoCharacteristic(characteristic, OrderType.TRANSMISSION));
                         continue;
                     }
                     // change_password
-                    if (characteristicUuid.equals(OrderType.changePassword.getUuid())) {
+                    if (characteristicUuid.equals(OrderType.PASSWORD.getUuid())) {
                         gatt.setCharacteristicNotification(characteristic, true);
-                        mokoCharacteristicMap.put(OrderType.changePassword, new MokoCharacteristic(characteristic, OrderType.changePassword));
+                        mokoCharacteristicMap.put(OrderType.PASSWORD, new MokoCharacteristic(characteristic, OrderType.PASSWORD));
                         continue;
                     }
                     // broadcasting_interval
-                    if (characteristicUuid.equals(OrderType.broadcastingInterval.getUuid())) {
-                        mokoCharacteristicMap.put(OrderType.broadcastingInterval, new MokoCharacteristic(characteristic, OrderType.broadcastingInterval));
+                    if (characteristicUuid.equals(OrderType.ADV_INTERVAL.getUuid())) {
+                        mokoCharacteristicMap.put(OrderType.ADV_INTERVAL, new MokoCharacteristic(characteristic, OrderType.ADV_INTERVAL));
                         continue;
                     }
                     // serial_id
-                    if (characteristicUuid.equals(OrderType.serialID.getUuid())) {
-                        mokoCharacteristicMap.put(OrderType.serialID, new MokoCharacteristic(characteristic, OrderType.serialID));
+                    if (characteristicUuid.equals(OrderType.SERIAL_ID.getUuid())) {
+                        mokoCharacteristicMap.put(OrderType.SERIAL_ID, new MokoCharacteristic(characteristic, OrderType.SERIAL_ID));
                         continue;
                     }
                     // iBeacon_name
-                    if (characteristicUuid.equals(OrderType.iBeaconName.getUuid())) {
-                        mokoCharacteristicMap.put(OrderType.iBeaconName, new MokoCharacteristic(characteristic, OrderType.iBeaconName));
+                    if (characteristicUuid.equals(OrderType.ADV_NAME.getUuid())) {
+                        mokoCharacteristicMap.put(OrderType.ADV_NAME, new MokoCharacteristic(characteristic, OrderType.ADV_NAME));
                         continue;
                     }
                     // connection_mode
-                    if (characteristicUuid.equals(OrderType.connectionMode.getUuid())) {
-                        mokoCharacteristicMap.put(OrderType.connectionMode, new MokoCharacteristic(characteristic, OrderType.connectionMode));
+                    if (characteristicUuid.equals(OrderType.CONNECTION.getUuid())) {
+                        mokoCharacteristicMap.put(OrderType.CONNECTION, new MokoCharacteristic(characteristic, OrderType.CONNECTION));
                         continue;
                     }
                     // soft_reboot
-                    if (characteristicUuid.equals(OrderType.softReboot.getUuid())) {
-                        mokoCharacteristicMap.put(OrderType.softReboot, new MokoCharacteristic(characteristic, OrderType.softReboot));
+                    if (characteristicUuid.equals(OrderType.SOFT_REBOOT.getUuid())) {
+                        mokoCharacteristicMap.put(OrderType.SOFT_REBOOT, new MokoCharacteristic(characteristic, OrderType.SOFT_REBOOT));
                         continue;
                     }
                     // iBeacon_mac
-                    if (characteristicUuid.equals(OrderType.iBeaconMac.getUuid())) {
-                        mokoCharacteristicMap.put(OrderType.iBeaconMac, new MokoCharacteristic(characteristic, OrderType.iBeaconMac));
+                    if (characteristicUuid.equals(OrderType.DEVICE_MAC.getUuid())) {
+                        mokoCharacteristicMap.put(OrderType.DEVICE_MAC, new MokoCharacteristic(characteristic, OrderType.DEVICE_MAC));
                         continue;
                     }
                     // overtime
-                    if (characteristicUuid.equals(OrderType.overtime.getUuid())) {
-                        mokoCharacteristicMap.put(OrderType.overtime, new MokoCharacteristic(characteristic, OrderType.overtime));
+                    if (characteristicUuid.equals(OrderType.OVER_TIME.getUuid())) {
+                        mokoCharacteristicMap.put(OrderType.OVER_TIME, new MokoCharacteristic(characteristic, OrderType.OVER_TIME));
                         continue;
                     }
                 }

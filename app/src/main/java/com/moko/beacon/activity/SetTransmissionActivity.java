@@ -17,11 +17,18 @@ import android.widget.TextView;
 
 import com.moko.beacon.BeaconConstants;
 import com.moko.beacon.R;
-import com.moko.beacon.service.MokoService;
 import com.moko.beacon.utils.ToastUtils;
 import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
+import com.moko.support.OrderTaskAssembler;
 import com.moko.support.entity.OrderType;
+import com.moko.support.event.ConnectStatusEvent;
+import com.moko.support.event.OrderTaskResponseEvent;
+import com.moko.support.task.OrderTaskResponse;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 
@@ -52,7 +59,6 @@ public class SetTransmissionActivity extends BaseActivity {
     LinearLayout llTransmissionGrade6;
     @Bind(R.id.ll_transmission_grade_7)
     LinearLayout llTransmissionGrade7;
-    private MokoService mMokoService;
     private int transmissionGrade;
     private ArrayList<ViewGroup> mViews;
 
@@ -61,7 +67,6 @@ public class SetTransmissionActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_transmission);
         ButterKnife.bind(this);
-        bindService(new Intent(this, MokoService.class), mServiceConnection, BIND_AUTO_CREATE);
         int transmission = getIntent().getIntExtra(BeaconConstants.EXTRA_KEY_DEVICE_TRANSMISSION, 0);
         mViews = new ArrayList<>();
         mViews.add(llTransmissionGrade0);
@@ -73,71 +78,62 @@ public class SetTransmissionActivity extends BaseActivity {
         mViews.add(llTransmissionGrade6);
         mViews.add(llTransmissionGrade7);
         setViewSeleceted(transmission);
+        EventBus.getDefault().register(this);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(mReceiver);
-        unbindService(mServiceConnection);
+       EventBus.getDefault().unregister(this);
+    }
+    @Subscribe(threadMode = ThreadMode.POSTING, priority = 200)
+    public void onConnectStatusEvent(ConnectStatusEvent event) {
+        final String action = event.getAction();
+        runOnUiThread(() -> {
+            if (MokoConstants.ACTION_CONN_STATUS_DISCONNECTED.equals(action)) {
+                ToastUtils.showToast(SetTransmissionActivity.this, getString(R.string.alert_diconnected));
+                SetTransmissionActivity.this.setResult(BeaconConstants.RESULT_CONN_DISCONNECTED);
+                finish();
+            }
+        });
     }
 
-    private BroadcastReceiver mReceiver = new BroadcastReceiver() {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            abortBroadcast();
-            if (intent != null) {
-                String action = intent.getAction();
-                if (MokoConstants.ACTION_CONNECT_DISCONNECTED.equals(action)) {
-                    ToastUtils.showToast(SetTransmissionActivity.this, getString(R.string.alert_diconnected));
-                    SetTransmissionActivity.this.setResult(BeaconConstants.RESULT_CONN_DISCONNECTED);
-                    finish();
-                }
-                if (MokoConstants.ACTION_RESPONSE_TIMEOUT.equals(action)) {
-                    OrderType orderType = (OrderType) intent.getSerializableExtra(MokoConstants.EXTRA_KEY_RESPONSE_ORDER_TYPE);
-                    switch (orderType) {
-                        case transmission:
-                            // 修改transmission失败
-                            ToastUtils.showToast(SetTransmissionActivity.this, getString(R.string.read_data_failed));
-                            finish();
-                            break;
-                    }
-                }
-                if (MokoConstants.ACTION_RESPONSE_SUCCESS.equals(action)) {
-                    OrderType orderType = (OrderType) intent.getSerializableExtra(MokoConstants.EXTRA_KEY_RESPONSE_ORDER_TYPE);
-                    switch (orderType) {
-                        case transmission:
-                            // 修改transmission成功
-                            SetTransmissionActivity.this.setResult(RESULT_OK);
-                            finish();
-                            break;
-                    }
+    @Subscribe(threadMode = ThreadMode.POSTING, priority = 200)
+    public void onOrderTaskResponseEvent(OrderTaskResponseEvent event) {
+        EventBus.getDefault().cancelEventDelivery(event);
+        final String action = event.getAction();
+        runOnUiThread(() -> {
+            if (MokoConstants.ACTION_ORDER_TIMEOUT.equals(action)) {
+                OrderTaskResponse response = event.getResponse();
+                OrderType orderType = response.orderType;
+                int responseType = response.responseType;
+                byte[] value = response.responseValue;
+                switch (orderType) {
+                    case TRANSMISSION:
+                        // 修改transmission失败
+                        ToastUtils.showToast(SetTransmissionActivity.this, getString(R.string.read_data_failed));
+                        finish();
+                        break;
                 }
             }
-        }
-    };
+            if (MokoConstants.ACTION_ORDER_FINISH.equals(action)) {
+            }
+            if (MokoConstants.ACTION_ORDER_RESULT.equals(action)) {
+                OrderTaskResponse response = event.getResponse();
+                OrderType orderType = response.orderType;
+                int responseType = response.responseType;
+                byte[] value = response.responseValue;
+                switch (orderType) {
+                    case TRANSMISSION:
+                        // 修改transmission成功
+                        SetTransmissionActivity.this.setResult(RESULT_OK);
+                        finish();
+                        break;
+                }
+            }
+        });
+    }
 
-    private ServiceConnection mServiceConnection = new ServiceConnection() {
-
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            mMokoService = ((MokoService.LocalBinder) service).getService();
-            // 注册广播接收器
-            IntentFilter filter = new IntentFilter();
-            filter.addAction(MokoConstants.ACTION_CONNECT_SUCCESS);
-            filter.addAction(MokoConstants.ACTION_CONNECT_DISCONNECTED);
-            filter.addAction(MokoConstants.ACTION_RESPONSE_SUCCESS);
-            filter.addAction(MokoConstants.ACTION_RESPONSE_TIMEOUT);
-            filter.addAction(MokoConstants.ACTION_RESPONSE_FINISH);
-            filter.setPriority(300);
-            registerReceiver(mReceiver, filter);
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-        }
-    };
 
     @OnClick({R.id.tv_back, R.id.iv_save, R.id.ll_transmission_grade_0, R.id.ll_transmission_grade_1, R.id.ll_transmission_grade_2
             , R.id.ll_transmission_grade_3, R.id.ll_transmission_grade_4, R.id.ll_transmission_grade_5
@@ -155,7 +151,7 @@ public class SetTransmissionActivity extends BaseActivity {
                 if (transmissionGrade == 7) {
                     transmissionGrade = 8;
                 }
-                mMokoService.sendOrder(mMokoService.setTransmission(transmissionGrade));
+                MokoSupport.getInstance().sendOrder(OrderTaskAssembler.setTransmission(transmissionGrade));
                 break;
             case R.id.ll_transmission_grade_0:
             case R.id.ll_transmission_grade_1:
