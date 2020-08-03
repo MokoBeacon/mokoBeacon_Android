@@ -11,7 +11,6 @@ import android.support.v4.content.ContextCompat;
 
 import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
-import com.moko.support.callback.MokoConnStateCallback;
 import com.moko.support.callback.MokoOrderTaskCallback;
 import com.moko.support.callback.MokoScanDeviceCallback;
 import com.moko.support.entity.OrderType;
@@ -50,7 +49,7 @@ import com.moko.support.task.TransmissionTask;
  * @Description
  * @ClassPath com.moko.beacon.service.MokoService
  */
-public class MokoService extends Service implements MokoConnStateCallback, MokoOrderTaskCallback {
+public class MokoService extends Service implements MokoOrderTaskCallback {
     private IBinder mBinder = new LocalBinder();
 
     public class LocalBinder extends Binder {
@@ -108,20 +107,20 @@ public class MokoService extends Service implements MokoConnStateCallback, MokoO
     ///////////////////////////////////////////////////////////////////////////
 
     public void connDevice(String address) {
-        MokoSupport.getInstance().connDevice(this, address, this);
+        MokoSupport.getInstance().connDevice(this, address);
     }
 
-    @Override
-    public void onConnectSuccess() {
-        Intent intent = new Intent(MokoConstants.ACTION_CONNECT_SUCCESS);
-        sendOrderedBroadcast(intent, null);
-    }
-
-    @Override
-    public void onDisConnected() {
-        Intent intent = new Intent(MokoConstants.ACTION_CONNECT_DISCONNECTED);
-        sendOrderedBroadcast(intent, null);
-    }
+//    @Override
+//    public void onConnectSuccess() {
+//        Intent intent = new Intent(MokoConstants.ACTION_CONNECT_SUCCESS);
+//        sendOrderedBroadcast(intent, null);
+//    }
+//
+//    @Override
+//    public void onDisConnected() {
+//        Intent intent = new Intent(MokoConstants.ACTION_CONNECT_DISCONNECTED);
+//        sendOrderedBroadcast(intent, null);
+//    }
 
     ///////////////////////////////////////////////////////////////////////////
     // 处理应答

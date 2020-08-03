@@ -786,6 +786,7 @@ public class DeviceInfoActivity extends BaseActivity {
                             final DfuServiceInitiator starter = new DfuServiceInitiator(mBeaconParam.iBeaconMAC)
                                     .setDeviceName(mBeaconParam.iBeaconName)
                                     .setKeepBond(false)
+                                    .setPacketsReceiptNotificationsEnabled(true)
                                     .setDisableNotification(true);
                             starter.setZip(null, firmwareFilePath);
                             starter.start(this, DfuService.class);
@@ -967,20 +968,10 @@ public class DeviceInfoActivity extends BaseActivity {
         public void onLogEvent(String deviceAddress, int level, String message) {
             switch (level) {
                 case DfuService.LOG_LEVEL_APPLICATION:
-                    LogModule.w(level + ":" + message);
-                    break;
-                case DfuService.LOG_LEVEL_VERBOSE:
-                    LogModule.w(level + ":" + message);
-                    break;
                 case DfuService.LOG_LEVEL_DEBUG:
-                    LogModule.w(level + ":" + message);
-                    break;
+                case DfuService.LOG_LEVEL_VERBOSE:
                 case DfuService.LOG_LEVEL_INFO:
-                    LogModule.w(level + ":" + message);
-                    break;
                 case DfuService.LOG_LEVEL_WARNING:
-                    LogModule.w(level + ":" + message);
-                    break;
                 case DfuService.LOG_LEVEL_ERROR:
                     LogModule.w(level + ":" + message);
                     break;

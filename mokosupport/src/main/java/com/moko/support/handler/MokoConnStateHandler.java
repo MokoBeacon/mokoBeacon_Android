@@ -22,7 +22,7 @@ public class MokoConnStateHandler extends BluetoothGattCallback {
     private static volatile MokoConnStateHandler INSTANCE;
 
     private MokoResponseCallback mMokoResponseCallback;
-    private MokoSupport.ServiceMessageHandler mHandler;
+//    private MokoSupport.ServiceMessageHandler mHandler;
 
     public MokoConnStateHandler() {
     }
@@ -38,35 +38,35 @@ public class MokoConnStateHandler extends BluetoothGattCallback {
         return INSTANCE;
     }
 
-    @Override
-    public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
-        super.onConnectionStateChange(gatt, status, newState);
-        LogModule.e("onConnectionStateChange");
-        LogModule.e("status : " + status);
-        LogModule.e("newState : " + newState);
-        if (newState == BluetoothProfile.STATE_CONNECTED) {
-            if (status == BluetoothGatt.GATT_SUCCESS) {
-                mHandler.sendEmptyMessage(MokoSupport.HANDLER_MESSAGE_WHAT_CONNECTED);
-                return;
-            }
-        } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
-            mHandler.sendEmptyMessage(MokoSupport.HANDLER_MESSAGE_WHAT_DISCONNECTED);
-            return;
-        }
-        mHandler.sendEmptyMessage(MokoSupport.HANDLER_MESSAGE_WHAT_DISCONNECTED);
-    }
-
-    @Override
-    public void onServicesDiscovered(BluetoothGatt gatt, int status) {
-        super.onServicesDiscovered(gatt, status);
-        LogModule.e("onServicesDiscovered");
-        LogModule.e("status : " + status);
-        if (status == BluetoothGatt.GATT_SUCCESS) {
-            mHandler.sendEmptyMessage(MokoSupport.HANDLER_MESSAGE_WHAT_SERVICES_DISCOVERED);
-        } else {
-            mHandler.sendEmptyMessage(MokoSupport.HANDLER_MESSAGE_WHAT_DISCONNECTED);
-        }
-    }
+//    @Override
+//    public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
+//        super.onConnectionStateChange(gatt, status, newState);
+//        LogModule.e("onConnectionStateChange");
+//        LogModule.e("status : " + status);
+//        LogModule.e("newState : " + newState);
+//        if (newState == BluetoothProfile.STATE_CONNECTED) {
+//            if (status == BluetoothGatt.GATT_SUCCESS) {
+//                mHandler.sendEmptyMessage(MokoSupport.HANDLER_MESSAGE_WHAT_CONNECTED);
+//                return;
+//            }
+//        } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
+//            mHandler.sendEmptyMessage(MokoSupport.HANDLER_MESSAGE_WHAT_DISCONNECTED);
+//            return;
+//        }
+//        mHandler.sendEmptyMessage(MokoSupport.HANDLER_MESSAGE_WHAT_DISCONNECTED);
+//    }
+//
+//    @Override
+//    public void onServicesDiscovered(BluetoothGatt gatt, int status) {
+//        super.onServicesDiscovered(gatt, status);
+//        LogModule.e("onServicesDiscovered");
+//        LogModule.e("status : " + status);
+//        if (status == BluetoothGatt.GATT_SUCCESS) {
+//            mHandler.sendEmptyMessage(MokoSupport.HANDLER_MESSAGE_WHAT_SERVICES_DISCOVERED);
+//        } else {
+//            mHandler.sendEmptyMessage(MokoSupport.HANDLER_MESSAGE_WHAT_DISCONNECTED);
+//        }
+//    }
 
     @Override
     public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
@@ -100,7 +100,7 @@ public class MokoConnStateHandler extends BluetoothGattCallback {
         this.mMokoResponseCallback = mMokoResponseCallback;
     }
 
-    public void setMessageHandler(MokoSupport.ServiceMessageHandler messageHandler) {
-        this.mHandler = messageHandler;
-    }
+//    public void setMessageHandler(MokoSupport.ServiceMessageHandler messageHandler) {
+//        this.mHandler = messageHandler;
+//    }
 }
