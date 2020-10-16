@@ -99,7 +99,6 @@ public class MokoBleManager extends BleManager<BleManagerCallbacks> {
             }
             if (paramsConfigCharacteristic.getUuid().toString().toLowerCase().equals(characteristicUUIDStr)) {
                 LogModule.e("paramsConfig notify opened");
-                gatt.requestMtu(247);
                 mMokoResponseCallback.onServicesDiscovered(gatt);
             }
         }
