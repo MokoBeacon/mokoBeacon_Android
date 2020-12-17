@@ -6,10 +6,11 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.SystemClock;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.content.ContextCompat;
 
 import com.moko.support.log.LogModule;
+
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentActivity;
 
 
 public class BaseActivity extends FragmentActivity {
@@ -56,6 +57,6 @@ public class BaseActivity extends FragmentActivity {
     }
 
     public boolean isLocationPermissionOpen() {
-        return ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+        return ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
     }
 }

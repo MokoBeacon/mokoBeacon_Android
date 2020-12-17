@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Message;
-import android.support.annotation.IdRes;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -61,7 +60,8 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import butterknife.Bind;
+import androidx.annotation.IdRes;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -77,21 +77,21 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
     public static final int SORT_TYPE_MAJOR = 1;
     public static final int SORT_TYPE_MINOR = 2;
 
-    @Bind(R.id.et_device_filter)
+    @BindView(R.id.et_device_filter)
     EditText etDeviceFilter;
-    @Bind(R.id.rb_sort_rssi)
+    @BindView(R.id.rb_sort_rssi)
     RadioButton rbSortRssi;
-    @Bind(R.id.rb_sort_major)
+    @BindView(R.id.rb_sort_major)
     RadioButton rbSortMajor;
-    @Bind(R.id.rb_sort_minor)
+    @BindView(R.id.rb_sort_minor)
     RadioButton rbSortMinor;
-    @Bind(R.id.rg_device_sort)
+    @BindView(R.id.rg_device_sort)
     RadioGroup rgDeviceSort;
-    @Bind(R.id.lv_device_list)
+    @BindView(R.id.lv_device_list)
     ListView lvDeviceList;
-    @Bind(R.id.iv_refresh)
+    @BindView(R.id.iv_refresh)
     ImageView ivRefresh;
-    @Bind(R.id.tv_devices_title)
+    @BindView(R.id.tv_devices_title)
     TextView tvDevicesTitle;
 
 

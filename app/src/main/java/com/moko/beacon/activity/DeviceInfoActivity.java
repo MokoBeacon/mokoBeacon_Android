@@ -4,19 +4,13 @@ import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.ServiceConnection;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.IBinder;
-import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
@@ -36,7 +30,6 @@ import com.moko.beacon.utils.ToastUtils;
 import com.moko.support.MokoConstants;
 import com.moko.support.MokoSupport;
 import com.moko.support.OrderTaskAssembler;
-import com.moko.support.entity.ConfigKeyEnum;
 import com.moko.support.entity.OrderType;
 import com.moko.support.event.ConnectStatusEvent;
 import com.moko.support.event.OrderTaskResponseEvent;
@@ -54,7 +47,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import butterknife.Bind;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import no.nordicsemi.android.dfu.DfuLogListener;
@@ -73,33 +69,33 @@ public class DeviceInfoActivity extends BaseActivity {
 
     public static final int REQUEST_CODE_SELECT_FIRMWARE = 0x10;
 
-    @Bind(R.id.tv_conn_state)
+    @BindView(R.id.tv_conn_state)
     TextView tvConnState;
-    @Bind(R.id.tv_ibeacon_battery)
+    @BindView(R.id.tv_ibeacon_battery)
     TextView tvIbeaconBattery;
-    @Bind(R.id.tv_ibeacon_uuid)
+    @BindView(R.id.tv_ibeacon_uuid)
     TextView tvIbeaconUuid;
-    @Bind(R.id.tv_ibeacon_major)
+    @BindView(R.id.tv_ibeacon_major)
     TextView tvIbeaconMajor;
-    @Bind(R.id.tv_ibeacon_minor)
+    @BindView(R.id.tv_ibeacon_minor)
     TextView tvIbeaconMinor;
-    @Bind(R.id.tv_ibeacon_measure_power)
+    @BindView(R.id.tv_ibeacon_measure_power)
     TextView tvIbeaconMeasurePower;
-    @Bind(R.id.tv_ibeacon_transmission)
+    @BindView(R.id.tv_ibeacon_transmission)
     TextView tvIbeaconTransmission;
-    @Bind(R.id.tv_ibeacon_broadcasting_interval)
+    @BindView(R.id.tv_ibeacon_broadcasting_interval)
     TextView tvIbeaconBroadcastingInterval;
-    @Bind(R.id.tv_ibeacon_serialID)
+    @BindView(R.id.tv_ibeacon_serialID)
     TextView tvIbeaconSerialID;
-    @Bind(R.id.tv_ibeacon_mac)
+    @BindView(R.id.tv_ibeacon_mac)
     TextView tvIbeaconMac;
-    @Bind(R.id.tv_ibeacon_device_name)
+    @BindView(R.id.tv_ibeacon_device_name)
     TextView tvIbeaconDeviceName;
-    @Bind(R.id.iv_ibeacon_device_conn_mode)
+    @BindView(R.id.iv_ibeacon_device_conn_mode)
     ImageView ivIbeaconDeviceConnMode;
-    @Bind(R.id.rl_ibeacon_three_axis)
+    @BindView(R.id.rl_ibeacon_three_axis)
     RelativeLayout rlIbeaconThreeAxis;
-    @Bind(R.id.view_cover)
+    @BindView(R.id.view_cover)
     View viewCover;
     private BeaconParam mBeaconParam;
 

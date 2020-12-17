@@ -2,7 +2,6 @@ package com.moko.beacon.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -31,7 +30,8 @@ import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import butterknife.Bind;
+import androidx.annotation.Nullable;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -45,29 +45,29 @@ public class SetUUIDActivity extends BaseActivity {
 
     public static final String UUID_PATTERN = "[A-Fa-f0-9]{8}-(?:[A-Fa-f0-9]{4}-){3}[A-Fa-f0-9]{12}";
 
-    @Bind(R.id.et_seletced_uuid)
+    @BindView(R.id.et_seletced_uuid)
     EditText etSeletcedUuid;
-    @Bind(R.id.tv_airLocate_uuid)
+    @BindView(R.id.tv_airLocate_uuid)
     TextView tvAirLocateUuid;
-    @Bind(R.id.iv_airLocate_selected)
+    @BindView(R.id.iv_airLocate_selected)
     ImageView ivAirLocateSelected;
-    @Bind(R.id.tv_wechat_1_uuid)
+    @BindView(R.id.tv_wechat_1_uuid)
     TextView tvWechat1Uuid;
-    @Bind(R.id.iv_wechat_1_selected)
+    @BindView(R.id.iv_wechat_1_selected)
     ImageView ivWechat1Selected;
-    @Bind(R.id.tv_wechat_2_uuid)
+    @BindView(R.id.tv_wechat_2_uuid)
     TextView tvWechat2Uuid;
-    @Bind(R.id.iv_wechat_2_selected)
+    @BindView(R.id.iv_wechat_2_selected)
     ImageView ivWechat2Selected;
-    @Bind(R.id.tv_estimote_uuid)
+    @BindView(R.id.tv_estimote_uuid)
     TextView tvEstimoteUuid;
-    @Bind(R.id.iv_estimote_selected)
+    @BindView(R.id.iv_estimote_selected)
     ImageView ivEstimoteSelected;
-    @Bind(R.id.tv_uuid)
+    @BindView(R.id.tv_uuid)
     TextView tvUuid;
-    @Bind(R.id.iv_uuid_selected)
+    @BindView(R.id.iv_uuid_selected)
     ImageView ivUuidSelected;
-    @Bind(R.id.rl_uuid)
+    @BindView(R.id.rl_uuid)
     RelativeLayout rlUuid;
     private HashMap<Integer, View> mUUIDViews;
     private Pattern pattern;

@@ -1,15 +1,6 @@
 package com.moko.beacon.activity;
 
-import android.content.BroadcastReceiver;
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.os.IBinder;
-import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -32,7 +23,9 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 
-import butterknife.Bind;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -43,21 +36,21 @@ import butterknife.OnClick;
  * @ClassPath com.moko.beacon.activity.SetTransmissionActivity
  */
 public class SetTransmissionActivity extends BaseActivity {
-    @Bind(R.id.ll_transmission_grade_0)
+    @BindView(R.id.ll_transmission_grade_0)
     LinearLayout llTransmissionGrade0;
-    @Bind(R.id.ll_transmission_grade_1)
+    @BindView(R.id.ll_transmission_grade_1)
     LinearLayout llTransmissionGrade1;
-    @Bind(R.id.ll_transmission_grade_2)
+    @BindView(R.id.ll_transmission_grade_2)
     LinearLayout llTransmissionGrade2;
-    @Bind(R.id.ll_transmission_grade_3)
+    @BindView(R.id.ll_transmission_grade_3)
     LinearLayout llTransmissionGrade3;
-    @Bind(R.id.ll_transmission_grade_4)
+    @BindView(R.id.ll_transmission_grade_4)
     LinearLayout llTransmissionGrade4;
-    @Bind(R.id.ll_transmission_grade_5)
+    @BindView(R.id.ll_transmission_grade_5)
     LinearLayout llTransmissionGrade5;
-    @Bind(R.id.ll_transmission_grade_6)
+    @BindView(R.id.ll_transmission_grade_6)
     LinearLayout llTransmissionGrade6;
-    @Bind(R.id.ll_transmission_grade_7)
+    @BindView(R.id.ll_transmission_grade_7)
     LinearLayout llTransmissionGrade7;
     private int transmissionGrade;
     private ArrayList<ViewGroup> mViews;

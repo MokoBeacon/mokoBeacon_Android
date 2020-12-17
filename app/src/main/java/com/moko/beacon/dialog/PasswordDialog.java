@@ -11,7 +11,7 @@ import android.widget.EditText;
 import com.moko.beacon.R;
 import com.moko.beacon.utils.ToastUtils;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 
 /**
@@ -21,7 +21,7 @@ import butterknife.OnClick;
  * @ClassPath com.moko.beacon.dialog.PasswordDialog
  */
 public class PasswordDialog extends BaseDialog {
-    @Bind(R.id.et_password)
+    @BindView(R.id.et_password)
     EditText etPassword;
     private String savedPassword;
     private final String FILTER_ASCII = "\\A\\p{ASCII}*\\z";

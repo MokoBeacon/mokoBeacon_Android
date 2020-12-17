@@ -6,7 +6,6 @@ import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
 import android.content.Context;
-import android.support.annotation.NonNull;
 
 import com.moko.support.callback.MokoResponseCallback;
 import com.moko.support.log.LogModule;
@@ -14,6 +13,7 @@ import com.moko.support.utils.MokoUtils;
 
 import java.util.UUID;
 
+import androidx.annotation.NonNull;
 import no.nordicsemi.android.ble.BleManager;
 import no.nordicsemi.android.ble.BleManagerCallbacks;
 import no.nordicsemi.android.ble.callback.DataReceivedCallback;

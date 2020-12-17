@@ -2,7 +2,6 @@ package com.moko.beacon.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.text.InputFilter;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -24,7 +23,8 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import butterknife.Bind;
+import androidx.annotation.Nullable;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -37,9 +37,9 @@ import butterknife.OnClick;
 public class SetPasswordActivity extends BaseActivity {
 
 
-    @Bind(R.id.et_password)
+    @BindView(R.id.et_password)
     EditText etPassword;
-    @Bind(R.id.et_password_confirm)
+    @BindView(R.id.et_password_confirm)
     EditText etPasswordConfirm;
     private final String FILTER_ASCII = "\\A\\p{ASCII}*\\z";
 

@@ -2,7 +2,6 @@ package com.moko.beacon.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.text.InputFilter;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -25,7 +24,8 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import butterknife.Bind;
+import androidx.annotation.Nullable;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -36,9 +36,9 @@ import butterknife.OnClick;
  * @ClassPath com.moko.beacon.activity.SetIBeaconNameActivity
  */
 public class SetIBeaconNameActivity extends BaseActivity {
-    @Bind(R.id.et_ibeacon_name)
+    @BindView(R.id.et_ibeacon_name)
     EditText etIBeaconName;
-    @Bind(R.id.tv_tips)
+    @BindView(R.id.tv_tips)
     TextView tvTips;
     private boolean isSupportThreeAxis;
     private final String FILTER_ASCII = "\\A\\p{ASCII}*\\z";

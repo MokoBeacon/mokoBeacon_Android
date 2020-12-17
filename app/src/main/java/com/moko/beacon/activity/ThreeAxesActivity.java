@@ -2,7 +2,6 @@ package com.moko.beacon.activity;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
@@ -29,7 +28,8 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-import butterknife.Bind;
+import androidx.annotation.Nullable;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -41,11 +41,11 @@ import butterknife.OnClick;
  */
 public class ThreeAxesActivity extends BaseActivity {
 
-    @Bind(R.id.tv_device_three_axis)
+    @BindView(R.id.tv_device_three_axis)
     TextView tvDeviceThreeAxis;
-    @Bind(R.id.tv_stop)
+    @BindView(R.id.tv_stop)
     TextView tvStop;
-    @Bind(R.id.scroll_view)
+    @BindView(R.id.scroll_view)
     ScrollView scrollView;
     private StringBuilder builder;
     private SimpleDateFormat simpleDateFormat;

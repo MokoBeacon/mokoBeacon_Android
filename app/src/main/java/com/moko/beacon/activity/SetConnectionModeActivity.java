@@ -2,8 +2,6 @@ package com.moko.beacon.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -26,7 +24,9 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.HashMap;
 
-import butterknife.Bind;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -38,13 +38,13 @@ import butterknife.OnClick;
  */
 public class SetConnectionModeActivity extends BaseActivity {
 
-    @Bind(R.id.iv_conn_yes)
+    @BindView(R.id.iv_conn_yes)
     ImageView ivConnYes;
-    @Bind(R.id.rl_conn_yes)
+    @BindView(R.id.rl_conn_yes)
     RelativeLayout rlConnYes;
-    @Bind(R.id.iv_conn_no)
+    @BindView(R.id.iv_conn_no)
     ImageView ivConnNo;
-    @Bind(R.id.rl_conn_no)
+    @BindView(R.id.rl_conn_no)
     RelativeLayout rlConnNo;
     private HashMap<ViewGroup, View> viewHashMap;
     private String connectMode;

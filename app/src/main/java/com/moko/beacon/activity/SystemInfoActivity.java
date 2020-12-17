@@ -3,7 +3,6 @@ package com.moko.beacon.activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
@@ -31,7 +30,8 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import butterknife.Bind;
+import androidx.annotation.Nullable;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -42,23 +42,23 @@ import butterknife.OnClick;
  * @ClassPath com.moko.beacon.activity.SystemInfoActivity
  */
 public class SystemInfoActivity extends BaseActivity {
-    @Bind(R.id.tv_ibeacon_soft_version)
+    @BindView(R.id.tv_ibeacon_soft_version)
     TextView tvIbeaconSoftVersion;
-    @Bind(R.id.tv_ibeacon_firmname)
+    @BindView(R.id.tv_ibeacon_firmname)
     TextView tvIbeaconFirmname;
-    @Bind(R.id.tv_ibeacon_device_name)
+    @BindView(R.id.tv_ibeacon_device_name)
     TextView tvIbeaconDeviceName;
-    @Bind(R.id.tv_ibeacon_date)
+    @BindView(R.id.tv_ibeacon_date)
     TextView tvIbeaconDate;
-    @Bind(R.id.tv_ibeacon_mac)
+    @BindView(R.id.tv_ibeacon_mac)
     TextView tvIbeaconMac;
-    @Bind(R.id.tv_ibeacon_chip_mode)
+    @BindView(R.id.tv_ibeacon_chip_mode)
     TextView tvIbeaconChipMode;
-    @Bind(R.id.tv_ibeacon_hardware_version)
+    @BindView(R.id.tv_ibeacon_hardware_version)
     TextView tvIbeaconHardwareVersion;
-    @Bind(R.id.tv_ibeacon_firmware_version)
+    @BindView(R.id.tv_ibeacon_firmware_version)
     TextView tvIbeaconFirmwareVersion;
-    @Bind(R.id.tv_ibeacon_runtime)
+    @BindView(R.id.tv_ibeacon_runtime)
     TextView tvIbeaconRuntime;
     private BeaconDeviceInfo mBeaconDeviceInfo;
 

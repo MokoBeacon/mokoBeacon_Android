@@ -18,8 +18,6 @@ import com.moko.support.task.GetProductDate;
 import com.moko.support.task.GetRunntime;
 import com.moko.support.task.GetSerialID;
 import com.moko.support.task.GetSoftVersion;
-import com.moko.support.task.SetSerialID;
-import com.moko.support.task.SetThreeAxes;
 import com.moko.support.task.GetTransmission;
 import com.moko.support.task.OrderTask;
 import com.moko.support.task.SetAdvInterval;
@@ -32,7 +30,9 @@ import com.moko.support.task.SetMeasurePower;
 import com.moko.support.task.SetMinor;
 import com.moko.support.task.SetOvertime;
 import com.moko.support.task.SetPassword;
+import com.moko.support.task.SetSerialID;
 import com.moko.support.task.SetSoftReboot;
+import com.moko.support.task.SetThreeAxes;
 import com.moko.support.task.SetTransmission;
 
 public class OrderTaskAssembler {

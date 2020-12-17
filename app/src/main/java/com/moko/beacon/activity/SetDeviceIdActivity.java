@@ -2,7 +2,6 @@ package com.moko.beacon.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
@@ -22,7 +21,8 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import butterknife.Bind;
+import androidx.annotation.Nullable;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -33,7 +33,7 @@ import butterknife.OnClick;
  * @ClassPath com.moko.beacon.activity.SetDeviceIdActivity
  */
 public class SetDeviceIdActivity extends BaseActivity {
-    @Bind(R.id.et_device_id)
+    @BindView(R.id.et_device_id)
     EditText etDeviceId;
 
     @Override

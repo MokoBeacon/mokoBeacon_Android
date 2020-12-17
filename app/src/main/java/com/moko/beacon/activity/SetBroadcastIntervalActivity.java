@@ -2,8 +2,6 @@ package com.moko.beacon.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
@@ -26,7 +24,9 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 
-import butterknife.Bind;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -38,27 +38,27 @@ import butterknife.OnClick;
  */
 public class SetBroadcastIntervalActivity extends BaseActivity {
 
-    @Bind(R.id.tv_broadcast_interval_1)
+    @BindView(R.id.tv_broadcast_interval_1)
     TextView tvBroadcastInterval1;
-    @Bind(R.id.tv_broadcast_interval_2)
+    @BindView(R.id.tv_broadcast_interval_2)
     TextView tvBroadcastInterval2;
-    @Bind(R.id.tv_broadcast_interval_3)
+    @BindView(R.id.tv_broadcast_interval_3)
     TextView tvBroadcastInterval3;
-    @Bind(R.id.tv_broadcast_interval_4)
+    @BindView(R.id.tv_broadcast_interval_4)
     TextView tvBroadcastInterval4;
-    @Bind(R.id.tv_broadcast_interval_5)
+    @BindView(R.id.tv_broadcast_interval_5)
     TextView tvBroadcastInterval5;
-    @Bind(R.id.tv_broadcast_interval_6)
+    @BindView(R.id.tv_broadcast_interval_6)
     TextView tvBroadcastInterval6;
-    @Bind(R.id.tv_broadcast_interval_7)
+    @BindView(R.id.tv_broadcast_interval_7)
     TextView tvBroadcastInterval7;
-    @Bind(R.id.tv_broadcast_interval_8)
+    @BindView(R.id.tv_broadcast_interval_8)
     TextView tvBroadcastInterval8;
-    @Bind(R.id.tv_broadcast_interval_9)
+    @BindView(R.id.tv_broadcast_interval_9)
     TextView tvBroadcastInterval9;
-    @Bind(R.id.tv_broadcast_interval_10)
+    @BindView(R.id.tv_broadcast_interval_10)
     TextView tvBroadcastInterval10;
-    @Bind(R.id.et_broadcast_interval)
+    @BindView(R.id.et_broadcast_interval)
     EditText etBroadcastInterval;
     private ArrayList<View> mViews;
 
