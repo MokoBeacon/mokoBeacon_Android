@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -40,8 +41,8 @@
             android:layout_width="match_parent"
             android:layout_height="38dp"
             android:layout_marginLeft="12dp"
-            android:layout_marginRight="12dp"
             android:layout_marginTop="53dp"
+            android:layout_marginRight="12dp"
             android:background="@drawable/shape_radius_white_bg"
             android:hint="@string/device_list_filter_hin"
             android:paddingLeft="10dp"
@@ -103,16 +104,11 @@
 
     </RadioGroup>
 
-    <ListView
-        android:id="@+id/lv_device_list"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_device_list"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1.0"
         android:background="@color/grey_ebebeb"
-        android:cacheColorHint="@color/transparent"
-        android:clipToPadding="false"
-        android:divider="@color/transparent"
-        android:dividerHeight="0dp"
-        android:listSelector="@color/transparent"
-        android:scrollbarStyle="outsideOverlay" />
+        tools:listitem="@layout/device_list_item" />
 </LinearLayout>

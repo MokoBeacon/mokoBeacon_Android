@@ -1,39 +1,38 @@
 package com.moko.support;
 
-import com.moko.support.task.GetAdvInterval;
-import com.moko.support.task.GetAdvName;
-import com.moko.support.task.GetBattery;
-import com.moko.support.task.GetChipModel;
-import com.moko.support.task.GetConnection;
-import com.moko.support.task.GetDeviceMac;
-import com.moko.support.task.GetDeviceModel;
-import com.moko.support.task.GetDeviceUUID;
-import com.moko.support.task.GetFirmwareVersion;
-import com.moko.support.task.GetHardwareVersion;
-import com.moko.support.task.GetMajor;
-import com.moko.support.task.GetManufacturer;
-import com.moko.support.task.GetMeasurePower;
-import com.moko.support.task.GetMinor;
-import com.moko.support.task.GetProductDate;
-import com.moko.support.task.GetRunntime;
-import com.moko.support.task.GetSerialID;
-import com.moko.support.task.GetSoftVersion;
-import com.moko.support.task.GetTransmission;
-import com.moko.support.task.OrderTask;
-import com.moko.support.task.SetAdvInterval;
-import com.moko.support.task.SetAdvName;
-import com.moko.support.task.SetClose;
-import com.moko.support.task.SetConnection;
-import com.moko.support.task.SetDeviceUUID;
-import com.moko.support.task.SetMajor;
-import com.moko.support.task.SetMeasurePower;
-import com.moko.support.task.SetMinor;
-import com.moko.support.task.SetOvertime;
-import com.moko.support.task.SetPassword;
-import com.moko.support.task.SetSerialID;
-import com.moko.support.task.SetSoftReboot;
-import com.moko.support.task.SetThreeAxes;
-import com.moko.support.task.SetTransmission;
+import com.moko.ble.lib.task.OrderTask;
+import com.moko.support.entity.ParamsKeyEnum;
+import com.moko.support.task.GetAdvIntervalTask;
+import com.moko.support.task.GetAdvNameTask;
+import com.moko.support.task.GetBatteryTask;
+import com.moko.support.task.GetConnectionTask;
+import com.moko.support.task.GetDeviceMacTask;
+import com.moko.support.task.GetDeviceUUIDTask;
+import com.moko.support.task.GetFirmwareRevisionTask;
+import com.moko.support.task.GetHardwareRevisionTask;
+import com.moko.support.task.GetMajorTask;
+import com.moko.support.task.GetManufacturerNameTask;
+import com.moko.support.task.GetMeasurePowerTask;
+import com.moko.support.task.GetMinorTask;
+import com.moko.support.task.GetModelNumberTask;
+import com.moko.support.task.GetSerialIDTask;
+import com.moko.support.task.GetSerialNumberTask;
+import com.moko.support.task.GetSoftwareRevisionTask;
+import com.moko.support.task.GetTransmissionTask;
+import com.moko.support.task.ParamsReadTask;
+import com.moko.support.task.ParamsWriteTask;
+import com.moko.support.task.SetAdvIntervalTask;
+import com.moko.support.task.SetAdvNameTask;
+import com.moko.support.task.SetConnectionTask;
+import com.moko.support.task.SetDeviceUUIDTask;
+import com.moko.support.task.SetMajorTask;
+import com.moko.support.task.SetMeasurePowerTask;
+import com.moko.support.task.SetMinorTask;
+import com.moko.support.task.SetOvertimeTask;
+import com.moko.support.task.SetPasswordTask;
+import com.moko.support.task.SetSerialIDTask;
+import com.moko.support.task.SetSoftRebootTask;
+import com.moko.support.task.SetTransmissionTask;
 
 public class OrderTaskAssembler {
     ///////////////////////////////////////////////////////////////////////////
@@ -41,97 +40,99 @@ public class OrderTaskAssembler {
     ///////////////////////////////////////////////////////////////////////////
 
     public static OrderTask getBattery() {
-        GetBattery task = new GetBattery();
+        GetBatteryTask task = new GetBatteryTask();
         return task;
     }
 
     public static OrderTask getAdvInterval() {
-        GetAdvInterval task = new GetAdvInterval();
+        GetAdvIntervalTask task = new GetAdvIntervalTask();
         return task;
     }
 
     public static OrderTask getChipModel() {
-        GetChipModel task = new GetChipModel();
+        ParamsReadTask task = new ParamsReadTask();
+        task.setData(ParamsKeyEnum.GET_CHIP_MODEL);
         return task;
     }
 
     public static OrderTask getConnection() {
-        GetConnection task = new GetConnection();
+        GetConnectionTask task = new GetConnectionTask();
         return task;
     }
 
     public static OrderTask getDeviceModel() {
-        GetDeviceModel task = new GetDeviceModel();
+        GetModelNumberTask task = new GetModelNumberTask();
         return task;
     }
 
     public static OrderTask getManufacturer() {
-        GetManufacturer task = new GetManufacturer();
+        GetManufacturerNameTask task = new GetManufacturerNameTask();
         return task;
     }
 
     public static OrderTask getFirmwareVersion() {
-        GetFirmwareVersion task = new GetFirmwareVersion();
+        GetFirmwareRevisionTask task = new GetFirmwareRevisionTask();
         return task;
     }
 
     public static OrderTask getHardwareVersion() {
-        GetHardwareVersion task = new GetHardwareVersion();
+        GetHardwareRevisionTask task = new GetHardwareRevisionTask();
         return task;
     }
 
     public static OrderTask getProductDate() {
-        GetProductDate task = new GetProductDate();
+        GetSerialNumberTask task = new GetSerialNumberTask();
         return task;
     }
 
     public static OrderTask getDeviceMac() {
-        GetDeviceMac task = new GetDeviceMac();
+        GetDeviceMacTask task = new GetDeviceMacTask();
         return task;
     }
 
     public static OrderTask getAdvName() {
-        GetAdvName task = new GetAdvName();
+        GetAdvNameTask task = new GetAdvNameTask();
         return task;
     }
 
     public static OrderTask getDeviceUUID() {
-        GetDeviceUUID task = new GetDeviceUUID();
+        GetDeviceUUIDTask task = new GetDeviceUUIDTask();
         return task;
     }
 
     public static OrderTask getMajor() {
-        GetMajor task = new GetMajor();
+        GetMajorTask task = new GetMajorTask();
         return task;
     }
 
     public static OrderTask getMinor() {
-        GetMinor task = new GetMinor();
+        GetMinorTask task = new GetMinorTask();
         return task;
     }
 
     public static OrderTask getMeasurePower() {
-        GetMeasurePower task = new GetMeasurePower();
+        GetMeasurePowerTask task = new GetMeasurePowerTask();
         return task;
     }
 
-    public static OrderTask getRunntime() {
-        GetRunntime task = new GetRunntime();
+    public static OrderTask getRuntime() {
+        ParamsReadTask task = new ParamsReadTask();
+        task.setData(ParamsKeyEnum.GET_RUNTIME);
         return task;
     }
 
     public static OrderTask getTransmission() {
-        GetTransmission task = new GetTransmission();
+        GetTransmissionTask task = new GetTransmissionTask();
         return task;
     }
 
     public static OrderTask getSoftVersion() {
-        GetSoftVersion task = new GetSoftVersion();
+        GetSoftwareRevisionTask task = new GetSoftwareRevisionTask();
         return task;
     }
 
     public static OrderTask getSerialID() {
-        GetSerialID task = new GetSerialID();
+        GetSerialIDTask task = new GetSerialIDTask();
         return task;
     }
 
@@ -141,84 +142,84 @@ public class OrderTaskAssembler {
     ///////////////////////////////////////////////////////////////////////////
 
     public static OrderTask setAdvInterval(int advInterval) {
-        SetAdvInterval task = new SetAdvInterval();
+        SetAdvIntervalTask task = new SetAdvIntervalTask();
         task.setData(advInterval);
         return task;
     }
 
     public static OrderTask setPassword(String password) {
-        SetPassword task = new SetPassword();
+        SetPasswordTask task = new SetPasswordTask();
         task.setData(password);
         return task;
     }
 
     public static OrderTask setConnection(String connection) {
-        SetConnection task = new SetConnection();
+        SetConnectionTask task = new SetConnectionTask();
         task.setData(connection);
         return task;
     }
 
     public static OrderTask setClose() {
-        SetClose task = new SetClose();
-        task.setData();
+        ParamsWriteTask task = new ParamsWriteTask();
+        task.close();
         return task;
     }
 
     public static OrderTask setAdvName(String advName) {
-        SetAdvName task = new SetAdvName();
+        SetAdvNameTask task = new SetAdvNameTask();
         task.setData(advName);
         return task;
     }
 
     public static OrderTask setDeviceUUID(String uuid) {
-        SetDeviceUUID task = new SetDeviceUUID();
+        SetDeviceUUIDTask task = new SetDeviceUUIDTask();
         task.setData(uuid);
         return task;
     }
 
     public static OrderTask setMajor(int major) {
-        SetMajor task = new SetMajor();
+        SetMajorTask task = new SetMajorTask();
         task.setData(major);
         return task;
     }
 
     public static OrderTask setMinor(int minor) {
-        SetMinor task = new SetMinor();
+        SetMinorTask task = new SetMinorTask();
         task.setData(minor);
         return task;
     }
 
     public static OrderTask setMeasurePower(int measurePower) {
-        SetMeasurePower task = new SetMeasurePower();
+        SetMeasurePowerTask task = new SetMeasurePowerTask();
         task.setData(measurePower);
         return task;
     }
 
     public static OrderTask setOvertime() {
-        SetOvertime task = new SetOvertime();
+        SetOvertimeTask task = new SetOvertimeTask();
         task.setData();
         return task;
     }
 
     public static OrderTask setTransmission(int transmission) {
-        SetTransmission task = new SetTransmission();
+        SetTransmissionTask task = new SetTransmissionTask();
         task.setData(transmission);
         return task;
     }
 
     public static OrderTask setSoftReboot() {
-        SetSoftReboot task = new SetSoftReboot();
+        SetSoftRebootTask task = new SetSoftRebootTask();
         return task;
     }
 
-    public static OrderTask setThreeAxes(boolean isOpen) {
-        SetThreeAxes task = new SetThreeAxes();
-        task.setData(isOpen);
+    public static OrderTask setThreeAxes(boolean enable) {
+        ParamsWriteTask task = new ParamsWriteTask();
+        task.setAxisEnable(enable);
         return task;
     }
 
     public static OrderTask setSerialID(String serialID) {
-        SetSerialID task = new SetSerialID();
+        SetSerialIDTask task = new SetSerialIDTask();
         task.setData(serialID);
         return task;
     }

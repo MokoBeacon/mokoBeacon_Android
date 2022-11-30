@@ -9,34 +9,33 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import com.elvishew.xlog.XLog;
 import com.moko.beacon.BeaconConstants;
 import com.moko.beacon.R;
-import com.moko.beacon.dialog.BeaconAlertDialog;
+import com.moko.beacon.databinding.ActivityDeviceInfoBinding;
+import com.moko.beacon.dialog.AlertMessageDialog;
+import com.moko.beacon.dialog.LoadingDialog;
+import com.moko.beacon.dialog.LoadingMessageDialog;
 import com.moko.beacon.entity.BeaconParam;
 import com.moko.beacon.service.DfuService;
 import com.moko.beacon.utils.FileUtils;
 import com.moko.beacon.utils.ToastUtils;
-import com.moko.support.MokoConstants;
+import com.moko.ble.lib.MokoConstants;
+import com.moko.ble.lib.event.ConnectStatusEvent;
+import com.moko.ble.lib.event.OrderTaskResponseEvent;
+import com.moko.ble.lib.task.OrderTask;
+import com.moko.ble.lib.task.OrderTaskResponse;
+import com.moko.ble.lib.utils.MokoUtils;
 import com.moko.support.MokoSupport;
 import com.moko.support.OrderTaskAssembler;
-import com.moko.support.entity.OrderType;
-import com.moko.support.event.ConnectStatusEvent;
-import com.moko.support.event.OrderTaskResponseEvent;
-import com.moko.support.log.LogModule;
-import com.moko.support.task.OrderTask;
-import com.moko.support.task.OrderTaskResponse;
-import com.moko.support.utils.MokoUtils;
+import com.moko.support.entity.OrderCHAR;
+import com.moko.support.entity.ParamsKeyEnum;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -50,53 +49,17 @@ import java.util.List;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 import no.nordicsemi.android.dfu.DfuLogListener;
 import no.nordicsemi.android.dfu.DfuProgressListener;
 import no.nordicsemi.android.dfu.DfuProgressListenerAdapter;
 import no.nordicsemi.android.dfu.DfuServiceInitiator;
 import no.nordicsemi.android.dfu.DfuServiceListenerHelper;
 
-/**
- * @Date 2017/12/13 0013
- * @Author wenzheng.liu
- * @Description
- * @ClassPath com.moko.beacon.activity.DeviceInfoActivity
- */
+
 public class DeviceInfoActivity extends BaseActivity {
 
     public static final int REQUEST_CODE_SELECT_FIRMWARE = 0x10;
-
-    @BindView(R.id.tv_conn_state)
-    TextView tvConnState;
-    @BindView(R.id.tv_ibeacon_battery)
-    TextView tvIbeaconBattery;
-    @BindView(R.id.tv_ibeacon_uuid)
-    TextView tvIbeaconUuid;
-    @BindView(R.id.tv_ibeacon_major)
-    TextView tvIbeaconMajor;
-    @BindView(R.id.tv_ibeacon_minor)
-    TextView tvIbeaconMinor;
-    @BindView(R.id.tv_ibeacon_measure_power)
-    TextView tvIbeaconMeasurePower;
-    @BindView(R.id.tv_ibeacon_transmission)
-    TextView tvIbeaconTransmission;
-    @BindView(R.id.tv_ibeacon_broadcasting_interval)
-    TextView tvIbeaconBroadcastingInterval;
-    @BindView(R.id.tv_ibeacon_serialID)
-    TextView tvIbeaconSerialID;
-    @BindView(R.id.tv_ibeacon_mac)
-    TextView tvIbeaconMac;
-    @BindView(R.id.tv_ibeacon_device_name)
-    TextView tvIbeaconDeviceName;
-    @BindView(R.id.iv_ibeacon_device_conn_mode)
-    ImageView ivIbeaconDeviceConnMode;
-    @BindView(R.id.rl_ibeacon_three_axis)
-    RelativeLayout rlIbeaconThreeAxis;
-    @BindView(R.id.view_cover)
-    View viewCover;
+    private ActivityDeviceInfoBinding mBind;
     private BeaconParam mBeaconParam;
 
     private boolean mIsCloseConnectable;
@@ -104,20 +67,20 @@ public class DeviceInfoActivity extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_device_info);
-        ButterKnife.bind(this);
+        mBind = ActivityDeviceInfoBinding.inflate(getLayoutInflater());
+        setContentView(mBind.getRoot());
         mBeaconParam = (BeaconParam) getIntent().getSerializableExtra(BeaconConstants.EXTRA_KEY_DEVICE_PARAM);
         if (mBeaconParam == null) {
             finish();
             return;
         }
-        rlIbeaconThreeAxis.setVisibility(!TextUtils.isEmpty(mBeaconParam.threeAxis) ? View.VISIBLE : View.GONE);
-        if (MokoSupport.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
-            tvConnState.setText(getString(R.string.device_info_conn_status_disconnect));
-            viewCover.setVisibility(View.GONE);
+        mBind.rlIbeaconThreeAxis.setVisibility(!TextUtils.isEmpty(mBeaconParam.threeAxis) ? View.VISIBLE : View.GONE);
+        if (MokoSupport.getInstance().isConnDevice(mBeaconParam.iBeaconMAC)) {
+            mBind.tvConnState.setText(getString(R.string.device_info_conn_status_disconnect));
+            mBind.viewCover.setVisibility(View.GONE);
         } else {
-            tvConnState.setText(getString(R.string.device_info_conn_status_connect));
-            viewCover.setVisibility(View.VISIBLE);
+            mBind.tvConnState.setText(getString(R.string.device_info_conn_status_connect));
+            mBind.viewCover.setVisibility(View.VISIBLE);
         }
         changeValue();
 
@@ -129,18 +92,18 @@ public class DeviceInfoActivity extends BaseActivity {
     }
 
     private void changeValue() {
-        tvIbeaconBattery.setText(mBeaconParam.battery);
-        tvIbeaconUuid.setText(mBeaconParam.uuid);
-        tvIbeaconMajor.setText(mBeaconParam.major);
-        tvIbeaconMinor.setText(mBeaconParam.minor);
-        tvIbeaconMeasurePower.setText(String.format("-%sdBm", mBeaconParam.measurePower));
-        tvIbeaconTransmission.setText(mBeaconParam.transmission);
-        tvIbeaconBroadcastingInterval.setText(mBeaconParam.broadcastingInterval);
-        tvIbeaconSerialID.setText(mBeaconParam.serialID);
-        tvIbeaconMac.setText(mBeaconParam.iBeaconMAC);
-        tvIbeaconDeviceName.setText(mBeaconParam.iBeaconName);
+        mBind.tvIbeaconBattery.setText(mBeaconParam.battery);
+        mBind.tvIbeaconUuid.setText(mBeaconParam.uuid);
+        mBind.tvIbeaconMajor.setText(mBeaconParam.major);
+        mBind.tvIbeaconMinor.setText(mBeaconParam.minor);
+        mBind.tvIbeaconMeasurePower.setText(String.format("-%sdBm", mBeaconParam.measurePower));
+        mBind.tvIbeaconTransmission.setText(mBeaconParam.transmission);
+        mBind.tvIbeaconBroadcastingInterval.setText(mBeaconParam.broadcastingInterval);
+        mBind.tvIbeaconSerialID.setText(mBeaconParam.serialID);
+        mBind.tvIbeaconMac.setText(mBeaconParam.iBeaconMAC);
+        mBind.tvIbeaconDeviceName.setText(mBeaconParam.iBeaconName);
         boolean isConnectable = "00".equals(mBeaconParam.connectionMode);
-        ivIbeaconDeviceConnMode.setImageDrawable(ContextCompat.getDrawable(this, isConnectable ? R.drawable.connectable_checked : R.drawable.connectable_unchecked));
+        mBind.ivIbeaconDeviceConnMode.setImageDrawable(ContextCompat.getDrawable(this, isConnectable ? R.drawable.connectable_checked : R.drawable.connectable_unchecked));
     }
 
     @Override
@@ -155,19 +118,18 @@ public class DeviceInfoActivity extends BaseActivity {
         EventBus.getDefault().cancelEventDelivery(event);
         final String action = event.getAction();
         runOnUiThread(() -> {
-            if (MokoConstants.ACTION_CONN_STATUS_DISCONNECTED.equals(action)) {
-                tvConnState.setText(getString(R.string.device_info_conn_status_connect));
-                viewCover.setVisibility(View.VISIBLE);
+            if (MokoConstants.ACTION_DISCONNECTED.equals(action)) {
+                mBind.tvConnState.setText(getString(R.string.device_info_conn_status_connect));
+                mBind.viewCover.setVisibility(View.VISIBLE);
                 ToastUtils.showToast(DeviceInfoActivity.this, "Connect Failed");
-                dismissLoadingProgressDialog();
-                dismissSyncProgressDialog();
+                dismissLoadingMessageDialog();
             }
             if (MokoConstants.ACTION_DISCOVER_SUCCESS.equals(action)) {
-                tvConnState.setText(getString(R.string.device_info_conn_status_disconnect));
-                viewCover.setVisibility(View.GONE);
+                mBind.tvConnState.setText(getString(R.string.device_info_conn_status_disconnect));
+                mBind.viewCover.setVisibility(View.GONE);
                 // 读取全部可读数据
-                tvConnState.postDelayed(() -> {
-                    // open password notify and set passwrord
+                mBind.tvConnState.postDelayed(() -> {
+                    // open password notify and set password
                     List<OrderTask> orderTasks = new ArrayList<>();
                     orderTasks.add(OrderTaskAssembler.getBattery());
                     orderTasks.add(OrderTaskAssembler.getSoftVersion());
@@ -187,7 +149,7 @@ public class DeviceInfoActivity extends BaseActivity {
                     orderTasks.add(OrderTaskAssembler.getAdvName());
                     orderTasks.add(OrderTaskAssembler.getConnection());
                     orderTasks.add(OrderTaskAssembler.getDeviceMac());
-                    orderTasks.add(OrderTaskAssembler.getRunntime());
+                    orderTasks.add(OrderTaskAssembler.getRuntime());
                     orderTasks.add(OrderTaskAssembler.getChipModel());
                     orderTasks.add(OrderTaskAssembler.setOvertime());
                     orderTasks.add(OrderTaskAssembler.setPassword(mBeaconParam.password));
@@ -206,7 +168,7 @@ public class DeviceInfoActivity extends BaseActivity {
         runOnUiThread(() -> {
             if (MokoConstants.ACTION_CURRENT_DATA.equals(action)) {
                 OrderTaskResponse response = event.getResponse();
-                OrderType orderType = response.orderType;
+                OrderCHAR orderCHAR = (OrderCHAR) response.orderCHAR;
                 int responseType = response.responseType;
                 byte[] value = response.responseValue;
 
@@ -214,22 +176,21 @@ public class DeviceInfoActivity extends BaseActivity {
             if (MokoConstants.ACTION_ORDER_TIMEOUT.equals(action)) {
             }
             if (MokoConstants.ACTION_ORDER_FINISH.equals(action)) {
-                tvConnState.postDelayed(() -> {
-                    dismissLoadingProgressDialog();
-                    dismissSyncProgressDialog();
+                mBind.tvConnState.postDelayed(() -> {
+                    dismissLoadingMessageDialog();
                 }, 500);
             }
             if (MokoConstants.ACTION_ORDER_RESULT.equals(action)) {
                 OrderTaskResponse response = event.getResponse();
-                OrderType orderType = response.orderType;
+                OrderCHAR orderCHAR = (OrderCHAR) response.orderCHAR;
                 int responseType = response.responseType;
                 byte[] value = response.responseValue;
-                switch (orderType) {
-                    case BATTERY:
+                switch (orderCHAR) {
+                    case CHAR_BATTERY:
                         mBeaconParam.battery = Integer.parseInt(MokoUtils.bytesToHexString(value), 16) + "";
-                        tvIbeaconBattery.setText(mBeaconParam.battery);
+                        mBind.tvIbeaconBattery.setText(mBeaconParam.battery);
                         break;
-                    case DEVICE_UUID:
+                    case CHAR_DEVICE_UUID:
                         // 读取UUID成功
                         // ToastUtils.showToast(DeviceInfoActivity.this, "读取UUID成功");
                         String hexString = MokoUtils.bytesToHexString(value).toUpperCase();
@@ -246,39 +207,39 @@ public class DeviceInfoActivity extends BaseActivity {
                             sb.append(hexString.substring(20, 32));
                             String uuid = sb.toString();
                             mBeaconParam.uuid = uuid;
-                            tvIbeaconUuid.setText(uuid);
-                            tvIbeaconUuid.setText(mBeaconParam.uuid);
+                            mBind.tvIbeaconUuid.setText(uuid);
+                            mBind.tvIbeaconUuid.setText(mBeaconParam.uuid);
                         }
                         break;
-                    case MAJOR:
+                    case CHAR_MAJOR:
                         mBeaconParam.major = Integer.parseInt(MokoUtils.bytesToHexString(value), 16) + "";
-                        tvIbeaconMajor.setText(mBeaconParam.major);
+                        mBind.tvIbeaconMajor.setText(mBeaconParam.major);
                         break;
-                    case MINOR:
+                    case CHAR_MINOR:
                         mBeaconParam.minor = Integer.parseInt(MokoUtils.bytesToHexString(value), 16) + "";
-                        tvIbeaconMinor.setText(mBeaconParam.minor);
+                        mBind.tvIbeaconMinor.setText(mBeaconParam.minor);
                         break;
-                    case MEASURE_POWER:
+                    case CHAR_MEASURE_POWER:
                         mBeaconParam.measurePower = Integer.parseInt(MokoUtils.bytesToHexString(value), 16) + "";
-                        tvIbeaconMeasurePower.setText(String.format("-%sdBm", mBeaconParam.measurePower));
+                        mBind.tvIbeaconMeasurePower.setText(String.format("-%sdBm", mBeaconParam.measurePower));
                         break;
-                    case TRANSMISSION:
+                    case CHAR_TRANSMISSION:
                         int transmission = Integer.parseInt(MokoUtils.bytesToHexString(value), 16);
                         if (transmission == 8) {
                             transmission = 7;
                         }
                         mBeaconParam.transmission = transmission + "";
-                        tvIbeaconTransmission.setText(mBeaconParam.transmission);
+                        mBind.tvIbeaconTransmission.setText(mBeaconParam.transmission);
                         break;
-                    case ADV_INTERVAL:
+                    case CHAR_ADV_INTERVAL:
                         mBeaconParam.broadcastingInterval = Integer.parseInt(MokoUtils.bytesToHexString(value), 16) + "";
-                        tvIbeaconBroadcastingInterval.setText(mBeaconParam.broadcastingInterval);
+                        mBind.tvIbeaconBroadcastingInterval.setText(mBeaconParam.broadcastingInterval);
                         break;
-                    case SERIAL_ID:
+                    case CHAR_SERIAL_ID:
                         mBeaconParam.serialID = MokoUtils.hex2String(MokoUtils.bytesToHexString(value));
-                        tvIbeaconSerialID.setText(mBeaconParam.serialID);
+                        mBind.tvIbeaconSerialID.setText(mBeaconParam.serialID);
                         break;
-                    case DEVICE_MAC:
+                    case CHAR_DEVICE_MAC:
                         String hexMac = MokoUtils.bytesToHexString(value);
                         if (hexMac.length() > 11) {
                             StringBuilder sb = new StringBuilder();
@@ -296,77 +257,92 @@ public class DeviceInfoActivity extends BaseActivity {
                             String mac = sb.toString().toUpperCase();
                             mBeaconParam.iBeaconMAC = mac;
                             mBeaconParam.beaconInfo.iBeaconMac = mac;
-                            tvIbeaconMac.setText(mBeaconParam.iBeaconMAC);
+                            mBind.tvIbeaconMac.setText(mBeaconParam.iBeaconMAC);
                         }
                         break;
-                    case ADV_NAME:
+                    case CHAR_ADV_NAME:
                         mBeaconParam.iBeaconName = MokoUtils.hex2String(MokoUtils.bytesToHexString(value));
-                        tvIbeaconDeviceName.setText(mBeaconParam.iBeaconName);
+                        mBind.tvIbeaconDeviceName.setText(mBeaconParam.iBeaconName);
                         break;
-                    case CONNECTION:
+                    case CHAR_CONNECTION:
                         if (responseType == OrderTask.RESPONSE_TYPE_READ) {
                             mBeaconParam.connectionMode = MokoUtils.bytesToHexString(value);
                             boolean isConnectable = "00".equals(mBeaconParam.connectionMode);
-                            ivIbeaconDeviceConnMode.setImageDrawable(ContextCompat.getDrawable(DeviceInfoActivity.this, isConnectable ? R.drawable.connectable_checked : R.drawable.connectable_unchecked));
+                            mBind.ivIbeaconDeviceConnMode.setImageDrawable(ContextCompat.getDrawable(DeviceInfoActivity.this, isConnectable ? R.drawable.connectable_checked : R.drawable.connectable_unchecked));
                             if (mIsCloseConnectable && !isConnectable) {
                                 mIsCloseConnectable = false;
-                                dismissSyncProgressDialog();
+                                dismissLoadingMessageDialog();
                                 back();
                             }
                         } else {
-                            dismissSyncProgressDialog();
+                            dismissLoadingMessageDialog();
                             mIsCloseConnectable = true;
                             mBeaconParam.connectionMode = null;
                             getEmptyInfo();
                         }
                         break;
-                    case MANUFACTURER:
+                    case CHAR_MANUFACTURER_NAME:
                         mBeaconParam.beaconInfo.firmname = MokoUtils.hex2String(MokoUtils.bytesToHexString(value));
                         break;
-                    case SOFT_VERSION:
+                    case CHAR_SOFTWARE_REVISION:
                         mBeaconParam.beaconInfo.softVersion = MokoUtils.hex2String(MokoUtils.bytesToHexString(value));
                         break;
-                    case DEVICE_MODEL:
+                    case CHAR_MODEL_NUMBER:
                         mBeaconParam.beaconInfo.deviceName = MokoUtils.hex2String(MokoUtils.bytesToHexString(value));
                         break;
-                    case PRODUCT_DATE:
+                    case CHAR_SERIAL_NUMBER:
                         mBeaconParam.beaconInfo.iBeaconDate = MokoUtils.hex2String(MokoUtils.bytesToHexString(value));
                         break;
-                    case HARDWARE_VERSION:
+                    case CHAR_HARDWARE_REVISION:
                         mBeaconParam.beaconInfo.hardwareVersion = MokoUtils.hex2String(MokoUtils.bytesToHexString(value));
                         break;
-                    case FIRMWARE_VERSION:
+                    case CHAR_FIRMWARE_REVISION:
                         mBeaconParam.beaconInfo.firmwareVersion = MokoUtils.hex2String(MokoUtils.bytesToHexString(value));
                         break;
-                    case PARAMS_CONFIG:
-                        if ("eb59".equals(MokoUtils.bytesToHexString(Arrays.copyOfRange(value, 0, 2)).toLowerCase())) {
-                            byte[] runtimeBytes = Arrays.copyOfRange(value, 4, value.length);
-                            int seconds = Integer.parseInt(MokoUtils.bytesToHexString(runtimeBytes), 16);
-                            int day = 0, hours = 0, minutes = 0;
-                            day = seconds / (60 * 60 * 24);
-                            seconds -= day * 60 * 60 * 24;
-                            hours = seconds / (60 * 60);
-                            seconds -= hours * 60 * 60;
-                            minutes = seconds / 60;
-                            seconds -= minutes * 60;
-                            mBeaconParam.beaconInfo.runtime = String.format("%dD%dh%dm%ds", day, hours, minutes, seconds);
-                        }
-                        if ("eb5b".equals(MokoUtils.bytesToHexString(Arrays.copyOfRange(value, 0, 2)).toLowerCase())) {
-                            byte[] chipModelBytes = Arrays.copyOfRange(value, 4, value.length);
-                            mBeaconParam.beaconInfo.chipModel = MokoUtils.hex2String(MokoUtils.bytesToHexString(chipModelBytes));
-                        }
-                        if ("eb6d".equals(MokoUtils.bytesToHexString(Arrays.copyOfRange(value, 0, 2)).toLowerCase())) {
-                            if ((value[value.length - 1] & 0xff) == 0xAA) {
-                                dismissSyncProgressDialog();
-                                ToastUtils.showToast(DeviceInfoActivity.this, "Power off successfully");
-                                back();
-                            } else {
-                                ToastUtils.showToast(DeviceInfoActivity.this, "Power off failed");
+                    case CHAR_PARAMS:
+                        if (value.length > 4) {
+                            int header = value[0] & 0xFF;// 0xED
+                            int cmd = value[1] & 0xFF;
+                            if (header != 0xEB)
+                                return;
+                            int length = MokoUtils.toInt(Arrays.copyOfRange(value, 2, 4));
+                            ParamsKeyEnum configKeyEnum = ParamsKeyEnum.fromParamKey(cmd);
+                            if (configKeyEnum == null) {
+                                return;
+                            }
+                            switch (configKeyEnum) {
+                                case GET_CHIP_MODEL:
+                                    byte[] chipModelBytes = Arrays.copyOfRange(value, 4, value.length);
+                                    mBeaconParam.beaconInfo.chipModel = MokoUtils.hex2String(MokoUtils.bytesToHexString(chipModelBytes));
+                                    break;
+                                case GET_RUNTIME:
+                                    byte[] runtimeBytes = Arrays.copyOfRange(value, 4, value.length);
+                                    int seconds = Integer.parseInt(MokoUtils.bytesToHexString(runtimeBytes), 16);
+                                    int day = 0, hours = 0, minutes = 0;
+                                    day = seconds / (60 * 60 * 24);
+                                    seconds -= day * 60 * 60 * 24;
+                                    hours = seconds / (60 * 60);
+                                    seconds -= hours * 60 * 60;
+                                    minutes = seconds / 60;
+                                    seconds -= minutes * 60;
+                                    mBeaconParam.beaconInfo.runtime = String.format("%dD%dh%dm%ds", day, hours, minutes, seconds);
+                                    break;
+                                case SET_CLOSE:
+                                    if ((value[value.length - 1] & 0xff) == 0xAA) {
+                                        dismissLoadingMessageDialog();
+                                        ToastUtils.showToast(DeviceInfoActivity.this, "Power off successfully");
+                                        back();
+                                    } else {
+                                        ToastUtils.showToast(DeviceInfoActivity.this, "Power off failed");
+                                    }
+                                    break;
                             }
                         }
                         break;
-                    case PASSWORD:
-                        if ("00".equals(MokoUtils.bytesToHexString(value))) {
+                    case CHAR_PASSWORD:
+                        if (value.length > 1)
+                            return;
+                        if (value[0] == 0) {
                             changeValue();
                         }
                         break;
@@ -387,11 +363,10 @@ public class DeviceInfoActivity extends BaseActivity {
                     switch (blueState) {
                         case BluetoothAdapter.STATE_TURNING_OFF:
                         case BluetoothAdapter.STATE_OFF:
-                            tvConnState.setText(getString(R.string.device_info_conn_status_connect));
-                            viewCover.setVisibility(View.VISIBLE);
+                            mBind.tvConnState.setText(getString(R.string.device_info_conn_status_connect));
+                            mBind.viewCover.setVisibility(View.VISIBLE);
                             ToastUtils.showToast(DeviceInfoActivity.this, "Connect Failed");
-                            dismissLoadingProgressDialog();
-                            dismissSyncProgressDialog();
+                            dismissLoadingMessageDialog();
                             dismissDFUProgressDialog();
                             final LocalBroadcastManager manager = LocalBroadcastManager.getInstance(DeviceInfoActivity.this);
                             final Intent abortAction = new Intent(DfuService.BROADCAST_ACTION);
@@ -404,304 +379,274 @@ public class DeviceInfoActivity extends BaseActivity {
         }
     };
 
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            back();
-            return false;
-        }
-        return super.onKeyDown(keyCode, event);
-    }
-
     private void back() {
-        if (MokoSupport.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
+        if (MokoSupport.getInstance().isConnDevice(mBeaconParam.iBeaconMAC)) {
             MokoSupport.getInstance().disConnectBle();
         }
         finish();
     }
 
+    @Override
+    public void onBackPressed() {
+        if (isWindowLocked()) return;
+        back();
+    }
 
-    @OnClick({R.id.tv_back, R.id.tv_conn_state, R.id.rl_ibeacon_battery, R.id.rl_ibeacon_uuid,
-            R.id.rl_ibeacon_major, R.id.rl_ibeacon_minor, R.id.rl_ibeacon_measure_power,
-            R.id.rl_ibeacon_transmission, R.id.rl_ibeacon_broadcasting_interval, R.id.rl_ibeacon_serialID,
-            R.id.rl_ibeacon_mac, R.id.rl_ibeacon_device_name, R.id.iv_ibeacon_device_conn_mode,
-            R.id.rl_ibeacon_change_password, R.id.rl_ibeacon_device_info, R.id.rl_ibeacon_three_axis,
-            R.id.rl_ibeacon_dfu, R.id.view_cover, R.id.iv_ibeacon_device_power})
-    public void onClick(View view) {
-        Intent intent;
-        switch (view.getId()) {
-            case R.id.view_cover:
-                ToastUtils.showToast(this, R.string.disconnect_alert);
-                break;
-            case R.id.tv_back:
-                back();
-                break;
-            case R.id.tv_conn_state:
-                if (!MokoSupport.getInstance().isBluetoothOpen()) {
-                    ToastUtils.showToast(this, "bluetooth is closed,please open");
-                    return;
-                }
-                if (!MokoSupport.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
-                    MokoSupport.getInstance().connDevice(DeviceInfoActivity.this, mBeaconParam.iBeaconMAC);
-                    showLoadingProgressDialog(getString(R.string.dialog_connecting));
-                } else {
-                    tvConnState.setText(getString(R.string.device_info_conn_status_connect));
-                    MokoSupport.getInstance().disConnectBle();
-                    viewCover.setVisibility(View.VISIBLE);
-                }
-                break;
-            case R.id.rl_ibeacon_uuid:
-                if (!MokoSupport.getInstance().isBluetoothOpen()) {
-                    ToastUtils.showToast(this, "bluetooth is closed,please open");
-                    return;
-                }
-                if (!MokoSupport.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
-                    ToastUtils.showToast(this, getString(R.string.alert_click_reconnect));
-                    return;
-                }
-                intent = new Intent(this, SetUUIDActivity.class);
-                intent.putExtra(BeaconConstants.EXTRA_KEY_DEVICE_UUID, mBeaconParam.uuid);
-                startActivityForResult(intent, BeaconConstants.REQUEST_CODE_SET_UUID);
-                break;
-            case R.id.rl_ibeacon_major:
-                if (!MokoSupport.getInstance().isBluetoothOpen()) {
-                    ToastUtils.showToast(this, "bluetooth is closed,please open");
-                    return;
-                }
-                if (!MokoSupport.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
-                    ToastUtils.showToast(this, getString(R.string.alert_click_reconnect));
-                    return;
-                }
-                intent = new Intent(this, SetMajorActivity.class);
-                intent.putExtra(BeaconConstants.EXTRA_KEY_DEVICE_MAJOR, Integer.parseInt(mBeaconParam.major));
-                startActivityForResult(intent, BeaconConstants.REQUEST_CODE_SET_MAJOR);
-                break;
-            case R.id.rl_ibeacon_minor:
-                if (!MokoSupport.getInstance().isBluetoothOpen()) {
-                    ToastUtils.showToast(this, "bluetooth is closed,please open");
-                    return;
-                }
-                if (!MokoSupport.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
-                    ToastUtils.showToast(this, getString(R.string.alert_click_reconnect));
-                    return;
-                }
-                intent = new Intent(this, SetMinorActivity.class);
-                intent.putExtra(BeaconConstants.EXTRA_KEY_DEVICE_MINOR, Integer.parseInt(mBeaconParam.minor));
-                startActivityForResult(intent, BeaconConstants.REQUEST_CODE_SET_MINOR);
-                break;
-            case R.id.rl_ibeacon_measure_power:
-                if (!MokoSupport.getInstance().isBluetoothOpen()) {
-                    ToastUtils.showToast(this, "bluetooth is closed,please open");
-                    return;
-                }
-                if (!MokoSupport.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
-                    ToastUtils.showToast(this, getString(R.string.alert_click_reconnect));
-                    return;
-                }
-                intent = new Intent(this, SetMeasurePowerActivity.class);
-                intent.putExtra(BeaconConstants.EXTRA_KEY_DEVICE_MEASURE_POWER, Integer.parseInt(mBeaconParam.measurePower));
-                startActivityForResult(intent, BeaconConstants.REQUEST_CODE_SET_MEASURE_POWER);
-                break;
-            case R.id.rl_ibeacon_transmission:
-                if (!MokoSupport.getInstance().isBluetoothOpen()) {
-                    ToastUtils.showToast(this, "bluetooth is closed,please open");
-                    return;
-                }
-                if (!MokoSupport.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
-                    ToastUtils.showToast(this, getString(R.string.alert_click_reconnect));
-                    return;
-                }
-                intent = new Intent(this, SetTransmissionActivity.class);
-                intent.putExtra(BeaconConstants.EXTRA_KEY_DEVICE_TRANSMISSION, Integer.parseInt(mBeaconParam.transmission));
-                startActivityForResult(intent, BeaconConstants.REQUEST_CODE_SET_TRANSMISSION);
-                break;
-            case R.id.rl_ibeacon_broadcasting_interval:
-                if (!MokoSupport.getInstance().isBluetoothOpen()) {
-                    ToastUtils.showToast(this, "bluetooth is closed,please open");
-                    return;
-                }
-                if (!MokoSupport.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
-                    ToastUtils.showToast(this, getString(R.string.alert_click_reconnect));
-                    return;
-                }
-                intent = new Intent(this, SetBroadcastIntervalActivity.class);
-                intent.putExtra(BeaconConstants.EXTRA_KEY_DEVICE_BROADCASTINTERVAL, Integer.parseInt(mBeaconParam.broadcastingInterval));
-                startActivityForResult(intent, BeaconConstants.REQUEST_CODE_SET_BROADCASTINTERVAL);
-                break;
-            case R.id.rl_ibeacon_serialID:
-                if (!MokoSupport.getInstance().isBluetoothOpen()) {
-                    ToastUtils.showToast(this, "bluetooth is closed,please open");
-                    return;
-                }
-                if (!MokoSupport.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
-                    ToastUtils.showToast(this, getString(R.string.alert_click_reconnect));
-                    return;
-                }
-                intent = new Intent(this, SetDeviceIdActivity.class);
-                intent.putExtra(BeaconConstants.EXTRA_KEY_DEVICE_DEVICE_ID, mBeaconParam.serialID);
-                startActivityForResult(intent, BeaconConstants.REQUEST_CODE_SET_DEVICE_ID);
-                break;
-            case R.id.rl_ibeacon_device_name:
-                if (!MokoSupport.getInstance().isBluetoothOpen()) {
-                    ToastUtils.showToast(this, "bluetooth is closed,please open");
-                    return;
-                }
-                if (!MokoSupport.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
-                    ToastUtils.showToast(this, getString(R.string.alert_click_reconnect));
-                    return;
-                }
-                intent = new Intent(this, SetIBeaconNameActivity.class);
-                intent.putExtra(BeaconConstants.EXTRA_KEY_DEVICE_IBEACON_NAME, mBeaconParam.iBeaconName);
-                intent.putExtra(BeaconConstants.EXTRA_KEY_DEVICE_IBEACON_THREE_AXIS, mBeaconParam.threeAxis);
-                startActivityForResult(intent, BeaconConstants.REQUEST_CODE_SET_IBEACON_NAME);
-                break;
-            case R.id.iv_ibeacon_device_conn_mode:
-                if (!MokoSupport.getInstance().isBluetoothOpen()) {
-                    ToastUtils.showToast(this, "bluetooth is closed,please open");
-                    return;
-                }
-                if (!MokoSupport.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
-                    ToastUtils.showToast(this, getString(R.string.alert_click_reconnect));
-                    return;
-                }
-                final boolean isConnectable = "00".equals(mBeaconParam.connectionMode);
-                final BeaconAlertDialog connectAlertDialog = new BeaconAlertDialog(this);
-                connectAlertDialog.setData(isConnectable ? "Are you sure to make device disconnectable?" : "Are you sure to make device connectable?");
-                connectAlertDialog.setConnectAlertClickListener(new BeaconAlertDialog.ConnectAlertClickListener() {
-                    @Override
-                    public void onEnsureClicked() {
-                        showSyncProgressDialog("Syncing...");
-                        String connectMode = !isConnectable ? "00" : "01";
-                        MokoSupport.getInstance().sendOrder(OrderTaskAssembler.setConnection(connectMode));
-                    }
+    public void onBattery(View view) {
+        if (isWindowLocked()) return;
+        ToastUtils.showToast(this, getString(R.string.device_info_cannot_modify));
+    }
 
-                    @Override
-                    public void onDismiss() {
+    public void onDeviceMac(View view) {
+        if (isWindowLocked()) return;
+        ToastUtils.showToast(this, getString(R.string.device_info_cannot_modify));
+    }
 
-                    }
-                });
-                connectAlertDialog.show();
-                break;
-            case R.id.rl_ibeacon_change_password:
-                if (!MokoSupport.getInstance().isBluetoothOpen()) {
-                    ToastUtils.showToast(this, "bluetooth is closed,please open");
-                    return;
-                }
-                if (!MokoSupport.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
-                    ToastUtils.showToast(this, getString(R.string.alert_click_reconnect));
-                    return;
-                }
-                intent = new Intent(this, SetPasswordActivity.class);
-                startActivityForResult(intent, BeaconConstants.REQUEST_CODE_SET_PASSWORD);
-                break;
-            case R.id.rl_ibeacon_device_info:
-                if (!MokoSupport.getInstance().isBluetoothOpen()) {
-                    ToastUtils.showToast(this, "bluetooth is closed,please open");
-                    return;
-                }
-                if (!MokoSupport.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
-                    ToastUtils.showToast(this, getString(R.string.alert_click_reconnect));
-                    return;
-                }
-                intent = new Intent(this, SystemInfoActivity.class);
-                intent.putExtra(BeaconConstants.EXTRA_KEY_DEVICE_INFO, mBeaconParam.beaconInfo);
-                startActivityForResult(intent, BeaconConstants.REQUEST_CODE_SET_SYSTEM_INFO);
-                break;
-            case R.id.rl_ibeacon_three_axis:
-                if (!MokoSupport.getInstance().isBluetoothOpen()) {
-                    ToastUtils.showToast(this, "bluetooth is closed,please open");
-                    return;
-                }
-                if (!MokoSupport.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
-                    ToastUtils.showToast(this, getString(R.string.alert_click_reconnect));
-                    return;
-                }
-                intent = new Intent(this, ThreeAxesActivity.class);
-                startActivityForResult(intent, BeaconConstants.REQUEST_CODE_SET_THREE_AXIS);
-                break;
-            case R.id.rl_ibeacon_mac:
-                ToastUtils.showToast(this, getString(R.string.device_info_cannot_modify));
-                break;
-            case R.id.rl_ibeacon_battery:
-                ToastUtils.showToast(this, getString(R.string.device_info_cannot_modify));
-                break;
-            case R.id.iv_ibeacon_device_power:
-                final BeaconAlertDialog powerAlertDialog = new BeaconAlertDialog(this);
-                powerAlertDialog.setData("Are you sure to turn off the device?Please make sure the device has a button to turn on!");
-                powerAlertDialog.setConnectAlertClickListener(new BeaconAlertDialog.ConnectAlertClickListener() {
-                    @Override
-                    public void onEnsureClicked() {
-                        showSyncProgressDialog("Syncing...");
-                        MokoSupport.getInstance().sendOrder(OrderTaskAssembler.setClose());
-                    }
+    public void onViewCover(View view) {
+        if (isWindowLocked()) return;
+        ToastUtils.showToast(this, R.string.disconnect_alert);
+    }
 
-                    @Override
-                    public void onDismiss() {
+    public void onBack(View view) {
+        if (isWindowLocked()) return;
+        back();
+    }
 
-                    }
-                });
-                powerAlertDialog.show();
-                break;
-            case R.id.rl_ibeacon_dfu:
-                if (!MokoSupport.getInstance().isBluetoothOpen()) {
-                    ToastUtils.showToast(this, "bluetooth is closed,please open");
-                    return;
-                }
-                if (!MokoSupport.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
-                    ToastUtils.showToast(this, getString(R.string.alert_click_reconnect));
-                    return;
-                }
-                intent = new Intent(Intent.ACTION_GET_CONTENT);
-                intent.setType("*/*");//设置类型，我这里是任意类型，任意后缀的可以这样写。
-                intent.addCategory(Intent.CATEGORY_OPENABLE);
-                try {
-                    startActivityForResult(Intent.createChooser(intent, "select file first!"), REQUEST_CODE_SELECT_FIRMWARE);
-                } catch (ActivityNotFoundException ex) {
-                    ToastUtils.showToast(this, "install file manager app");
-                }
-                break;
+    public void onConnectState(View view) {
+        if (isWindowLocked()) return;
+        if (!MokoSupport.getInstance().isBluetoothOpen()) {
+            ToastUtils.showToast(this, "bluetooth is closed,please open");
+            return;
+        }
+        if (!MokoSupport.getInstance().isConnDevice(mBeaconParam.iBeaconMAC)) {
+            MokoSupport.getInstance().connDevice(mBeaconParam.iBeaconMAC);
+            showLoadingMessageDialog(getString(R.string.dialog_connecting));
+        } else {
+            mBind.tvConnState.setText(getString(R.string.device_info_conn_status_connect));
+            MokoSupport.getInstance().disConnectBle();
+            mBind.viewCover.setVisibility(View.VISIBLE);
         }
     }
 
-    private ProgressDialog mLoadingDialog;
+    public void onUUID(View view) {
+        if (isWindowLocked()) return;
+        if (!MokoSupport.getInstance().isBluetoothOpen()) {
+            ToastUtils.showToast(this, "bluetooth is closed,please open");
+            return;
+        }
+        if (!MokoSupport.getInstance().isConnDevice(mBeaconParam.iBeaconMAC)) {
+            ToastUtils.showToast(this, getString(R.string.alert_click_reconnect));
+            return;
+        }
+        Intent intent = new Intent(this, SetUUIDActivity.class);
+        intent.putExtra(BeaconConstants.EXTRA_KEY_DEVICE_UUID, mBeaconParam.uuid);
+        startActivityForResult(intent, BeaconConstants.REQUEST_CODE_SET_UUID);
+    }
 
-    private void showLoadingProgressDialog(String tips) {
-        mLoadingDialog = new ProgressDialog(DeviceInfoActivity.this);
-        mLoadingDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        mLoadingDialog.setCanceledOnTouchOutside(false);
-        mLoadingDialog.setCancelable(false);
-        mLoadingDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        mLoadingDialog.setMessage(tips);
-        if (!isFinishing() && mLoadingDialog != null && !mLoadingDialog.isShowing()) {
-            mLoadingDialog.show();
+    public void onMajor(View view) {
+        if (isWindowLocked()) return;
+        if (!MokoSupport.getInstance().isBluetoothOpen()) {
+            ToastUtils.showToast(this, "bluetooth is closed,please open");
+            return;
+        }
+        if (!MokoSupport.getInstance().isConnDevice(mBeaconParam.iBeaconMAC)) {
+            ToastUtils.showToast(this, getString(R.string.alert_click_reconnect));
+            return;
+        }
+        Intent intent = new Intent(this, SetMajorActivity.class);
+        intent.putExtra(BeaconConstants.EXTRA_KEY_DEVICE_MAJOR, Integer.parseInt(mBeaconParam.major));
+        startActivityForResult(intent, BeaconConstants.REQUEST_CODE_SET_MAJOR);
+    }
+
+    public void onMinor(View view) {
+        if (isWindowLocked()) return;
+        if (!MokoSupport.getInstance().isBluetoothOpen()) {
+            ToastUtils.showToast(this, "bluetooth is closed,please open");
+            return;
+        }
+        if (!MokoSupport.getInstance().isConnDevice(mBeaconParam.iBeaconMAC)) {
+            ToastUtils.showToast(this, getString(R.string.alert_click_reconnect));
+            return;
+        }
+        Intent intent = new Intent(this, SetMinorActivity.class);
+        intent.putExtra(BeaconConstants.EXTRA_KEY_DEVICE_MINOR, Integer.parseInt(mBeaconParam.minor));
+        startActivityForResult(intent, BeaconConstants.REQUEST_CODE_SET_MINOR);
+    }
+
+    public void onMeasurePower(View view) {
+        if (isWindowLocked()) return;
+        if (!MokoSupport.getInstance().isBluetoothOpen()) {
+            ToastUtils.showToast(this, "bluetooth is closed,please open");
+            return;
+        }
+        if (!MokoSupport.getInstance().isConnDevice(mBeaconParam.iBeaconMAC)) {
+            ToastUtils.showToast(this, getString(R.string.alert_click_reconnect));
+            return;
+        }
+        Intent intent = new Intent(this, SetMeasurePowerActivity.class);
+        intent.putExtra(BeaconConstants.EXTRA_KEY_DEVICE_MEASURE_POWER, Integer.parseInt(mBeaconParam.measurePower));
+        startActivityForResult(intent, BeaconConstants.REQUEST_CODE_SET_MEASURE_POWER);
+    }
+
+    public void onTransmissionPower(View view) {
+        if (isWindowLocked()) return;
+        if (!MokoSupport.getInstance().isBluetoothOpen()) {
+            ToastUtils.showToast(this, "bluetooth is closed,please open");
+            return;
+        }
+        if (!MokoSupport.getInstance().isConnDevice(mBeaconParam.iBeaconMAC)) {
+            ToastUtils.showToast(this, getString(R.string.alert_click_reconnect));
+            return;
+        }
+        Intent intent = new Intent(this, SetTransmissionActivity.class);
+        intent.putExtra(BeaconConstants.EXTRA_KEY_DEVICE_TRANSMISSION, Integer.parseInt(mBeaconParam.transmission));
+        startActivityForResult(intent, BeaconConstants.REQUEST_CODE_SET_TRANSMISSION);
+    }
+
+    public void onAdvInterval(View view) {
+        if (isWindowLocked()) return;
+        if (!MokoSupport.getInstance().isBluetoothOpen()) {
+            ToastUtils.showToast(this, "bluetooth is closed,please open");
+            return;
+        }
+        if (!MokoSupport.getInstance().isConnDevice(mBeaconParam.iBeaconMAC)) {
+            ToastUtils.showToast(this, getString(R.string.alert_click_reconnect));
+            return;
+        }
+        Intent intent = new Intent(this, SetBroadcastIntervalActivity.class);
+        intent.putExtra(BeaconConstants.EXTRA_KEY_DEVICE_BROADCASTINTERVAL, Integer.parseInt(mBeaconParam.broadcastingInterval));
+        startActivityForResult(intent, BeaconConstants.REQUEST_CODE_SET_BROADCASTINTERVAL);
+    }
+
+    public void onSerialId(View view) {
+        if (isWindowLocked()) return;
+        if (!MokoSupport.getInstance().isBluetoothOpen()) {
+            ToastUtils.showToast(this, "bluetooth is closed,please open");
+            return;
+        }
+        if (!MokoSupport.getInstance().isConnDevice(mBeaconParam.iBeaconMAC)) {
+            ToastUtils.showToast(this, getString(R.string.alert_click_reconnect));
+            return;
+        }
+        Intent intent = new Intent(this, SetDeviceIdActivity.class);
+        intent.putExtra(BeaconConstants.EXTRA_KEY_DEVICE_DEVICE_ID, mBeaconParam.serialID);
+        startActivityForResult(intent, BeaconConstants.REQUEST_CODE_SET_DEVICE_ID);
+    }
+
+    public void onIBeaconName(View view) {
+        if (isWindowLocked()) return;
+        if (!MokoSupport.getInstance().isBluetoothOpen()) {
+            ToastUtils.showToast(this, "bluetooth is closed,please open");
+            return;
+        }
+        if (!MokoSupport.getInstance().isConnDevice(mBeaconParam.iBeaconMAC)) {
+            ToastUtils.showToast(this, getString(R.string.alert_click_reconnect));
+            return;
+        }
+        Intent intent = new Intent(this, SetIBeaconNameActivity.class);
+        intent.putExtra(BeaconConstants.EXTRA_KEY_DEVICE_IBEACON_NAME, mBeaconParam.iBeaconName);
+        intent.putExtra(BeaconConstants.EXTRA_KEY_DEVICE_IBEACON_THREE_AXIS, mBeaconParam.threeAxis);
+        startActivityForResult(intent, BeaconConstants.REQUEST_CODE_SET_IBEACON_NAME);
+    }
+
+    public void onModifyPassword(View view) {
+        if (isWindowLocked()) return;
+        if (!MokoSupport.getInstance().isBluetoothOpen()) {
+            ToastUtils.showToast(this, "bluetooth is closed,please open");
+            return;
+        }
+        if (!MokoSupport.getInstance().isConnDevice(mBeaconParam.iBeaconMAC)) {
+            ToastUtils.showToast(this, getString(R.string.alert_click_reconnect));
+            return;
+        }
+        Intent intent = new Intent(this, SetPasswordActivity.class);
+        startActivityForResult(intent, BeaconConstants.REQUEST_CODE_SET_PASSWORD);
+    }
+
+    public void onAxis(View view) {
+        if (isWindowLocked()) return;
+        if (!MokoSupport.getInstance().isBluetoothOpen()) {
+            ToastUtils.showToast(this, "bluetooth is closed,please open");
+            return;
+        }
+        if (!MokoSupport.getInstance().isConnDevice(mBeaconParam.iBeaconMAC)) {
+            ToastUtils.showToast(this, getString(R.string.alert_click_reconnect));
+            return;
+        }
+        Intent intent = new Intent(this, ThreeAxesActivity.class);
+        startActivityForResult(intent, BeaconConstants.REQUEST_CODE_SET_THREE_AXIS);
+    }
+
+    public void onDeviceInfo(View view) {
+        if (isWindowLocked()) return;
+        if (!MokoSupport.getInstance().isBluetoothOpen()) {
+            ToastUtils.showToast(this, "bluetooth is closed,please open");
+            return;
+        }
+        if (!MokoSupport.getInstance().isConnDevice(mBeaconParam.iBeaconMAC)) {
+            ToastUtils.showToast(this, getString(R.string.alert_click_reconnect));
+            return;
+        }
+        Intent intent = new Intent(this, SystemInfoActivity.class);
+        intent.putExtra(BeaconConstants.EXTRA_KEY_DEVICE_INFO, mBeaconParam.beaconInfo);
+        startActivityForResult(intent, BeaconConstants.REQUEST_CODE_SET_SYSTEM_INFO);
+    }
+
+    public void onConnectable(View view) {
+        if (isWindowLocked()) return;
+        if (!MokoSupport.getInstance().isBluetoothOpen()) {
+            ToastUtils.showToast(this, "bluetooth is closed,please open");
+            return;
+        }
+        if (!MokoSupport.getInstance().isConnDevice(mBeaconParam.iBeaconMAC)) {
+            ToastUtils.showToast(this, getString(R.string.alert_click_reconnect));
+            return;
+        }
+        final boolean isConnectable = "00".equals(mBeaconParam.connectionMode);
+        String connectMessage = String.format("Are you sure to make device %s?", isConnectable ? "disconnectable" : "connectable");
+        AlertMessageDialog connectDialog = new AlertMessageDialog();
+        connectDialog.setTitle("Warning!");
+        connectDialog.setMessage(connectMessage);
+        connectDialog.setOnAlertConfirmListener(() -> {
+            showLoadingMessageDialog("Syncing...");
+            String connectMode = !isConnectable ? "00" : "01";
+            MokoSupport.getInstance().sendOrder(OrderTaskAssembler.setConnection(connectMode));
+        });
+        connectDialog.show(getSupportFragmentManager());
+    }
+
+    public void onPowerOff(View view) {
+        if (isWindowLocked()) return;
+        AlertMessageDialog powerDialog = new AlertMessageDialog();
+        powerDialog.setTitle("Warning!");
+        powerDialog.setMessage("Are you sure to turn off the device?Please make sure the device has a button to turn on!");
+        powerDialog.setOnAlertConfirmListener(() -> {
+            showLoadingMessageDialog("Syncing...");
+            MokoSupport.getInstance().sendOrder(OrderTaskAssembler.setClose());
+        });
+        powerDialog.show(getSupportFragmentManager());
+    }
+
+    public void onDFU(View view) {
+        if (isWindowLocked()) return;
+        if (!MokoSupport.getInstance().isBluetoothOpen()) {
+            ToastUtils.showToast(this, "bluetooth is closed,please open");
+            return;
+        }
+        if (!MokoSupport.getInstance().isConnDevice(mBeaconParam.iBeaconMAC)) {
+            ToastUtils.showToast(this, getString(R.string.alert_click_reconnect));
+            return;
+        }
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("*/*");//设置类型，我这里是任意类型，任意后缀的可以这样写。
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        try {
+            startActivityForResult(Intent.createChooser(intent, "select file first!"), REQUEST_CODE_SELECT_FIRMWARE);
+        } catch (ActivityNotFoundException ex) {
+            ToastUtils.showToast(this, "install file manager app");
         }
     }
 
-    private void dismissLoadingProgressDialog() {
-        if (!isFinishing() && mLoadingDialog != null && mLoadingDialog.isShowing()) {
-            mLoadingDialog.dismiss();
-        }
-    }
-
-    private ProgressDialog mSyncingDialog;
-
-    private void showSyncProgressDialog(String tips) {
-        mSyncingDialog = new ProgressDialog(DeviceInfoActivity.this);
-        mSyncingDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        mSyncingDialog.setCanceledOnTouchOutside(false);
-        mSyncingDialog.setCancelable(false);
-        mSyncingDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        mSyncingDialog.setMessage(tips);
-        if (!isFinishing() && mSyncingDialog != null && !mSyncingDialog.isShowing()) {
-            mSyncingDialog.show();
-        }
-    }
-
-    private void dismissSyncProgressDialog() {
-        if (!isFinishing() && mSyncingDialog != null && mSyncingDialog.isShowing()) {
-            mSyncingDialog.dismiss();
-        }
-    }
 
     private ProgressDialog mDFUDialog;
 
@@ -728,8 +673,8 @@ public class DeviceInfoActivity extends BaseActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == BeaconConstants.RESULT_CONN_DISCONNECTED) {
-            tvConnState.setText(getString(R.string.device_info_conn_status_connect));
-            viewCover.setVisibility(View.VISIBLE);
+            mBind.tvConnState.setText(getString(R.string.device_info_conn_status_connect));
+            mBind.viewCover.setVisibility(View.VISIBLE);
         } else {
             switch (requestCode) {
                 case BeaconConstants.REQUEST_CODE_SET_UUID:
@@ -788,33 +733,27 @@ public class DeviceInfoActivity extends BaseActivity {
                     }
                 case REQUEST_CODE_SELECT_FIRMWARE:
                     if (resultCode == RESULT_OK) {
-                        if (!MokoSupport.getInstance().isConnDevice(this, mBeaconParam.iBeaconMAC)) {
+                        if (!MokoSupport.getInstance().isConnDevice(mBeaconParam.iBeaconMAC)) {
                             ToastUtils.showToast(this, getString(R.string.alert_click_reconnect));
                             return;
                         }
                         //得到uri，后面就是将uri转化成file的过程。
                         Uri uri = data.getData();
                         String firmwareFilePath = FileUtils.getPath(this, uri);
-                        if (TextUtils.isEmpty(firmwareFilePath)) {
-                            ToastUtils.showToast(this, "file is not exists!");
+                        if (TextUtils.isEmpty(firmwareFilePath))
+                            return;
+                        final File firmwareFile = new File(firmwareFilePath);
+                        if (!firmwareFile.exists() || !firmwareFilePath.toLowerCase().endsWith("zip") || firmwareFile.length() == 0) {
+                            ToastUtils.showToast(this, "File error!");
                             return;
                         }
-                        final File firmwareFile = new File(firmwareFilePath);
-                        if (firmwareFile.exists()) {
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                DfuServiceInitiator.createDfuNotificationChannel(this);
-                            }
-                            final DfuServiceInitiator starter = new DfuServiceInitiator(mBeaconParam.iBeaconMAC)
-                                    .setDeviceName(mBeaconParam.iBeaconName)
-                                    .setKeepBond(false)
-                                    .setPacketsReceiptNotificationsEnabled(true)
-                                    .setDisableNotification(true);
-                            starter.setZip(null, firmwareFilePath);
-                            starter.start(this, DfuService.class);
-                            showDFUProgressDialog("Waiting...");
-                        } else {
-                            ToastUtils.showToast(this, "file is not exists!");
-                        }
+                        final DfuServiceInitiator starter = new DfuServiceInitiator(mBeaconParam.iBeaconMAC)
+                                .setDeviceName(mBeaconParam.iBeaconName)
+                                .setKeepBond(false)
+                                .setDisableNotification(true);
+                        starter.setZip(null, firmwareFilePath);
+                        starter.start(this, DfuService.class);
+                        showDFUProgressDialog("Waiting...");
                     }
                     break;
             }
@@ -895,8 +834,8 @@ public class DeviceInfoActivity extends BaseActivity {
                 ToastUtils.showToast(this, "bluetooth is closed,please open");
                 return;
             }
-            showSyncProgressDialog("Syncing...");
-            tvConnState.postDelayed(new Runnable() {
+            showLoadingMessageDialog("Syncing...");
+            mBind.tvConnState.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     orderTasks.add(OrderTaskAssembler.setOvertime());
@@ -925,7 +864,7 @@ public class DeviceInfoActivity extends BaseActivity {
     private final DfuProgressListener mDfuProgressListener = new DfuProgressListenerAdapter() {
         @Override
         public void onDeviceConnecting(String deviceAddress) {
-            LogModule.w("onDeviceConnecting...");
+            XLog.w("onDeviceConnecting...");
             mDeviceConnectCount++;
             if (mDeviceConnectCount > 3) {
                 Toast.makeText(DeviceInfoActivity.this, "Error:DFU Failed", Toast.LENGTH_SHORT).show();
@@ -939,7 +878,7 @@ public class DeviceInfoActivity extends BaseActivity {
 
         @Override
         public void onDeviceDisconnecting(String deviceAddress) {
-            LogModule.w("onDeviceDisconnecting...");
+            XLog.w("onDeviceDisconnecting...");
         }
 
         @Override
@@ -978,7 +917,7 @@ public class DeviceInfoActivity extends BaseActivity {
         public void onError(String deviceAddress, int error, int errorType, String message) {
             String errorMessage = String.format("error:%d,errorType:%d,message:%s)", error, errorType, message);
             Toast.makeText(DeviceInfoActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
-            LogModule.i(message);
+            XLog.i(message);
             dismissDFUProgressDialog();
         }
     };
@@ -993,9 +932,37 @@ public class DeviceInfoActivity extends BaseActivity {
                 case DfuService.LOG_LEVEL_INFO:
                 case DfuService.LOG_LEVEL_WARNING:
                 case DfuService.LOG_LEVEL_ERROR:
-                    LogModule.w(level + ":" + message);
+                    XLog.w(level + ":" + message);
                     break;
             }
         }
     };
+
+
+    private LoadingDialog mLoadingDialog;
+
+//    private void showLoadingProgressDialog() {
+//        mLoadingDialog = new LoadingDialog();
+//        mLoadingDialog.show(getSupportFragmentManager());
+//
+//    }
+//
+//    private void dismissLoadingProgressDialog() {
+//        if (mLoadingDialog != null)
+//            mLoadingDialog.dismissAllowingStateLoss();
+//    }
+
+    private LoadingMessageDialog mLoadingMessageDialog;
+
+    private void showLoadingMessageDialog(String msg) {
+        mLoadingMessageDialog = new LoadingMessageDialog();
+        mLoadingMessageDialog.setMessage(msg);
+        mLoadingMessageDialog.show(getSupportFragmentManager());
+
+    }
+
+    private void dismissLoadingMessageDialog() {
+        if (mLoadingMessageDialog != null)
+            mLoadingMessageDialog.dismissAllowingStateLoss();
+    }
 }

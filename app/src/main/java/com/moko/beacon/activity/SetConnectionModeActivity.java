@@ -5,18 +5,18 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 
 import com.moko.beacon.BeaconConstants;
 import com.moko.beacon.R;
+import com.moko.beacon.databinding.ActivityConnectionModeBinding;
 import com.moko.beacon.utils.ToastUtils;
-import com.moko.support.MokoConstants;
+import com.moko.ble.lib.MokoConstants;
+import com.moko.ble.lib.event.ConnectStatusEvent;
+import com.moko.ble.lib.event.OrderTaskResponseEvent;
+import com.moko.ble.lib.task.OrderTaskResponse;
 import com.moko.support.MokoSupport;
 import com.moko.support.OrderTaskAssembler;
-import com.moko.support.entity.OrderType;
-import com.moko.support.event.ConnectStatusEvent;
-import com.moko.support.event.OrderTaskResponseEvent;
-import com.moko.support.task.OrderTaskResponse;
+import com.moko.support.entity.OrderCHAR;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -26,42 +26,27 @@ import java.util.HashMap;
 
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 
-/**
- * @Date 2017/12/18 0018
- * @Author wenzheng.liu
- * @Description
- * @ClassPath com.moko.beacon.activity.SetIBeaconNameActivity
- */
 public class SetConnectionModeActivity extends BaseActivity {
 
-    @BindView(R.id.iv_conn_yes)
-    ImageView ivConnYes;
-    @BindView(R.id.rl_conn_yes)
-    RelativeLayout rlConnYes;
-    @BindView(R.id.iv_conn_no)
-    ImageView ivConnNo;
-    @BindView(R.id.rl_conn_no)
-    RelativeLayout rlConnNo;
+
+    private ActivityConnectionModeBinding mBind;
     private HashMap<ViewGroup, View> viewHashMap;
     private String connectMode;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_connection_mode);
-        ButterKnife.bind(this);
+        mBind = ActivityConnectionModeBinding.inflate(getLayoutInflater());
+        setContentView(mBind.getRoot());
         String connection_mode = getIntent().getStringExtra(BeaconConstants.EXTRA_KEY_DEVICE_CONNECTION_MODE);
         viewHashMap = new HashMap<>();
-        viewHashMap.put(rlConnYes, ivConnYes);
-        viewHashMap.put(rlConnNo, ivConnNo);
+        viewHashMap.put(mBind.rlConnYes, mBind.ivConnYes);
+        viewHashMap.put(mBind.rlConnNo, mBind.ivConnNo);
         if ("00".equals(connection_mode)) {
-            setViewSelected(rlConnYes);
+            setViewSelected(mBind.rlConnYes);
         } else {
-            setViewSelected(rlConnNo);
+            setViewSelected(mBind.rlConnNo);
         }
         EventBus.getDefault().register(this);
     }
@@ -77,7 +62,7 @@ public class SetConnectionModeActivity extends BaseActivity {
     public void onConnectStatusEvent(ConnectStatusEvent event) {
         final String action = event.getAction();
         runOnUiThread(() -> {
-            if (MokoConstants.ACTION_CONN_STATUS_DISCONNECTED.equals(action)) {
+            if (MokoConstants.ACTION_DISCONNECTED.equals(action)) {
                 ToastUtils.showToast(SetConnectionModeActivity.this, getString(R.string.alert_diconnected));
                 SetConnectionModeActivity.this.setResult(BeaconConstants.RESULT_CONN_DISCONNECTED);
                 finish();
@@ -92,11 +77,11 @@ public class SetConnectionModeActivity extends BaseActivity {
         runOnUiThread(() -> {
             if (MokoConstants.ACTION_ORDER_TIMEOUT.equals(action)) {
                 OrderTaskResponse response = event.getResponse();
-                OrderType orderType = response.orderType;
+                OrderCHAR orderCHAR = (OrderCHAR) response.orderCHAR;
                 int responseType = response.responseType;
                 byte[] value = response.responseValue;
-                switch (orderType) {
-                    case CONNECTION:
+                switch (orderCHAR) {
+                    case CHAR_CONNECTION:
                         // 修改连接模式失败
                         ToastUtils.showToast(SetConnectionModeActivity.this, getString(R.string.read_data_failed));
                         finish();
@@ -107,11 +92,11 @@ public class SetConnectionModeActivity extends BaseActivity {
             }
             if (MokoConstants.ACTION_ORDER_RESULT.equals(action)) {
                 OrderTaskResponse response = event.getResponse();
-                OrderType orderType = response.orderType;
+                OrderCHAR orderCHAR = (OrderCHAR) response.orderCHAR;
                 int responseType = response.responseType;
                 byte[] value = response.responseValue;
-                switch (orderType) {
-                    case CONNECTION:
+                switch (orderCHAR) {
+                    case CHAR_CONNECTION:
                         // 修改连接模式成功
                         Intent i = new Intent();
                         i.putExtra(BeaconConstants.EXTRA_KEY_DEVICE_CONNECTION_MODE, connectMode);
@@ -123,31 +108,30 @@ public class SetConnectionModeActivity extends BaseActivity {
         });
     }
 
-    @OnClick({R.id.tv_back, R.id.iv_save, R.id.rl_conn_yes, R.id.rl_conn_no})
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.tv_back:
-                finish();
-                break;
-            case R.id.iv_save:
-                if (!MokoSupport.getInstance().isBluetoothOpen()) {
-                    ToastUtils.showToast(this, "bluetooth is closed,please open");
-                    return;
-                }
-                MokoSupport.getInstance().sendOrder(OrderTaskAssembler.setConnection(connectMode));
-                break;
-            case R.id.rl_conn_yes:
-            case R.id.rl_conn_no:
-                setViewSelected(view);
-                break;
-        }
-    }
-
     private void setViewSelected(View parent) {
         for (View view : viewHashMap.values()) {
             ((ImageView) view).setImageDrawable(ContextCompat.getDrawable(this, R.drawable.icon_unselected));
         }
         ((ImageView) viewHashMap.get(parent)).setImageDrawable(ContextCompat.getDrawable(this, R.drawable.icon_selected));
         connectMode = (String) parent.getTag();
+    }
+
+    public void onBack(View view) {
+        if (isWindowLocked()) return;
+        finish();
+    }
+
+    public void onSave(View view) {
+        if (isWindowLocked()) return;
+        if (!MokoSupport.getInstance().isBluetoothOpen()) {
+            ToastUtils.showToast(this, "bluetooth is closed,please open");
+            return;
+        }
+        MokoSupport.getInstance().sendOrder(OrderTaskAssembler.setConnection(connectMode));
+    }
+
+    public void onConnectable(View view) {
+        if (isWindowLocked()) return;
+        setViewSelected(view);
     }
 }

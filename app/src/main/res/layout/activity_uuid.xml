@@ -13,9 +13,11 @@
             android:id="@+id/tv_back"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:clickable="true"
             android:drawableLeft="@drawable/back"
             android:drawablePadding="6dp"
             android:gravity="center_vertical"
+            android:onClick="onBack"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
             android:textColor="@color/white_ffffff"
@@ -34,6 +36,8 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
+            android:clickable="true"
+            android:onClick="onSave"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
             android:src="@drawable/save" />
@@ -59,8 +63,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
                 android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
                 android:layout_marginTop="20dp"
+                android:layout_marginRight="16dp"
                 android:background="@drawable/shape_radius_grey_bg"
                 android:digits="-0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
                 android:gravity="center"
@@ -77,8 +81,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="70dp"
                 android:layout_marginLeft="25dp"
-                android:layout_marginRight="25dp"
                 android:layout_marginTop="20dp"
+                android:layout_marginRight="25dp"
+                android:clickable="true"
+                android:onClick="onUUID"
                 android:paddingTop="20dp">
 
                 <TextView
@@ -120,6 +126,8 @@
                 android:layout_height="70dp"
                 android:layout_marginLeft="25dp"
                 android:layout_marginRight="25dp"
+                android:clickable="true"
+                android:onClick="onUUID"
                 android:paddingTop="20dp">
 
                 <TextView
@@ -160,6 +168,8 @@
                 android:layout_height="70dp"
                 android:layout_marginLeft="25dp"
                 android:layout_marginRight="25dp"
+                android:clickable="true"
+                android:onClick="onUUID"
                 android:paddingTop="20dp">
 
                 <TextView
@@ -200,6 +210,8 @@
                 android:layout_height="70dp"
                 android:layout_marginLeft="25dp"
                 android:layout_marginRight="25dp"
+                android:clickable="true"
+                android:onClick="onUUID"
                 android:paddingTop="20dp">
 
                 <TextView
@@ -240,6 +252,8 @@
                 android:layout_height="70dp"
                 android:layout_marginLeft="25dp"
                 android:layout_marginRight="25dp"
+                android:clickable="true"
+                android:onClick="onUUID"
                 android:paddingTop="20dp">
 
                 <TextView

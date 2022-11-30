@@ -14,9 +14,11 @@
             android:id="@+id/tv_back"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:clickable="true"
             android:drawableLeft="@drawable/back"
             android:drawablePadding="6dp"
             android:gravity="center_vertical"
+            android:onClick="onBack"
             android:paddingLeft="16dp"
             android:text="@string/device_list_title"
             android:textColor="@color/white_ffffff"
@@ -35,7 +37,9 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
+            android:clickable="true"
             android:gravity="center_vertical"
+            android:onClick="onConnectState"
             android:paddingRight="16dp"
             android:text="@string/device_info_conn_status_connect"
             android:textColor="@color/white_ffffff"
@@ -60,12 +64,15 @@
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent">
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <RelativeLayout
                     android:id="@+id/rl_ibeacon_battery"
                     android:layout_width="match_parent"
-                    android:layout_height="49dp">
+                    android:layout_height="49dp"
+                    android:clickable="true"
+                    android:onClick="onBattery">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -94,7 +101,9 @@
                 <RelativeLayout
                     android:id="@+id/rl_ibeacon_uuid"
                     android:layout_width="match_parent"
-                    android:layout_height="49dp">
+                    android:layout_height="49dp"
+                    android:clickable="true"
+                    android:onClick="onUUID">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -125,7 +134,9 @@
                 <RelativeLayout
                     android:id="@+id/rl_ibeacon_major"
                     android:layout_width="match_parent"
-                    android:layout_height="49dp">
+                    android:layout_height="49dp"
+                    android:clickable="true"
+                    android:onClick="onMajor">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -155,7 +166,9 @@
                 <RelativeLayout
                     android:id="@+id/rl_ibeacon_minor"
                     android:layout_width="match_parent"
-                    android:layout_height="49dp">
+                    android:layout_height="49dp"
+                    android:clickable="true"
+                    android:onClick="onMinor">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -185,7 +198,9 @@
                 <RelativeLayout
                     android:id="@+id/rl_ibeacon_measure_power"
                     android:layout_width="match_parent"
-                    android:layout_height="49dp">
+                    android:layout_height="49dp"
+                    android:clickable="true"
+                    android:onClick="onMeasurePower">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -215,7 +230,9 @@
                 <RelativeLayout
                     android:id="@+id/rl_ibeacon_transmission"
                     android:layout_width="match_parent"
-                    android:layout_height="49dp">
+                    android:layout_height="49dp"
+                    android:clickable="true"
+                    android:onClick="onTransmissionPower">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -245,7 +262,9 @@
                 <RelativeLayout
                     android:id="@+id/rl_ibeacon_broadcasting_interval"
                     android:layout_width="match_parent"
-                    android:layout_height="49dp">
+                    android:layout_height="49dp"
+                    android:clickable="true"
+                    android:onClick="onAdvInterval">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -275,7 +294,9 @@
                 <RelativeLayout
                     android:id="@+id/rl_ibeacon_serialID"
                     android:layout_width="match_parent"
-                    android:layout_height="49dp">
+                    android:layout_height="49dp"
+                    android:clickable="true"
+                    android:onClick="onSerialId">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -305,7 +326,9 @@
                 <RelativeLayout
                     android:id="@+id/rl_ibeacon_mac"
                     android:layout_width="match_parent"
-                    android:layout_height="49dp">
+                    android:layout_height="49dp"
+                    android:clickable="true"
+                    android:onClick="onDeviceMac">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -334,7 +357,9 @@
                 <RelativeLayout
                     android:id="@+id/rl_ibeacon_device_name"
                     android:layout_width="match_parent"
-                    android:layout_height="49dp">
+                    android:layout_height="49dp"
+                    android:clickable="true"
+                    android:onClick="onIBeaconName">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -364,7 +389,9 @@
                 <RelativeLayout
                     android:id="@+id/rl_ibeacon_change_password"
                     android:layout_width="match_parent"
-                    android:layout_height="49dp">
+                    android:layout_height="49dp"
+                    android:clickable="true"
+                    android:onClick="onModifyPassword">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -394,7 +421,9 @@
                 <RelativeLayout
                     android:id="@+id/rl_ibeacon_three_axis"
                     android:layout_width="match_parent"
-                    android:layout_height="49dp">
+                    android:layout_height="49dp"
+                    android:clickable="true"
+                    android:onClick="onAxis">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -424,7 +453,9 @@
                 <RelativeLayout
                     android:id="@+id/rl_ibeacon_device_info"
                     android:layout_width="match_parent"
-                    android:layout_height="49dp">
+                    android:layout_height="49dp"
+                    android:clickable="true"
+                    android:onClick="onDeviceInfo">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -453,7 +484,9 @@
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="49dp">
+                    android:layout_height="49dp"
+                    android:clickable="true"
+                    android:onClick="onConnectable">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -477,7 +510,9 @@
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="49dp">
+                    android:layout_height="49dp"
+                    android:clickable="true"
+                    android:onClick="onPowerOff">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -502,7 +537,9 @@
                 <RelativeLayout
                     android:id="@+id/rl_ibeacon_dfu"
                     android:layout_width="match_parent"
-                    android:layout_height="49dp">
+                    android:layout_height="49dp"
+                    android:clickable="true"
+                    android:onClick="onDFU">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -535,6 +572,8 @@
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:background="#77ffffff"
+                android:clickable="true"
+                android:onClick="onViewCover"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="@id/ll_params_parent"
                 app:layout_constraintLeft_toLeftOf="parent"

@@ -5,21 +5,15 @@ import android.text.TextUtils;
 import android.util.SparseArray;
 
 import com.moko.beacon.entity.BeaconInfo;
+import com.moko.ble.lib.utils.MokoUtils;
 import com.moko.support.entity.DeviceInfo;
 import com.moko.support.service.DeviceInfoParseable;
-import com.moko.support.utils.MokoUtils;
 
 import java.text.DecimalFormat;
 import java.util.Map;
 
 import no.nordicsemi.android.support.v18.scanner.ScanResult;
 
-/**
- * @Date 2018/1/10
- * @Author wenzheng.liu
- * @Description 通用解析工具类
- * @ClassPath com.moko.beacon.utils.BeaconInfoParseableImpl
- */
 public class BeaconInfoParseableImpl implements DeviceInfoParseable<BeaconInfo> {
 
     @Override

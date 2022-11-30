@@ -17,6 +17,8 @@
             android:drawablePadding="6dp"
             android:gravity="center_vertical"
             android:paddingLeft="16dp"
+            android:clickable="true"
+            android:onClick="onBack"
             android:paddingRight="16dp"
             android:textColor="@color/white_ffffff"
             android:textSize="15sp" />
@@ -35,6 +37,8 @@
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
             android:paddingLeft="16dp"
+            android:clickable="true"
+            android:onClick="onSave"
             android:paddingRight="16dp"
             android:src="@drawable/save" />
     </RelativeLayout>

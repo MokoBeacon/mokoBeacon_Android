@@ -4,19 +4,19 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import com.moko.beacon.BeaconConstants;
 import com.moko.beacon.R;
+import com.moko.beacon.databinding.ActivityBroadcastIntervalBinding;
 import com.moko.beacon.utils.ToastUtils;
-import com.moko.support.MokoConstants;
+import com.moko.ble.lib.MokoConstants;
+import com.moko.ble.lib.event.ConnectStatusEvent;
+import com.moko.ble.lib.event.OrderTaskResponseEvent;
+import com.moko.ble.lib.task.OrderTaskResponse;
 import com.moko.support.MokoSupport;
 import com.moko.support.OrderTaskAssembler;
-import com.moko.support.entity.OrderType;
-import com.moko.support.event.ConnectStatusEvent;
-import com.moko.support.event.OrderTaskResponseEvent;
-import com.moko.support.task.OrderTaskResponse;
+import com.moko.support.entity.OrderCHAR;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -26,62 +26,34 @@ import java.util.ArrayList;
 
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 
-/**
- * @Date 2017/12/18 0018
- * @Author wenzheng.liu
- * @Description
- * @ClassPath com.moko.beacon.activity.SetBroadcastIntervalActivity
- */
+
 public class SetBroadcastIntervalActivity extends BaseActivity {
 
-    @BindView(R.id.tv_broadcast_interval_1)
-    TextView tvBroadcastInterval1;
-    @BindView(R.id.tv_broadcast_interval_2)
-    TextView tvBroadcastInterval2;
-    @BindView(R.id.tv_broadcast_interval_3)
-    TextView tvBroadcastInterval3;
-    @BindView(R.id.tv_broadcast_interval_4)
-    TextView tvBroadcastInterval4;
-    @BindView(R.id.tv_broadcast_interval_5)
-    TextView tvBroadcastInterval5;
-    @BindView(R.id.tv_broadcast_interval_6)
-    TextView tvBroadcastInterval6;
-    @BindView(R.id.tv_broadcast_interval_7)
-    TextView tvBroadcastInterval7;
-    @BindView(R.id.tv_broadcast_interval_8)
-    TextView tvBroadcastInterval8;
-    @BindView(R.id.tv_broadcast_interval_9)
-    TextView tvBroadcastInterval9;
-    @BindView(R.id.tv_broadcast_interval_10)
-    TextView tvBroadcastInterval10;
-    @BindView(R.id.et_broadcast_interval)
-    EditText etBroadcastInterval;
+
+    private ActivityBroadcastIntervalBinding mBind;
     private ArrayList<View> mViews;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_broadcast_interval);
-        ButterKnife.bind(this);
+        mBind = ActivityBroadcastIntervalBinding.inflate(getLayoutInflater());
+        setContentView(mBind.getRoot());
         int broadcastInterval = getIntent().getIntExtra(BeaconConstants.EXTRA_KEY_DEVICE_BROADCASTINTERVAL, 0) - 1;
         mViews = new ArrayList<>();
-        mViews.add(tvBroadcastInterval1);
-        mViews.add(tvBroadcastInterval2);
-        mViews.add(tvBroadcastInterval3);
-        mViews.add(tvBroadcastInterval4);
-        mViews.add(tvBroadcastInterval5);
-        mViews.add(tvBroadcastInterval6);
-        mViews.add(tvBroadcastInterval7);
-        mViews.add(tvBroadcastInterval8);
-        mViews.add(tvBroadcastInterval9);
-        mViews.add(tvBroadcastInterval10);
+        mViews.add(mBind.tvBroadcastInterval1);
+        mViews.add(mBind.tvBroadcastInterval2);
+        mViews.add(mBind.tvBroadcastInterval3);
+        mViews.add(mBind.tvBroadcastInterval4);
+        mViews.add(mBind.tvBroadcastInterval5);
+        mViews.add(mBind.tvBroadcastInterval6);
+        mViews.add(mBind.tvBroadcastInterval7);
+        mViews.add(mBind.tvBroadcastInterval8);
+        mViews.add(mBind.tvBroadcastInterval9);
+        mViews.add(mBind.tvBroadcastInterval10);
         if (broadcastInterval > 9) {
-            etBroadcastInterval.setText((broadcastInterval + 1) + "");
-            etBroadcastInterval.setSelection(String.valueOf(broadcastInterval + 1).length());
+            mBind.etBroadcastInterval.setText((broadcastInterval + 1) + "");
+            mBind.etBroadcastInterval.setSelection(String.valueOf(broadcastInterval + 1).length());
         } else {
             setViewSeleceted(broadcastInterval);
         }
@@ -92,7 +64,7 @@ public class SetBroadcastIntervalActivity extends BaseActivity {
     public void onConnectStatusEvent(ConnectStatusEvent event) {
         final String action = event.getAction();
         runOnUiThread(() -> {
-            if (MokoConstants.ACTION_CONN_STATUS_DISCONNECTED.equals(action)) {
+            if (MokoConstants.ACTION_DISCONNECTED.equals(action)) {
                 ToastUtils.showToast(SetBroadcastIntervalActivity.this, getString(R.string.alert_diconnected));
                 SetBroadcastIntervalActivity.this.setResult(BeaconConstants.RESULT_CONN_DISCONNECTED);
                 finish();
@@ -107,11 +79,11 @@ public class SetBroadcastIntervalActivity extends BaseActivity {
         runOnUiThread(() -> {
             if (MokoConstants.ACTION_ORDER_TIMEOUT.equals(action)) {
                 OrderTaskResponse response = event.getResponse();
-                OrderType orderType = response.orderType;
+                OrderCHAR orderCHAR = (OrderCHAR) response.orderCHAR;
                 int responseType = response.responseType;
                 byte[] value = response.responseValue;
-                switch (orderType) {
-                    case ADV_INTERVAL:
+                switch (orderCHAR) {
+                    case CHAR_ADV_INTERVAL:
                         // 修改broadcastingInterval失败
                         ToastUtils.showToast(SetBroadcastIntervalActivity.this, getString(R.string.read_data_failed));
                         finish();
@@ -122,14 +94,14 @@ public class SetBroadcastIntervalActivity extends BaseActivity {
             }
             if (MokoConstants.ACTION_ORDER_RESULT.equals(action)) {
                 OrderTaskResponse response = event.getResponse();
-                OrderType orderType = response.orderType;
+                OrderCHAR orderCHAR = (OrderCHAR) response.orderCHAR;
                 int responseType = response.responseType;
                 byte[] value = response.responseValue;
-                switch (orderType) {
-                    case ADV_INTERVAL:
+                switch (orderCHAR) {
+                    case CHAR_ADV_INTERVAL:
                         // 修改broadcastingInterval成功
                         Intent i = new Intent();
-                        i.putExtra(BeaconConstants.EXTRA_KEY_DEVICE_BROADCASTINTERVAL, Integer.parseInt(etBroadcastInterval.getText().toString()));
+                        i.putExtra(BeaconConstants.EXTRA_KEY_DEVICE_BROADCASTINTERVAL, Integer.parseInt(mBind.etBroadcastInterval.getText().toString()));
                         SetBroadcastIntervalActivity.this.setResult(RESULT_OK, i);
                         finish();
                         break;
@@ -145,47 +117,11 @@ public class SetBroadcastIntervalActivity extends BaseActivity {
         EventBus.getDefault().unregister(this);
     }
 
-    @OnClick({R.id.tv_back, R.id.iv_save, R.id.tv_broadcast_interval_1, R.id.tv_broadcast_interval_2,
-            R.id.tv_broadcast_interval_3, R.id.tv_broadcast_interval_4, R.id.tv_broadcast_interval_5,
-            R.id.tv_broadcast_interval_6, R.id.tv_broadcast_interval_7, R.id.tv_broadcast_interval_8,
-            R.id.tv_broadcast_interval_9, R.id.tv_broadcast_interval_10})
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.tv_back:
-                finish();
-                break;
-            case R.id.iv_save:
-                if (!MokoSupport.getInstance().isBluetoothOpen()) {
-                    ToastUtils.showToast(this, "bluetooth is closed,please open");
-                    return;
-                }
-                String broadcastIntervalStr = etBroadcastInterval.getText().toString();
-                if (TextUtils.isEmpty(broadcastIntervalStr)) {
-                    ToastUtils.showToast(this, getString(R.string.alert_data_cannot_null));
-                    return;
-                }
-                int broadcastIntervalValue = Integer.parseInt(broadcastIntervalStr);
-                if (broadcastIntervalValue > 100 || broadcastIntervalValue <= 0) {
-                    ToastUtils.showToast(this, getString(R.string.alert_broadcast_interval_range));
-                    return;
-                }
-                MokoSupport.getInstance().sendOrder(OrderTaskAssembler.setAdvInterval(broadcastIntervalValue));
-                break;
-            case R.id.tv_broadcast_interval_1:
-            case R.id.tv_broadcast_interval_2:
-            case R.id.tv_broadcast_interval_3:
-            case R.id.tv_broadcast_interval_4:
-            case R.id.tv_broadcast_interval_5:
-            case R.id.tv_broadcast_interval_6:
-            case R.id.tv_broadcast_interval_7:
-            case R.id.tv_broadcast_interval_8:
-            case R.id.tv_broadcast_interval_9:
-            case R.id.tv_broadcast_interval_10:
-                int broadcastInterval = Integer.valueOf((String) view.getTag()) - 1;
-                setViewSeleceted(broadcastInterval);
-                break;
 
-        }
+    public void onAdvInterval(View view) {
+        if (isWindowLocked()) return;
+        int broadcastInterval = Integer.valueOf((String) view.getTag()) - 1;
+        setViewSeleceted(broadcastInterval);
     }
 
     private void setViewSeleceted(int broadcastInterval) {
@@ -196,7 +132,32 @@ public class SetBroadcastIntervalActivity extends BaseActivity {
         View selected = mViews.get(broadcastInterval);
         selected.setBackground(ContextCompat.getDrawable(this, R.drawable.shape_radius_big_blue_bg));
         ((TextView) selected).setTextColor(ContextCompat.getColor(this, R.color.white_ffffff));
-        etBroadcastInterval.setText((broadcastInterval + 1) + "");
-        etBroadcastInterval.setSelection(String.valueOf(broadcastInterval + 1).length());
+        mBind.etBroadcastInterval.setText((broadcastInterval + 1) + "");
+        mBind.etBroadcastInterval.setSelection(String.valueOf(broadcastInterval + 1).length());
+    }
+
+
+    public void onBack(View view) {
+        if (isWindowLocked()) return;
+        finish();
+    }
+
+    public void onSave(View view) {
+        if (isWindowLocked()) return;
+        if (!MokoSupport.getInstance().isBluetoothOpen()) {
+            ToastUtils.showToast(this, "bluetooth is closed,please open");
+            return;
+        }
+        String broadcastIntervalStr = mBind.etBroadcastInterval.getText().toString();
+        if (TextUtils.isEmpty(broadcastIntervalStr)) {
+            ToastUtils.showToast(this, getString(R.string.alert_data_cannot_null));
+            return;
+        }
+        int broadcastIntervalValue = Integer.parseInt(broadcastIntervalStr);
+        if (broadcastIntervalValue > 100 || broadcastIntervalValue <= 0) {
+            ToastUtils.showToast(this, getString(R.string.alert_broadcast_interval_range));
+            return;
+        }
+        MokoSupport.getInstance().sendOrder(OrderTaskAssembler.setAdvInterval(broadcastIntervalValue));
     }
 }

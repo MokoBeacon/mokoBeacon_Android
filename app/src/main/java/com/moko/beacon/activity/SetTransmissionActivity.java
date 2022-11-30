@@ -3,19 +3,19 @@ package com.moko.beacon.activity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.moko.beacon.BeaconConstants;
 import com.moko.beacon.R;
+import com.moko.beacon.databinding.ActivityTransmissionBinding;
 import com.moko.beacon.utils.ToastUtils;
-import com.moko.support.MokoConstants;
+import com.moko.ble.lib.MokoConstants;
+import com.moko.ble.lib.event.ConnectStatusEvent;
+import com.moko.ble.lib.event.OrderTaskResponseEvent;
+import com.moko.ble.lib.task.OrderTaskResponse;
 import com.moko.support.MokoSupport;
 import com.moko.support.OrderTaskAssembler;
-import com.moko.support.entity.OrderType;
-import com.moko.support.event.ConnectStatusEvent;
-import com.moko.support.event.OrderTaskResponseEvent;
-import com.moko.support.task.OrderTaskResponse;
+import com.moko.support.entity.OrderCHAR;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -25,51 +25,29 @@ import java.util.ArrayList;
 
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 
-/**
- * @Date 2017/12/18 0018
- * @Author wenzheng.liu
- * @Description
- * @ClassPath com.moko.beacon.activity.SetTransmissionActivity
- */
+
 public class SetTransmissionActivity extends BaseActivity {
-    @BindView(R.id.ll_transmission_grade_0)
-    LinearLayout llTransmissionGrade0;
-    @BindView(R.id.ll_transmission_grade_1)
-    LinearLayout llTransmissionGrade1;
-    @BindView(R.id.ll_transmission_grade_2)
-    LinearLayout llTransmissionGrade2;
-    @BindView(R.id.ll_transmission_grade_3)
-    LinearLayout llTransmissionGrade3;
-    @BindView(R.id.ll_transmission_grade_4)
-    LinearLayout llTransmissionGrade4;
-    @BindView(R.id.ll_transmission_grade_5)
-    LinearLayout llTransmissionGrade5;
-    @BindView(R.id.ll_transmission_grade_6)
-    LinearLayout llTransmissionGrade6;
-    @BindView(R.id.ll_transmission_grade_7)
-    LinearLayout llTransmissionGrade7;
+
+    private ActivityTransmissionBinding mBind;
     private int transmissionGrade;
     private ArrayList<ViewGroup> mViews;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_transmission);
-        ButterKnife.bind(this);
+        mBind = ActivityTransmissionBinding.inflate(getLayoutInflater());
+        setContentView(mBind.getRoot());
         int transmission = getIntent().getIntExtra(BeaconConstants.EXTRA_KEY_DEVICE_TRANSMISSION, 0);
         mViews = new ArrayList<>();
-        mViews.add(llTransmissionGrade0);
-        mViews.add(llTransmissionGrade1);
-        mViews.add(llTransmissionGrade2);
-        mViews.add(llTransmissionGrade3);
-        mViews.add(llTransmissionGrade4);
-        mViews.add(llTransmissionGrade5);
-        mViews.add(llTransmissionGrade6);
-        mViews.add(llTransmissionGrade7);
+        mViews.add(mBind.llTransmissionGrade0);
+        mViews.add(mBind.llTransmissionGrade1);
+        mViews.add(mBind.llTransmissionGrade2);
+        mViews.add(mBind.llTransmissionGrade3);
+        mViews.add(mBind.llTransmissionGrade4);
+        mViews.add(mBind.llTransmissionGrade5);
+        mViews.add(mBind.llTransmissionGrade6);
+        mViews.add(mBind.llTransmissionGrade7);
         setViewSeleceted(transmission);
         EventBus.getDefault().register(this);
     }
@@ -77,13 +55,14 @@ public class SetTransmissionActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-       EventBus.getDefault().unregister(this);
+        EventBus.getDefault().unregister(this);
     }
+
     @Subscribe(threadMode = ThreadMode.POSTING, priority = 200)
     public void onConnectStatusEvent(ConnectStatusEvent event) {
         final String action = event.getAction();
         runOnUiThread(() -> {
-            if (MokoConstants.ACTION_CONN_STATUS_DISCONNECTED.equals(action)) {
+            if (MokoConstants.ACTION_DISCONNECTED.equals(action)) {
                 ToastUtils.showToast(SetTransmissionActivity.this, getString(R.string.alert_diconnected));
                 SetTransmissionActivity.this.setResult(BeaconConstants.RESULT_CONN_DISCONNECTED);
                 finish();
@@ -98,11 +77,11 @@ public class SetTransmissionActivity extends BaseActivity {
         runOnUiThread(() -> {
             if (MokoConstants.ACTION_ORDER_TIMEOUT.equals(action)) {
                 OrderTaskResponse response = event.getResponse();
-                OrderType orderType = response.orderType;
+                OrderCHAR orderCHAR = (OrderCHAR) response.orderCHAR;
                 int responseType = response.responseType;
                 byte[] value = response.responseValue;
-                switch (orderType) {
-                    case TRANSMISSION:
+                switch (orderCHAR) {
+                    case CHAR_TRANSMISSION:
                         // 修改transmission失败
                         ToastUtils.showToast(SetTransmissionActivity.this, getString(R.string.read_data_failed));
                         finish();
@@ -113,11 +92,11 @@ public class SetTransmissionActivity extends BaseActivity {
             }
             if (MokoConstants.ACTION_ORDER_RESULT.equals(action)) {
                 OrderTaskResponse response = event.getResponse();
-                OrderType orderType = response.orderType;
+                OrderCHAR orderCHAR = (OrderCHAR) response.orderCHAR;
                 int responseType = response.responseType;
                 byte[] value = response.responseValue;
-                switch (orderType) {
-                    case TRANSMISSION:
+                switch (orderCHAR) {
+                    case CHAR_TRANSMISSION:
                         // 修改transmission成功
                         SetTransmissionActivity.this.setResult(RESULT_OK);
                         finish();
@@ -125,40 +104,6 @@ public class SetTransmissionActivity extends BaseActivity {
                 }
             }
         });
-    }
-
-
-    @OnClick({R.id.tv_back, R.id.iv_save, R.id.ll_transmission_grade_0, R.id.ll_transmission_grade_1, R.id.ll_transmission_grade_2
-            , R.id.ll_transmission_grade_3, R.id.ll_transmission_grade_4, R.id.ll_transmission_grade_5
-            , R.id.ll_transmission_grade_6, R.id.ll_transmission_grade_7})
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.tv_back:
-                finish();
-                break;
-            case R.id.iv_save:
-                if (!MokoSupport.getInstance().isBluetoothOpen()) {
-                    ToastUtils.showToast(this, "bluetooth is closed,please open");
-                    return;
-                }
-                if (transmissionGrade == 7) {
-                    transmissionGrade = 8;
-                }
-                MokoSupport.getInstance().sendOrder(OrderTaskAssembler.setTransmission(transmissionGrade));
-                break;
-            case R.id.ll_transmission_grade_0:
-            case R.id.ll_transmission_grade_1:
-            case R.id.ll_transmission_grade_2:
-            case R.id.ll_transmission_grade_3:
-            case R.id.ll_transmission_grade_4:
-            case R.id.ll_transmission_grade_5:
-            case R.id.ll_transmission_grade_6:
-            case R.id.ll_transmission_grade_7:
-                int transmission = Integer.valueOf((String) view.getTag());
-                setViewSeleceted(transmission);
-                break;
-
-        }
     }
 
     private void setViewSeleceted(int transmission) {
@@ -172,5 +117,28 @@ public class SetTransmissionActivity extends BaseActivity {
         ((TextView) selected.getChildAt(0)).setTextColor(ContextCompat.getColor(this, R.color.white_ffffff));
         ((TextView) selected.getChildAt(1)).setTextColor(ContextCompat.getColor(this, R.color.white_ffffff));
         transmissionGrade = transmission;
+    }
+
+    public void onBack(View view) {
+        if (isWindowLocked()) return;
+        finish();
+    }
+
+    public void onSave(View view) {
+        if (isWindowLocked()) return;
+        if (!MokoSupport.getInstance().isBluetoothOpen()) {
+            ToastUtils.showToast(this, "bluetooth is closed,please open");
+            return;
+        }
+        if (transmissionGrade == 7) {
+            transmissionGrade = 8;
+        }
+        MokoSupport.getInstance().sendOrder(OrderTaskAssembler.setTransmission(transmissionGrade));
+    }
+
+    public void onTransmission(View view) {
+        if (isWindowLocked()) return;
+        int transmission = Integer.valueOf((String) view.getTag());
+        setViewSeleceted(transmission);
     }
 }

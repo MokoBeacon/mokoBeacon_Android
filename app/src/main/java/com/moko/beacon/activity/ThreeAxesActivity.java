@@ -1,25 +1,22 @@
 package com.moko.beacon.activity;
 
-import android.app.ProgressDialog;
 import android.os.Bundle;
-import android.view.KeyEvent;
-import android.view.View;
-import android.view.Window;
 import android.widget.ScrollView;
-import android.widget.TextView;
 
+import com.elvishew.xlog.XLog;
 import com.moko.beacon.BeaconConstants;
 import com.moko.beacon.R;
+import com.moko.beacon.databinding.ActivityThreeAxisBinding;
+import com.moko.beacon.dialog.LoadingDialog;
 import com.moko.beacon.utils.ToastUtils;
-import com.moko.support.MokoConstants;
+import com.moko.ble.lib.MokoConstants;
+import com.moko.ble.lib.event.ConnectStatusEvent;
+import com.moko.ble.lib.event.OrderTaskResponseEvent;
+import com.moko.ble.lib.task.OrderTaskResponse;
+import com.moko.ble.lib.utils.MokoUtils;
 import com.moko.support.MokoSupport;
 import com.moko.support.OrderTaskAssembler;
-import com.moko.support.entity.OrderType;
-import com.moko.support.event.ConnectStatusEvent;
-import com.moko.support.event.OrderTaskResponseEvent;
-import com.moko.support.log.LogModule;
-import com.moko.support.task.OrderTaskResponse;
-import com.moko.support.utils.MokoUtils;
+import com.moko.support.entity.OrderCHAR;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -29,24 +26,11 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import androidx.annotation.Nullable;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 
-/**
- * @Date 2018/1/10
- * @Author wenzheng.liu
- * @Description
- * @ClassPath com.moko.beacon.activity.ThreeAxesActivity
- */
 public class ThreeAxesActivity extends BaseActivity {
 
-    @BindView(R.id.tv_device_three_axis)
-    TextView tvDeviceThreeAxis;
-    @BindView(R.id.tv_stop)
-    TextView tvStop;
-    @BindView(R.id.scroll_view)
-    ScrollView scrollView;
+
+    private ActivityThreeAxisBinding mBind;
     private StringBuilder builder;
     private SimpleDateFormat simpleDateFormat;
     private boolean isNotifyOn;
@@ -55,14 +39,30 @@ public class ThreeAxesActivity extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_three_axis);
-        ButterKnife.bind(this);
+        mBind = ActivityThreeAxisBinding.inflate(getLayoutInflater());
+        setContentView(mBind.getRoot());
         simpleDateFormat = new SimpleDateFormat(BeaconConstants.PATTERN_HH_MM_SS);
         builder = new StringBuilder();
         EventBus.getDefault().register(this);
-        showLoadingProgressDialog("");
+        showLoadingProgressDialog();
         MokoSupport.getInstance().sendOrder(OrderTaskAssembler.setThreeAxes(true));
         isNotifyOn = true;
+        mBind.tvBack.setOnClickListener(v -> back());
+        mBind.tvStop.setOnClickListener(v -> {
+            if (!MokoSupport.getInstance().isBluetoothOpen()) {
+                ToastUtils.showToast(this, "bluetooth is closed,please open");
+                return;
+            }
+            if (isNotifyOn) {
+                showLoadingProgressDialog();
+                MokoSupport.getInstance().sendOrder(OrderTaskAssembler.setThreeAxes(false));
+                isNotifyOn = false;
+            } else {
+                showLoadingProgressDialog();
+                MokoSupport.getInstance().sendOrder(OrderTaskAssembler.setThreeAxes(true));
+                isNotifyOn = true;
+            }
+        });
     }
 
     @Override
@@ -75,7 +75,7 @@ public class ThreeAxesActivity extends BaseActivity {
     public void onConnectStatusEvent(ConnectStatusEvent event) {
         final String action = event.getAction();
         runOnUiThread(() -> {
-            if (MokoConstants.ACTION_CONN_STATUS_DISCONNECTED.equals(action)) {
+            if (MokoConstants.ACTION_DISCONNECTED.equals(action)) {
                 dismissLoadingProgressDialog();
                 ToastUtils.showToast(ThreeAxesActivity.this, getString(R.string.alert_diconnected));
                 ThreeAxesActivity.this.setResult(BeaconConstants.RESULT_CONN_DISCONNECTED);
@@ -92,11 +92,11 @@ public class ThreeAxesActivity extends BaseActivity {
             if (MokoConstants.ACTION_ORDER_TIMEOUT.equals(action)) {
                 dismissLoadingProgressDialog();
                 OrderTaskResponse response = event.getResponse();
-                OrderType orderType = response.orderType;
+                OrderCHAR orderCHAR = (OrderCHAR) response.orderCHAR;
                 int responseType = response.responseType;
                 byte[] value = response.responseValue;
-                switch (orderType) {
-                    case PARAMS_CONFIG:
+                switch (orderCHAR) {
+                    case CHAR_PARAMS:
                         ToastUtils.showToast(ThreeAxesActivity.this, getString(R.string.read_data_failed));
                         finish();
                         break;
@@ -108,42 +108,42 @@ public class ThreeAxesActivity extends BaseActivity {
             if (MokoConstants.ACTION_ORDER_RESULT.equals(action)) {
                 dismissLoadingProgressDialog();
                 OrderTaskResponse response = event.getResponse();
-                OrderType orderType = response.orderType;
+                OrderCHAR orderCHAR = (OrderCHAR) response.orderCHAR;
                 int responseType = response.responseType;
                 byte[] value = response.responseValue;
-                switch (orderType) {
-                    case PARAMS_CONFIG:
+                switch (orderCHAR) {
+                    case CHAR_PARAMS:
                         if (!isNotifyOn) {
                             if (isBack) {
                                 finish();
                             } else {
-                                tvStop.setText("Start");
-                                LogModule.i("三轴加速度计关闭");
+                                mBind.tvStop.setText("Start");
+                                XLog.i("三轴加速度计关闭");
                             }
                         } else {
-                            tvStop.setText("Stop");
-                            LogModule.i("三轴加速度计打开");
+                            mBind.tvStop.setText("Stop");
+                            XLog.i("三轴加速度计打开");
                         }
                         break;
                 }
             }
             if (MokoConstants.ACTION_CURRENT_DATA.equals(action)) {
                 OrderTaskResponse response = event.getResponse();
-                OrderType orderType = response.orderType;
+                OrderCHAR orderCHAR = (OrderCHAR) response.orderCHAR;
                 int responseType = response.responseType;
                 byte[] value = response.responseValue;
-                switch (orderType) {
-                    case PARAMS_CONFIG:
+                switch (orderCHAR) {
+                    case CHAR_PARAMS:
                         builder.append(simpleDateFormat.format(Calendar.getInstance().getTime()));
                         String threeAxisStr = MokoUtils.bytesToHexString(value);
                         if (threeAxisStr.length() >= 20) {
                             builder.append(String.format("----<X：%s；Y：%s；Z：%s>", threeAxisStr.substring(8, 12), threeAxisStr.substring(12, 16), threeAxisStr.substring(16, 20)));
                             builder.append("\n");
-                            tvDeviceThreeAxis.setText(builder.toString());
-                            scrollView.post(new Runnable() {
+                            mBind.tvDeviceThreeAxis.setText(builder.toString());
+                            mBind.scrollView.post(new Runnable() {
                                 @Override
                                 public void run() {
-                                    scrollView.fullScroll(ScrollView.FOCUS_DOWN);
+                                    mBind.scrollView.fullScroll(ScrollView.FOCUS_DOWN);
                                 }
                             });
                         }
@@ -153,39 +153,9 @@ public class ThreeAxesActivity extends BaseActivity {
         });
     }
 
-
-    @OnClick({R.id.tv_back, R.id.tv_stop})
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.tv_back:
-                back();
-                break;
-            case R.id.tv_stop:
-                if (!MokoSupport.getInstance().isBluetoothOpen()) {
-                    ToastUtils.showToast(this, "bluetooth is closed,please open");
-                    return;
-                }
-                if (isNotifyOn) {
-                    showLoadingProgressDialog("");
-                    MokoSupport.getInstance().sendOrder(OrderTaskAssembler.setThreeAxes(false));
-                    isNotifyOn = false;
-                } else {
-                    showLoadingProgressDialog("");
-                    MokoSupport.getInstance().sendOrder(OrderTaskAssembler.setThreeAxes(true));
-                    isNotifyOn = true;
-                }
-                break;
-
-        }
-    }
-
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            back();
-            return false;
-        }
-        return super.onKeyDown(keyCode, event);
+    public void onBackPressed() {
+        back();
     }
 
     private void back() {
@@ -195,7 +165,7 @@ public class ThreeAxesActivity extends BaseActivity {
             return;
         }
         if (isNotifyOn) {
-            showLoadingProgressDialog("");
+            showLoadingProgressDialog();
             MokoSupport.getInstance().sendOrder(OrderTaskAssembler.setThreeAxes(false));
             isNotifyOn = false;
             isBack = true;
@@ -204,23 +174,16 @@ public class ThreeAxesActivity extends BaseActivity {
         }
     }
 
-    private ProgressDialog mLoadingDialog;
+    private LoadingDialog mLoadingDialog;
 
-    private void showLoadingProgressDialog(String tips) {
-        mLoadingDialog = new ProgressDialog(ThreeAxesActivity.this);
-        mLoadingDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        mLoadingDialog.setCanceledOnTouchOutside(false);
-        mLoadingDialog.setCancelable(false);
-        mLoadingDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        mLoadingDialog.setMessage(tips);
-        if (!isFinishing() && mLoadingDialog != null && !mLoadingDialog.isShowing()) {
-            mLoadingDialog.show();
-        }
+    private void showLoadingProgressDialog() {
+        mLoadingDialog = new LoadingDialog();
+        mLoadingDialog.show(getSupportFragmentManager());
+
     }
 
     private void dismissLoadingProgressDialog() {
-        if (!isFinishing() && mLoadingDialog != null && mLoadingDialog.isShowing()) {
-            mLoadingDialog.dismiss();
-        }
+        if (mLoadingDialog != null)
+            mLoadingDialog.dismissAllowingStateLoss();
     }
 }

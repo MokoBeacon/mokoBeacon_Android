@@ -1,4 +1,4 @@
 <paths>
-    <external-path name="log" path="mokoSupport/"/>
+    <external-path name="log" path="MokoBeacon/"/>
     <external-path name="*" path="."/>
 </paths>

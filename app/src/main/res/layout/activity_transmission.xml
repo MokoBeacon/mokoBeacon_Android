@@ -13,9 +13,11 @@
             android:id="@+id/tv_back"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:clickable="true"
             android:drawableLeft="@drawable/back"
             android:drawablePadding="6dp"
             android:gravity="center_vertical"
+            android:onClick="onBack"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
             android:textColor="@color/white_ffffff"
@@ -34,6 +36,8 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
+            android:clickable="true"
+            android:onClick="onSave"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
             android:src="@drawable/save" />
@@ -68,7 +72,9 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1.0"
                 android:background="@drawable/shape_radius_white_bg"
+                android:clickable="true"
                 android:gravity="center_horizontal"
+                android:onClick="onTransmission"
                 android:orientation="vertical"
                 android:tag="0">
 
@@ -99,7 +105,9 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1.0"
                 android:background="@drawable/shape_radius_white_bg"
+                android:clickable="true"
                 android:gravity="center_horizontal"
+                android:onClick="onTransmission"
                 android:orientation="vertical"
                 android:tag="1">
 
@@ -130,7 +138,9 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1.0"
                 android:background="@drawable/shape_radius_white_bg"
+                android:clickable="true"
                 android:gravity="center_horizontal"
+                android:onClick="onTransmission"
                 android:orientation="vertical"
                 android:tag="2">
 
@@ -166,7 +176,9 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1.0"
                 android:background="@drawable/shape_radius_white_bg"
+                android:clickable="true"
                 android:gravity="center_horizontal"
+                android:onClick="onTransmission"
                 android:orientation="vertical"
                 android:tag="3">
 
@@ -197,7 +209,9 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1.0"
                 android:background="@drawable/shape_radius_white_bg"
+                android:clickable="true"
                 android:gravity="center_horizontal"
+                android:onClick="onTransmission"
                 android:orientation="vertical"
                 android:tag="4">
 
@@ -228,7 +242,9 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1.0"
                 android:background="@drawable/shape_radius_white_bg"
+                android:clickable="true"
                 android:gravity="center_horizontal"
+                android:onClick="onTransmission"
                 android:orientation="vertical"
                 android:tag="5">
 
@@ -264,7 +280,9 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1.0"
                 android:background="@drawable/shape_radius_white_bg"
+                android:clickable="true"
                 android:gravity="center_horizontal"
+                android:onClick="onTransmission"
                 android:orientation="vertical"
                 android:tag="6">
 
@@ -295,7 +313,9 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1.0"
                 android:background="@drawable/shape_radius_white_bg"
+                android:clickable="true"
                 android:gravity="center_horizontal"
+                android:onClick="onTransmission"
                 android:orientation="vertical"
                 android:tag="7">
 
@@ -326,7 +346,9 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1.0"
                 android:background="@drawable/shape_radius_white_bg"
+                android:clickable="true"
                 android:gravity="center_horizontal"
+                android:onClick="onTransmission"
                 android:orientation="vertical"
                 android:tag="8"
                 android:visibility="invisible">
