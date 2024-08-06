@@ -81,11 +81,11 @@ public class BeaconInfoParseableImpl implements DeviceInfoParseable<BeaconInfo> 
         String mac = deviceInfo.mac;
         double distance = MokoUtils.getDistance(deviceInfo.rssi, acc);
         String distanceDesc = "Unknown";
-        if (distance <= 1.0) {
+        if (distance <= 0.1) {
             distanceDesc = "Immediate";
-        } else if (distance > 1.0 && distance <= 3.0) {
+        } else if (distance > 0.1 && distance <= 1.0) {
             distanceDesc = "Near";
-        } else if (distance > 3.0) {
+        } else if (distance > 1.0) {
             distanceDesc = "Far";
         }
         // txPower;
