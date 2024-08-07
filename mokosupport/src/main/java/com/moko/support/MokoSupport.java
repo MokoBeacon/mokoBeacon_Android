@@ -128,7 +128,7 @@ public class MokoSupport extends MokoBleLib {
     public boolean orderNotify(BluetoothGattCharacteristic characteristic, byte[] value) {
         final UUID responseUUID = characteristic.getUuid();
         OrderCHAR orderCHAR = null;
-        if (responseUUID.equals(OrderCHAR.CHAR_PARAMS.getUuid()) && value.length >= 10) {
+        if (responseUUID.equals(OrderCHAR.CHAR_PARAMS.getUuid()) && value.length == 10 && value[1] == 0x6c) {
             orderCHAR = OrderCHAR.CHAR_PARAMS;
         }
         if (orderCHAR == null)

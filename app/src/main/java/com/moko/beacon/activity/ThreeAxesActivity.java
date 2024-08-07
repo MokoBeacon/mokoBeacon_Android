@@ -68,7 +68,8 @@ public class ThreeAxesActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        EventBus.getDefault().unregister(this);
+        if (EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().unregister(this);
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING, priority = 200)
@@ -98,6 +99,8 @@ public class ThreeAxesActivity extends BaseActivity {
                 switch (orderCHAR) {
                     case CHAR_PARAMS:
                         ToastUtils.showToast(ThreeAxesActivity.this, getString(R.string.read_data_failed));
+                        if (EventBus.getDefault().isRegistered(this))
+                            EventBus.getDefault().unregister(this);
                         finish();
                         break;
                 }
@@ -160,6 +163,8 @@ public class ThreeAxesActivity extends BaseActivity {
 
     private void back() {
         if (!MokoSupport.getInstance().isBluetoothOpen()) {
+            if (EventBus.getDefault().isRegistered(this))
+                EventBus.getDefault().unregister(this);
             ToastUtils.showToast(this, "bluetooth is closed,please open");
             finish();
             return;
@@ -170,6 +175,8 @@ public class ThreeAxesActivity extends BaseActivity {
             isNotifyOn = false;
             isBack = true;
         } else {
+            if (EventBus.getDefault().isRegistered(this))
+                EventBus.getDefault().unregister(this);
             finish();
         }
     }

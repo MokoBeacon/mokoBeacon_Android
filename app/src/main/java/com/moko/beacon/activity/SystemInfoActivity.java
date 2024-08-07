@@ -107,7 +107,8 @@ public class SystemInfoActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        EventBus.getDefault().unregister(this);
+        if (EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().unregister(this);
     }
 
 
@@ -236,6 +237,8 @@ public class SystemInfoActivity extends BaseActivity {
     }
 
     private void back() {
+        if (EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().unregister(this);
         Intent intent = new Intent();
         intent.putExtra(BeaconConstants.EXTRA_KEY_DEVICE_INFO, mBeaconDeviceInfo);
         setResult(RESULT_OK);

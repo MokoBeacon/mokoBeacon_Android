@@ -1,15 +1,17 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 31
-    buildToolsVersion "29.0.3"
+    compileSdk 34
 
     defaultConfig {
+        namespace "com.moko.beacon"
         applicationId "com.moko.beacon"
-        minSdkVersion 18
-        targetSdkVersion 31
-        versionCode 15
-        versionName "1.4.1"
+        minSdkVersion 21
+        targetSdk 34
+        versionCode 200
+        versionName "2.0.0"
+        def formatDate = new Date().format("yyyyMMddHHmm")
+        setProperty("archivesBaseName", "MokoBeacon_${versionName}_${formatDate}")
     }
 
     buildTypes {
@@ -31,19 +33,6 @@ android {
         abortOnError false
     }
 
-    applicationVariants.all { variant ->
-        variant.outputs.all { output ->
-            def outputFile = output.outputFile
-            if (outputFile != null && outputFile.name.endsWith('.apk')) {
-                def formatedDate = new Date().format("yyyyMMddHHmm")
-                def apkFileName = "MokoBeacon_${defaultConfig.versionName}_${formatedDate}.apk"
-                if (outputFile.name.contains('debug')) {
-                    apkFileName = "MokoBeacon_${defaultConfig.versionName}_${formatedDate}_debug.apk"
-                }
-                outputFileName = apkFileName
-            }
-        }
-    }
 }
 
 dependencies {

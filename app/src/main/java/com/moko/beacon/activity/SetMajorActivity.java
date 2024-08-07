@@ -65,7 +65,8 @@ public class SetMajorActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        EventBus.getDefault().unregister(this);
+        if (EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().unregister(this);
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING, priority = 200)
@@ -94,6 +95,8 @@ public class SetMajorActivity extends BaseActivity {
                     case CHAR_MAJOR:
                         // 修改major失败
                         ToastUtils.showToast(SetMajorActivity.this, getString(R.string.read_data_failed));
+                        if (EventBus.getDefault().isRegistered(this))
+                            EventBus.getDefault().unregister(this);
                         finish();
                         break;
                 }
@@ -111,6 +114,8 @@ public class SetMajorActivity extends BaseActivity {
                         Intent i = new Intent();
                         i.putExtra(BeaconConstants.EXTRA_KEY_DEVICE_MAJOR, Integer.valueOf(mBind.etMajor.getText().toString()));
                         SetMajorActivity.this.setResult(RESULT_OK, i);
+                        if (EventBus.getDefault().isRegistered(this))
+                            EventBus.getDefault().unregister(this);
                         finish();
                         break;
                 }
@@ -121,6 +126,8 @@ public class SetMajorActivity extends BaseActivity {
 
     public void onBack(View view) {
         if (isWindowLocked()) return;
+        if (EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().unregister(this);
         finish();
     }
 

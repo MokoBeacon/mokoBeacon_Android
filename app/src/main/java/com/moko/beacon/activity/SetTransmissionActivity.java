@@ -55,6 +55,7 @@ public class SetTransmissionActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (EventBus.getDefault().isRegistered(this))
         EventBus.getDefault().unregister(this);
     }
 
@@ -84,6 +85,8 @@ public class SetTransmissionActivity extends BaseActivity {
                     case CHAR_TRANSMISSION:
                         // 修改transmission失败
                         ToastUtils.showToast(SetTransmissionActivity.this, getString(R.string.read_data_failed));
+                        if (EventBus.getDefault().isRegistered(this))
+                            EventBus.getDefault().unregister(this);
                         finish();
                         break;
                 }
@@ -99,6 +102,8 @@ public class SetTransmissionActivity extends BaseActivity {
                     case CHAR_TRANSMISSION:
                         // 修改transmission成功
                         SetTransmissionActivity.this.setResult(RESULT_OK);
+                        if (EventBus.getDefault().isRegistered(this))
+                            EventBus.getDefault().unregister(this);
                         finish();
                         break;
                 }
@@ -121,6 +126,8 @@ public class SetTransmissionActivity extends BaseActivity {
 
     public void onBack(View view) {
         if (isWindowLocked()) return;
+        if (EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().unregister(this);
         finish();
     }
 

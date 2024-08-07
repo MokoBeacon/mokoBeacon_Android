@@ -40,7 +40,8 @@ public class SetMeasurePowerActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        EventBus.getDefault().unregister(this);
+        if (EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().unregister(this);
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING, priority = 200)
@@ -69,6 +70,8 @@ public class SetMeasurePowerActivity extends BaseActivity {
                     case CHAR_MEASURE_POWER:
                         // 修改measure power失败
                         ToastUtils.showToast(SetMeasurePowerActivity.this, getString(R.string.read_data_failed));
+                        if (EventBus.getDefault().isRegistered(this))
+                            EventBus.getDefault().unregister(this);
                         finish();
                         break;
                 }
@@ -86,6 +89,8 @@ public class SetMeasurePowerActivity extends BaseActivity {
                         Intent i = new Intent();
                         i.putExtra(BeaconConstants.EXTRA_KEY_DEVICE_MEASURE_POWER, Integer.valueOf(mBind.etMeasurePower.getText().toString()));
                         SetMeasurePowerActivity.this.setResult(RESULT_OK, i);
+                        if (EventBus.getDefault().isRegistered(this))
+                            EventBus.getDefault().unregister(this);
                         finish();
                         break;
                 }
@@ -95,6 +100,8 @@ public class SetMeasurePowerActivity extends BaseActivity {
 
     public void onBack(View view) {
         if (isWindowLocked()) return;
+        if (EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().unregister(this);
         finish();
     }
 

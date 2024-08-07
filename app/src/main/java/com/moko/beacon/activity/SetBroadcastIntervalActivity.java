@@ -86,6 +86,8 @@ public class SetBroadcastIntervalActivity extends BaseActivity {
                     case CHAR_ADV_INTERVAL:
                         // 修改broadcastingInterval失败
                         ToastUtils.showToast(SetBroadcastIntervalActivity.this, getString(R.string.read_data_failed));
+                        if (EventBus.getDefault().isRegistered(this))
+                            EventBus.getDefault().unregister(this);
                         finish();
                         break;
                 }
@@ -103,6 +105,8 @@ public class SetBroadcastIntervalActivity extends BaseActivity {
                         Intent i = new Intent();
                         i.putExtra(BeaconConstants.EXTRA_KEY_DEVICE_BROADCASTINTERVAL, Integer.parseInt(mBind.etBroadcastInterval.getText().toString()));
                         SetBroadcastIntervalActivity.this.setResult(RESULT_OK, i);
+                        if (EventBus.getDefault().isRegistered(this))
+                            EventBus.getDefault().unregister(this);
                         finish();
                         break;
                 }
@@ -114,7 +118,8 @@ public class SetBroadcastIntervalActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        EventBus.getDefault().unregister(this);
+        if (EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().unregister(this);
     }
 
 
@@ -139,6 +144,8 @@ public class SetBroadcastIntervalActivity extends BaseActivity {
 
     public void onBack(View view) {
         if (isWindowLocked()) return;
+        if (EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().unregister(this);
         finish();
     }
 

@@ -97,7 +97,8 @@ public class SetUUIDActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        EventBus.getDefault().unregister(this);
+        if (EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().unregister(this);
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING, priority = 200)
@@ -126,6 +127,8 @@ public class SetUUIDActivity extends BaseActivity {
                     case CHAR_DEVICE_UUID:
                         // 修改UUID失败
                         ToastUtils.showToast(SetUUIDActivity.this, getString(R.string.read_data_failed));
+                        if (EventBus.getDefault().isRegistered(this))
+                            EventBus.getDefault().unregister(this);
                         finish();
                         break;
                 }
@@ -143,6 +146,8 @@ public class SetUUIDActivity extends BaseActivity {
                         Intent i = new Intent();
                         i.putExtra(BeaconConstants.EXTRA_KEY_DEVICE_UUID, mBind.etSeletcedUuid.getText().toString());
                         SetUUIDActivity.this.setResult(RESULT_OK, i);
+                        if (EventBus.getDefault().isRegistered(this))
+                            EventBus.getDefault().unregister(this);
                         finish();
                         break;
                 }
@@ -187,6 +192,8 @@ public class SetUUIDActivity extends BaseActivity {
 
     public void onBack(View view) {
         if (isWindowLocked()) return;
+        if (EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().unregister(this);
         finish();
     }
 

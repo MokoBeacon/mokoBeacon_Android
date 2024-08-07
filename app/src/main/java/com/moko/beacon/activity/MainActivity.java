@@ -29,6 +29,7 @@ import com.moko.beacon.entity.BeaconInfo;
 import com.moko.beacon.entity.BeaconParam;
 import com.moko.beacon.utils.BeaconInfoParseableImpl;
 import com.moko.beacon.utils.ToastUtils;
+import com.moko.beacon.utils.Utils;
 import com.moko.ble.lib.MokoConstants;
 import com.moko.ble.lib.event.ConnectStatusEvent;
 import com.moko.ble.lib.event.OrderTaskResponseEvent;
@@ -84,6 +85,19 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
         super.onCreate(savedInstanceState);
         mBind = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(mBind.getRoot());
+        StringBuffer buffer = new StringBuffer();
+        // 记录机型
+        buffer.append("机型：");
+        buffer.append(android.os.Build.MODEL);
+        buffer.append("=====");
+        // 记录版本号
+        buffer.append("手机系统版本：");
+        buffer.append(android.os.Build.VERSION.RELEASE);
+        buffer.append("=====");
+        // 记录APP版本
+        buffer.append("APP版本：");
+        buffer.append(Utils.getVersionInfo(this));
+        XLog.d(buffer.toString());
         beaconInfoHashMap = new ConcurrentHashMap<>();
         mBeaconInfos = new ArrayList<>();
         mAdapter = new BeaconListAdapter();
@@ -406,7 +420,8 @@ public class MainActivity extends BaseActivity implements RadioGroup.OnCheckedCh
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(mReceiver);
-        EventBus.getDefault().unregister(this);
+        if (EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().unregister(this);
     }
 
     @Override

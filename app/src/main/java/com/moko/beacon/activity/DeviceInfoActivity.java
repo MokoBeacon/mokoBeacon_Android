@@ -110,7 +110,8 @@ public class DeviceInfoActivity extends BaseActivity {
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(mReceiver);
-        EventBus.getDefault().unregister(this);
+        if (EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().unregister(this);
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING, priority = 100)
@@ -383,6 +384,8 @@ public class DeviceInfoActivity extends BaseActivity {
         if (MokoSupport.getInstance().isConnDevice(mBeaconParam.iBeaconMAC)) {
             MokoSupport.getInstance().disConnectBle();
         }
+        if (EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().unregister(this);
         finish();
     }
 
@@ -749,6 +752,8 @@ public class DeviceInfoActivity extends BaseActivity {
                         }
                         final DfuServiceInitiator starter = new DfuServiceInitiator(mBeaconParam.iBeaconMAC)
                                 .setDeviceName(mBeaconParam.iBeaconName)
+                                .setForeground(false)
+                                .setMtu(23)
                                 .setKeepBond(false)
                                 .setDisableNotification(true);
                         starter.setZip(null, firmwareFilePath);

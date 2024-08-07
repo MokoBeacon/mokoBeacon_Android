@@ -42,7 +42,8 @@ public class SetDeviceIdActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        EventBus.getDefault().unregister(this);
+        if (EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().unregister(this);
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING, priority = 200)
@@ -71,6 +72,8 @@ public class SetDeviceIdActivity extends BaseActivity {
                     case CHAR_SERIAL_ID:
                         // 修改deviceId失败
                         ToastUtils.showToast(SetDeviceIdActivity.this, getString(R.string.read_data_failed));
+                        if (EventBus.getDefault().isRegistered(this))
+                            EventBus.getDefault().unregister(this);
                         finish();
                         break;
                 }
@@ -88,6 +91,8 @@ public class SetDeviceIdActivity extends BaseActivity {
                         Intent i = new Intent();
                         i.putExtra(BeaconConstants.EXTRA_KEY_DEVICE_DEVICE_ID, mBind.etDeviceId.getText().toString());
                         SetDeviceIdActivity.this.setResult(RESULT_OK, i);
+                        if (EventBus.getDefault().isRegistered(this))
+                            EventBus.getDefault().unregister(this);
                         finish();
                         break;
                 }
@@ -97,6 +102,8 @@ public class SetDeviceIdActivity extends BaseActivity {
 
     public void onBack(View view) {
         if (isWindowLocked()) return;
+        if (EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().unregister(this);
         finish();
     }
 

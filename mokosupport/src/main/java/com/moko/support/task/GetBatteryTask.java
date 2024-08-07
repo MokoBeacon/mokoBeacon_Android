@@ -8,7 +8,7 @@ public class GetBatteryTask extends OrderTask {
     public byte[] data;
 
     public GetBatteryTask() {
-        super(OrderCHAR.CHAR_PARAMS, RESPONSE_TYPE_READ);
+        super(OrderCHAR.CHAR_BATTERY, RESPONSE_TYPE_READ);
     }
 
     @Override
